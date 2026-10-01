@@ -6,7 +6,7 @@ public static class BaseDeDatos
 {
     private const int VersionDeEsquema = 1;
 
-    private static readonly string Ruta = ResolverRuta();
+    public static readonly string Ruta = ResolverRuta();
 
     public static string CadenaDeConexion
         => new SqliteConnectionStringBuilder

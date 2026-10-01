@@ -3,6 +3,7 @@ using Structure.Datos;
 using Structure.Repositorios;
 
 BaseDeDatos.Inicializar();
+Console.WriteLine($"Base de datos: {BaseDeDatos.Ruta}");
 
 var gestor = new GestorDeEstudiantes(new RepositorioEstudiantes());
 var comision = CargaDePrueba.Comision;
@@ -19,7 +20,6 @@ while (true)
     Console.WriteLine($"=== Gestión de estudios ===  Comisión: {comision}");
     Console.WriteLine("1) Listar estudiantes");
     Console.WriteLine("2) Agregar estudiante");
-    Console.WriteLine("3) Cargar 30 estudiantes de prueba");
     Console.WriteLine("0) Salir");
     Console.Write("Opción: ");
 
@@ -34,9 +34,6 @@ while (true)
             break;
         case "2":
             Agregar();
-            break;
-        case "3":
-            Console.WriteLine($"Se cargaron {CargaDePrueba.Cargar(comision)} estudiantes.");
             break;
         case "0":
             return;
