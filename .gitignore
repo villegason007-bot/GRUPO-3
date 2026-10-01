@@ -492,4 +492,4 @@ data/
 *.db-shm
 *.db-wal
 # artifacts de Avalonia
-avalonia-build-tasks/
+.avalonia-build-tasks/
