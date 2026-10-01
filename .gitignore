@@ -485,3 +485,9 @@ $RECYCLE.BIN/
 
 # diagramas
 diagramas.md
+
+# Base de datos local
+data/
+*.db
+*.db-shm
+*.db-wal
