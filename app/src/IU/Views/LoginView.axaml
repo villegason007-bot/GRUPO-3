@@ -1,0 +1,94 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="IU.Views.LoginView">
+
+    <!-- Fondo tipo "aurora" -->
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#0F172A" Offset="0"/>
+                <GradientStop Color="#312E81" Offset="0.6"/>
+                <GradientStop Color="#7C3AED" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <!-- Luces difusas para sensación de vidrio líquido -->
+        <Ellipse Width="500" Height="500"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Top"
+                 Margin="-150,-150,0,0"
+                 IsHitTestVisible="False">
+            <Ellipse.Fill>
+                <RadialGradientBrush>
+                    <GradientStop Color="#806366F1" Offset="0"/>
+                    <GradientStop Color="#006366F1" Offset="1"/>
+                </RadialGradientBrush>
+            </Ellipse.Fill>
+        </Ellipse>
+
+        <Ellipse Width="600" Height="600"
+                 HorizontalAlignment="Right"
+                 VerticalAlignment="Bottom"
+                 Margin="0,0,-200,-200"
+                 IsHitTestVisible="False">
+            <Ellipse.Fill>
+                <RadialGradientBrush>
+                    <GradientStop Color="#80EC4899" Offset="0"/>
+                    <GradientStop Color="#00EC4899" Offset="1"/>
+                </RadialGradientBrush>
+            </Ellipse.Fill>
+        </Ellipse>
+
+        <!-- Card glass -->
+        <Border Classes="card"
+                Width="420"
+                Padding="44"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+
+            <StackPanel Spacing="22">
+
+                <TextBlock
+                    Text="Gestión de Cursada"
+                    FontSize="30"
+                    FontWeight="Bold"
+                    Foreground="White"
+                    HorizontalAlignment="Center"/>
+
+                <TextBlock
+                    Text="Iniciar sesión"
+                    FontSize="16"
+                    Foreground="#CCFFFFFF"
+                    HorizontalAlignment="Center"/>
+
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Usuario"
+                               Foreground="#E6FFFFFF"
+                               FontWeight="SemiBold"/>
+                    <TextBox x:Name="TxtUsuario"
+                             Classes="glass"
+                             Watermark="Ingresá tu usuario"/>
+                </StackPanel>
+
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Contraseña"
+                               Foreground="#E6FFFFFF"
+                               FontWeight="SemiBold"/>
+                    <TextBox x:Name="TxtPassword"
+                             Classes="glass"
+                             PasswordChar="●"
+                             Watermark="Ingresá tu contraseña"/>
+                </StackPanel>
+
+                <Button
+                    Content="Ingresar"
+                    Classes="glass"
+                    Height="46"
+                    HorizontalAlignment="Stretch"
+                    Click="BtnIngresar_Click"/>
+
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

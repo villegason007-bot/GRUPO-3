@@ -1,0 +1,196 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="IU.Views.DashboardView">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#0B1120" Offset="0"/>
+                <GradientStop Color="#1E293B" Offset="0.6"/>
+                <GradientStop Color="#312E81" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <!-- Luces difusas de fondo -->
+        <Ellipse Grid.RowSpan="2"
+                 Width="700" Height="700"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Top"
+                 Margin="-250,-250,0,0"
+                 IsHitTestVisible="False">
+            <Ellipse.Fill>
+                <RadialGradientBrush>
+                    <GradientStop Color="#80818CF8" Offset="0"/>
+                    <GradientStop Color="#00818CF8" Offset="1"/>
+                </RadialGradientBrush>
+            </Ellipse.Fill>
+        </Ellipse>
+
+        <Ellipse Grid.RowSpan="2"
+                 Width="700" Height="700"
+                 HorizontalAlignment="Right"
+                 VerticalAlignment="Bottom"
+                 Margin="0,0,-250,-250"
+                 IsHitTestVisible="False">
+            <Ellipse.Fill>
+                <RadialGradientBrush>
+                    <GradientStop Color="#80EC4899" Offset="0"/>
+                    <GradientStop Color="#00EC4899" Offset="1"/>
+                </RadialGradientBrush>
+            </Ellipse.Fill>
+        </Ellipse>
+
+        <!-- Encabezado glass -->
+        <Border
+            Grid.Row="0"
+            Classes="card"
+            Margin="20,20,20,0"
+            Padding="28">
+
+            <StackPanel Spacing="6">
+                <TextBlock
+                    Text="Panel de seguimiento"
+                    FontSize="28"
+                    FontWeight="Bold"
+                    Foreground="White"/>
+
+                <TextBlock
+                    Text="Gestión de cursada y estudiantes"
+                    FontSize="15"
+                    Foreground="#CCFFFFFF"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Contenido -->
+        <ScrollViewer Grid.Row="1">
+
+            <Grid
+                Margin="20"
+                RowDefinitions="Auto,Auto"
+                ColumnDefinitions="*,*">
+
+                <!-- Cursada -->
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Classes="card"
+                    Margin="0,0,10,10"
+                    Padding="26">
+
+                    <StackPanel Spacing="12">
+
+                        <TextBlock
+                            Text="Cursada y comisión"
+                            FontSize="20"
+                            FontWeight="Bold"
+                            Foreground="White"/>
+
+                        <TextBlock
+                            Text="Administrar comisiones y consultar la nómina de estudiantes."
+                            Foreground="#CCFFFFFF"
+                            TextWrapping="Wrap"/>
+
+                        <Button
+                            Content="Ver comisiones"
+                            Classes="glass"
+                            HorizontalAlignment="Left"/>
+
+                    </StackPanel>
+                </Border>
+
+                <!-- Asistencia -->
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Classes="card"
+                    Margin="10,0,0,10"
+                    Padding="26">
+
+                    <StackPanel Spacing="12">
+
+                        <TextBlock
+                            Text="Asistencia y entregas"
+                            FontSize="20"
+                            FontWeight="Bold"
+                            Foreground="White"/>
+
+                        <TextBlock
+                            Text="Registrar asistencia y entregas de trabajos."
+                            Foreground="#CCFFFFFF"
+                            TextWrapping="Wrap"/>
+
+                        <Button
+                            Content="Registrar asistencia"
+                            Classes="glass"
+                            HorizontalAlignment="Left"/>
+
+                    </StackPanel>
+                </Border>
+
+                <!-- Riesgo -->
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Classes="card"
+                    Margin="0,10,10,0"
+                    Padding="26">
+
+                    <StackPanel Spacing="12">
+
+                        <TextBlock
+                            Text="Indicador de riesgo"
+                            FontSize="20"
+                            FontWeight="Bold"
+                            Foreground="White"/>
+
+                        <TextBlock
+                            Text="Consultar y configurar el cálculo de riesgo de los estudiantes."
+                            Foreground="#CCFFFFFF"
+                            TextWrapping="Wrap"/>
+
+                        <Button
+                            Content="Ver indicador"
+                            Classes="glass"
+                            HorizontalAlignment="Left"/>
+
+                    </StackPanel>
+                </Border>
+
+                <!-- Seguimiento -->
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Classes="card"
+                    Margin="10,10,0,0"
+                    Padding="26">
+
+                    <StackPanel Spacing="12">
+
+                        <TextBlock
+                            Text="Panel de seguimiento"
+                            FontSize="20"
+                            FontWeight="Bold"
+                            Foreground="White"/>
+
+                        <TextBlock
+                            Text="Ver estudiantes ordenados por riesgo y consultar su historial."
+                            Foreground="#CCFFFFFF"
+                            TextWrapping="Wrap"/>
+
+                        <Button
+                            Content="Ver seguimiento"
+                            Classes="glass"
+                            HorizontalAlignment="Left"/>
+
+                    </StackPanel>
+                </Border>
+
+            </Grid>
+
+        </ScrollViewer>
+
+    </Grid>
+
+</UserControl>
