@@ -2,14 +2,120 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="IU.App"
              xmlns:local="using:IU"
-             RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+             RequestedThemeVariant="Dark">
+	<!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
-    <Application.DataTemplates>
-        <local:ViewLocator/>
-    </Application.DataTemplates>
-  
-    <Application.Styles>
-        <FluentTheme />
-    </Application.Styles>
+	<Application.DataTemplates>
+		<local:ViewLocator/>
+	</Application.DataTemplates>
+
+	<Application.Resources>
+		<!-- ============================================= -->
+		<!--  LIQUID GLASS - Recursos compartidos          -->
+		<!-- ============================================= -->
+
+		<!-- Colores base -->
+		<SolidColorBrush x:Key="GlassTint"     Color="#33FFFFFF"/>
+		<SolidColorBrush x:Key="GlassBorder"   Color="#66FFFFFF"/>
+		<SolidColorBrush x:Key="GlassText"     Color="#0F172A"/>
+		<SolidColorBrush x:Key="GlassSubText"  Color="#475569"/>
+		<SolidColorBrush x:Key="AccentBrush"   Color="#6366F1"/>
+
+		<!-- Gradiente de fondo global tipo aurora -->
+		<LinearGradientBrush x:Key="AuroraBackground" StartPoint="0%,0%" EndPoint="100%,100%">
+			<GradientStop Color="#0F172A" Offset="0"/>
+			<GradientStop Color="#1E293B" Offset="0.5"/>
+			<GradientStop Color="#312E81" Offset="1"/>
+		</LinearGradientBrush>
+
+		<!-- Gradiente del botón acento -->
+		<LinearGradientBrush x:Key="AccentGradient" StartPoint="0%,0%" EndPoint="0%,100%">
+			<GradientStop Color="#818CF8" Offset="0"/>
+			<GradientStop Color="#6366F1" Offset="1"/>
+		</LinearGradientBrush>
+
+		<!-- Gradiente sutil del vidrio -->
+		<LinearGradientBrush x:Key="GlassGradient" StartPoint="0%,0%" EndPoint="100%,100%">
+			<GradientStop Color="#40FFFFFF" Offset="0"/>
+			<GradientStop Color="#1AFFFFFF" Offset="0.5"/>
+			<GradientStop Color="#26FFFFFF" Offset="1"/>
+		</LinearGradientBrush>
+	</Application.Resources>
+
+	<Application.Styles>
+		<FluentTheme />
+
+		<!-- ============================================= -->
+		<!--  ESTILOS GLASS                                -->
+		<!-- ============================================= -->
+
+		<!-- Botón glass -->
+		<Style Selector="Button.glass">
+			<Setter Property="Background" Value="{StaticResource AccentGradient}"/>
+			<Setter Property="Foreground" Value="White"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="Padding" Value="18,10"/>
+			<Setter Property="CornerRadius" Value="10"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="BorderBrush" Value="#66FFFFFF"/>
+			<Setter Property="Effect">
+				<DropShadowEffect Color="#6366F1"
+								  BlurRadius="20"
+								  OffsetX="0"
+								  OffsetY="6"
+								  Opacity="0.4"/>
+			</Setter>
+			<Setter Property="Transitions">
+				<Transitions>
+					<TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2"/>
+					<BrushTransition Property="Background" Duration="0:0:0.2"/>
+				</Transitions>
+			</Setter>
+		</Style>
+
+		<Style Selector="Button.glass:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="#7C83FF"/>
+		</Style>
+
+		<Style Selector="Button.glass:pressed">
+			<Setter Property="RenderTransform" Value="scale(0.97)"/>
+		</Style>
+
+		<!-- TextBox glass -->
+		<Style Selector="TextBox.glass">
+			<Setter Property="Background" Value="#33FFFFFF"/>
+			<Setter Property="Foreground" Value="#0F172A"/>
+			<Setter Property="BorderBrush" Value="#4DFFFFFF"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="CornerRadius" Value="10"/>
+			<Setter Property="Padding" Value="12,10"/>
+			<Setter Property="CaretBrush" Value="#6366F1"/>
+		</Style>
+
+		<Style Selector="TextBox.glass /template/ Border#PART_BorderElement">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="BorderThickness" Value="0"/>
+		</Style>
+
+		<Style Selector="TextBox.glass:focus /template/ Border#PART_BorderElement">
+			<Setter Property="BorderBrush" Value="#6366F1"/>
+			<Setter Property="Effect">
+				<DropShadowEffect Color="#6366F1"
+								  BlurRadius="20"
+								  OffsetX="0"
+								  OffsetY="6"
+								  Opacity="0.4"/>
+			</Setter>
+		</Style>
+
+		<!-- Card glass -->
+		<Style Selector="Border.card">
+			<Setter Property="Background" Value="{StaticResource GlassGradient}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource GlassBorder}"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="CornerRadius" Value="18"/>
+			<Setter Property="BoxShadow" Value="0 10 30 0 #40000000, inset 0 1 0 0 #66FFFFFF"/>
+			<Setter Property="ClipToBounds" Value="False"/>
+		</Style>
+	</Application.Styles>
 </Application>
