@@ -3,38 +3,29 @@
              x:Class="IU.App"
              xmlns:local="using:IU"
              RequestedThemeVariant="Dark">
-	<!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
 	<Application.DataTemplates>
 		<local:ViewLocator/>
 	</Application.DataTemplates>
 
 	<Application.Resources>
-		<!-- ============================================= -->
-		<!--  LIQUID GLASS - Recursos compartidos          -->
-		<!-- ============================================= -->
-
-		<!-- Colores base -->
 		<SolidColorBrush x:Key="GlassTint"     Color="#33FFFFFF"/>
 		<SolidColorBrush x:Key="GlassBorder"   Color="#66FFFFFF"/>
 		<SolidColorBrush x:Key="GlassText"     Color="#0F172A"/>
 		<SolidColorBrush x:Key="GlassSubText"  Color="#475569"/>
 		<SolidColorBrush x:Key="AccentBrush"   Color="#6366F1"/>
 
-		<!-- Gradiente de fondo global tipo aurora -->
 		<LinearGradientBrush x:Key="AuroraBackground" StartPoint="0%,0%" EndPoint="100%,100%">
 			<GradientStop Color="#0F172A" Offset="0"/>
 			<GradientStop Color="#1E293B" Offset="0.5"/>
 			<GradientStop Color="#312E81" Offset="1"/>
 		</LinearGradientBrush>
 
-		<!-- Gradiente del botón acento -->
 		<LinearGradientBrush x:Key="AccentGradient" StartPoint="0%,0%" EndPoint="0%,100%">
 			<GradientStop Color="#818CF8" Offset="0"/>
 			<GradientStop Color="#6366F1" Offset="1"/>
 		</LinearGradientBrush>
 
-		<!-- Gradiente sutil del vidrio -->
 		<LinearGradientBrush x:Key="GlassGradient" StartPoint="0%,0%" EndPoint="100%,100%">
 			<GradientStop Color="#40FFFFFF" Offset="0"/>
 			<GradientStop Color="#1AFFFFFF" Offset="0.5"/>
@@ -45,11 +36,6 @@
 	<Application.Styles>
 		<FluentTheme />
 
-		<!-- ============================================= -->
-		<!--  ESTILOS GLASS                                -->
-		<!-- ============================================= -->
-
-		<!-- Botón glass -->
 		<Style Selector="Button.glass">
 			<Setter Property="Background" Value="{StaticResource AccentGradient}"/>
 			<Setter Property="Foreground" Value="White"/>
@@ -81,7 +67,6 @@
 			<Setter Property="RenderTransform" Value="scale(0.97)"/>
 		</Style>
 
-		<!-- TextBox glass -->
 		<Style Selector="TextBox.glass">
 			<Setter Property="Background" Value="#33FFFFFF"/>
 			<Setter Property="Foreground" Value="#0F172A"/>
@@ -108,7 +93,6 @@
 			</Setter>
 		</Style>
 
-		<!-- Card glass -->
 		<Style Selector="Border.card">
 			<Setter Property="Background" Value="{StaticResource GlassGradient}"/>
 			<Setter Property="BorderBrush" Value="{StaticResource GlassBorder}"/>
