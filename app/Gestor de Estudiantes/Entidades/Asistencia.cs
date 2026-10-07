@@ -1,22 +1,28 @@
 namespace Gestor_de_Estudiantes.Entidades;
 
-internal class Asistencia
+public class Asistencia
 {
-    // Id opcional para identificar la fila
-    public Guid Id { get; set; } = Guid.NewGuid();
+    // Id de la fila en la base de datos
+    public long Id { get; set; }
+
+    // Clave foránea a la clase
+    public long ClaseId { get; set; }
+
+    // Clave foránea al estudiante
+    public long EstudianteId { get; set; }
 
     // Relación con el estudiante
-    public Estudiante Estudiante { get; set; }
+    public Estudiante? Estudiante { get; set; }
 
     // Relación con la clase
-    public Clase Clase { get; set; }
+    public Clase? Clase { get; set; }
 
-    // El tipo de dato oficial requerido por el diagrama 
+    // El tipo de dato oficial requerido por el diagrama
     public Condicion Condicion { get; set; }
 
     // Propiedad puente que lee y modifica la condición
-    public bool EstaPresente 
-    { 
+    public bool EstaPresente
+    {
         get => Condicion == Condicion.Presente;
         set => Condicion = value ? Condicion.Presente : Condicion.Ausente;
     }
