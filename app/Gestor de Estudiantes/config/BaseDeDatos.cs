@@ -40,6 +40,7 @@ namespace Gestor_de_Estudiantes.Config
                     apellido TEXT NULL,
                     telefono TEXT NULL,
                     fecha_incorporacion TEXT NULL,
+                    activo INTEGER NOT NULL DEFAULT 1 CHECK (activo IN (0, 1)),
                     comision_id TEXT NOT NULL REFERENCES comisiones(id)
                 );
 
@@ -74,6 +75,18 @@ namespace Gestor_de_Estudiantes.Config
                 );
                 """;
             esquema.ExecuteNonQuery();
+
+            // Migración ligera para bases creadas antes de la baja lógica:
+            // SQLite no admite ADD COLUMN IF NOT EXISTS, se ignora si ya existe.
+            try
+            {
+                using var migracion = conexion.CreateCommand();
+                migracion.CommandText = "ALTER TABLE estudiantes ADD COLUMN activo INTEGER NOT NULL DEFAULT 1;";
+                migracion.ExecuteNonQuery();
+            }
+            catch (SqliteException)
+            {
+            }
 
             using var semilla = conexion.CreateCommand();
             semilla.CommandText = "INSERT OR IGNORE INTO comisiones (id, codigo) VALUES (@id, @codigo);";

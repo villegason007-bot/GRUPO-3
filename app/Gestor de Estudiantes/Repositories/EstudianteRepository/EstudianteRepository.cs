@@ -14,7 +14,7 @@ namespace Gestor_de_Estudiantes.Repositories
                 SELECT e.id, e.legajo, e.nombre, e.apellido, e.telefono, e.fecha_incorporacion
                 FROM estudiantes e
                 INNER JOIN comisiones c ON c.id = e.comision_id
-                WHERE c.codigo = @codigo
+                WHERE c.codigo = @codigo AND e.activo = 1
                 ORDER BY e.legajo;
                 """;
             comando.Parameters.AddWithValue("@codigo", codigoComision);
@@ -33,7 +33,7 @@ namespace Gestor_de_Estudiantes.Repositories
             comando.CommandText = """
                 SELECT e.id, e.legajo, e.nombre, e.apellido, e.telefono, e.fecha_incorporacion
                 FROM estudiantes e
-                WHERE e.legajo = @legajo;
+                WHERE e.legajo = @legajo AND e.activo = 1;
                 """;
             comando.Parameters.AddWithValue("@legajo", legajo);
 
@@ -62,7 +62,7 @@ namespace Gestor_de_Estudiantes.Repositories
         {
             using var conexion = BaseDeDatos.Abrir();
             using var comando = conexion.CreateCommand();
-            comando.CommandText = "DELETE FROM estudiantes WHERE legajo = @legajo;";
+            comando.CommandText = "UPDATE estudiantes SET activo = 0 WHERE legajo = @legajo AND activo = 1;";
             comando.Parameters.AddWithValue("@legajo", legajo);
             return comando.ExecuteNonQuery() > 0;
         }
