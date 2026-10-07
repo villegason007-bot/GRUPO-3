@@ -3,12 +3,15 @@ skinparam linetype ortho
 title Modelo de dominio — Seguimiento de cursada y alerta temprana
 
 class Comision {
-  + nombre : Texto
+  + codigo : Texto
 }
 
 class Estudiante {
   + legajo : Texto
   + nombre : Texto
+  + apellido : Texto
+  + telefono : Texto
+  + fechaIncorporacion : Fecha
 }
 
 class Clase {

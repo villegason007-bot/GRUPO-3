@@ -14,4 +14,4 @@ Un panel para que quien sigue una comisión sepa a qué estudiantes contactar es
 
 ## Modelo de dominio
 
-![Modelo de dominio](app/docs/diagrams/dominio.png)
+![Modelo de dominio](docs/diagrams/dominio.png)
