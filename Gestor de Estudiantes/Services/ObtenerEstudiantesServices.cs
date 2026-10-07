@@ -1,4 +1,4 @@
-﻿GIT using Gestor_de_Estudiantes.Entidades;
+﻿using Gestor_de_Estudiantes.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
