@@ -103,7 +103,7 @@ void MenuEstudiantes()
                     break;
             }
         }
-        catch (Exception excepcion) when (excepcion is ArgumentException or InvalidOperationException)
+        catch (Exception excepcion) when (excepcion is ArgumentException or InvalidOperationException or SqliteException)
         {
             Console.WriteLine($"Error: {excepcion.Message}");
         }
@@ -149,7 +149,7 @@ void MenuComisiones()
                     break;
             }
         }
-        catch (Exception excepcion) when (excepcion is ArgumentException or InvalidOperationException)
+        catch (Exception excepcion) when (excepcion is ArgumentException or InvalidOperationException or SqliteException)
         {
             Console.WriteLine($"Error: {excepcion.Message}");
         }
@@ -525,7 +525,7 @@ void Eliminar()
     var legajo = Console.ReadLine() ?? string.Empty;
 
     if (servicioEstudiantes.EliminarEstudiante(legajo))
-        Console.WriteLine($"Eliminado: {legajo.Trim()}");
+        Console.WriteLine($"Dado de baja: {legajo.Trim()} (baja lógica, conserva historial)");
     else
         Console.WriteLine($"No existe estudiante con legajo {legajo.Trim()}.");
 }
