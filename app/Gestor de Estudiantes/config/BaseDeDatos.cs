@@ -4,7 +4,7 @@ namespace Gestor_de_Estudiantes.Config
 {
     public static class BaseDeDatos
     {
-        public static string Ruta { get; } = ResolverRuta();
+        public static string Ruta { get; set; } = ResolverRuta();
 
         public static string CadenaDeConexion
             => new SqliteConnectionStringBuilder
