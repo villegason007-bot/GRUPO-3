@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Gestor_de_Estudiantes.Entidades
+﻿namespace Gestor_de_Estudiantes.Entidades
 {
-    internal class Estudiante
+    public class Estudiante
     {
-        public string Nombre { get; set; }
-        public string Apellido { get; set; }
+        public long Id { get; set; }
+        public string Legajo { get; set; } = string.Empty;
+        public string Nombre { get; set; } = string.Empty;
+        public string Apellido { get; set; } = string.Empty;
+        public string? Telefono { get; set; }
+        public string? FechaIncorporacion { get; set; }
     }
 }
