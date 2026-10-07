@@ -42,6 +42,36 @@ namespace Gestor_de_Estudiantes.Config
                     fecha_incorporacion TEXT NULL,
                     comision_id INTEGER NOT NULL REFERENCES comisiones(id)
                 );
+
+                CREATE TABLE IF NOT EXISTS clases (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    comision_id INTEGER NOT NULL REFERENCES comisiones(id),
+                    fecha TEXT NOT NULL
+                );
+
+                CREATE TABLE IF NOT EXISTS asistencias (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    clase_id INTEGER NOT NULL REFERENCES clases(id),
+                    estudiante_id INTEGER NOT NULL REFERENCES estudiantes(id),
+                    condicion TEXT NOT NULL CHECK (condicion IN ('Presente', 'Ausente')),
+                    UNIQUE (clase_id, estudiante_id)
+                );
+
+                CREATE TABLE IF NOT EXISTS trabajos (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    comision_id INTEGER NOT NULL REFERENCES comisiones(id),
+                    titulo TEXT NOT NULL,
+                    fecha_entrega TEXT NOT NULL
+                );
+
+                CREATE TABLE IF NOT EXISTS entregas (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    trabajo_id INTEGER NOT NULL REFERENCES trabajos(id),
+                    estudiante_id INTEGER NOT NULL REFERENCES estudiantes(id),
+                    entregado INTEGER NOT NULL CHECK (entregado IN (0, 1)),
+                    fecha TEXT NULL,
+                    UNIQUE (trabajo_id, estudiante_id)
+                );
                 """;
             esquema.ExecuteNonQuery();
 
