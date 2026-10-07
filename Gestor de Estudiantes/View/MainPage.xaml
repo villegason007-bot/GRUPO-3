@@ -15,6 +15,20 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <ListView ItemsSource="{Binding ListadoComisiones}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding Nombre}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <ListView ItemsSource="{Binding ListadoTrabajos}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding Titulo}" Detail="{Binding FechaDeEntrega}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
             <!--<Image
                 Source="dotnet_bot.png"
                 HeightRequest="185"

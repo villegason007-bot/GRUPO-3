@@ -15,6 +15,8 @@ namespace Gestor_de_Estudiantes
         private void ContentPage_Loaded(object sender, EventArgs e)
         {
             this._vm.MostrarEstudiantes();
+            this._vm.MostrarComisiones();
+            this._vm.MostrarTrabajos();
         }
     }
 }
