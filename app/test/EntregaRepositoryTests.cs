@@ -89,18 +89,23 @@ namespace Test
         {
             var trabajoId = CrearTrabajo();
             var estudianteId = CrearEstudiante();
-            var entrega = new Entrega
+            _repositorio.RegistrarEntrega(new Entrega
             {
                 TrabajoId = trabajoId,
                 EstudianteId = estudianteId,
                 Entregado = true,
                 Fecha = new DateTime(2026, 10, 19),
-            };
-            _repositorio.RegistrarEntrega(entrega);
+            });
 
             try
             {
-                _repositorio.RegistrarEntrega(entrega);
+                _repositorio.RegistrarEntrega(new Entrega
+                {
+                    TrabajoId = trabajoId,
+                    EstudianteId = estudianteId,
+                    Entregado = false,
+                    Fecha = null,
+                });
                 Assert.Fail("Se esperaba una restricción UNIQUE.");
             }
             catch (SqliteException excepcion)

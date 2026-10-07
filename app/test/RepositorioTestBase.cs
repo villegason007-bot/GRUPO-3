@@ -20,26 +20,26 @@ namespace Test
                 File.Delete(BaseDeDatos.Ruta);
         }
 
-        protected static long CrearClase()
+        protected static Guid CrearClase()
         {
             var repositorio = new ClaseRepository();
             repositorio.AgregarClase(new Clase { Fecha = new DateTime(2026, 10, 5) }, "1K1");
             return repositorio.ListarClases("1K1")[0].Id;
         }
 
-        protected static long CrearEstudiante()
+        protected static Guid CrearEstudiante()
         {
             return CrearEstudiante("9001", "Ana");
         }
 
-        protected static long CrearEstudiante(string legajo, string nombre)
+        protected static Guid CrearEstudiante(string legajo, string nombre)
         {
             var repositorio = new EstudianteRepository();
             repositorio.AgregarEstudiante(new Estudiante { Legajo = legajo, Nombre = nombre, Apellido = "García" }, "1K1");
             return repositorio.ListarEstudiantes("1K1").First(estudiante => estudiante.Legajo == legajo).Id;
         }
 
-        protected static long CrearTrabajo()
+        protected static Guid CrearTrabajo()
         {
             var repositorio = new TrabajoRepository();
             repositorio.AgregarTrabajo(new Trabajo { Titulo = "TP1", FechaDeEntrega = new DateTime(2026, 10, 20) }, "1K1");

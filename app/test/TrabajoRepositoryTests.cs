@@ -20,7 +20,7 @@ namespace Test
             Assert.AreEqual(1, trabajos.Count);
             Assert.AreEqual("TP1", trabajos[0].Titulo);
             Assert.AreEqual(fecha, trabajos[0].FechaDeEntrega);
-            Assert.IsTrue(trabajos[0].Id > 0);
+            Assert.AreNotEqual(Guid.Empty, trabajos[0].Id);
         }
 
         [TestMethod]

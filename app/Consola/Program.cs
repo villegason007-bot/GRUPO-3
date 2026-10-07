@@ -29,7 +29,11 @@ while (true)
     Console.WriteLine("0) Salir");
     Console.Write("> ");
 
-    switch (Console.ReadLine())
+    var opcionPrincipal = Console.ReadLine();
+    if (opcionPrincipal is null)
+        return;
+
+    switch (opcionPrincipal)
     {
         case "1":
             MenuEstudiantes();
@@ -73,6 +77,8 @@ void MenuEstudiantes()
         Console.Write("> ");
 
         var opcion = Console.ReadLine();
+        if (opcion is null)
+            return;
 
         try
         {
@@ -116,6 +122,8 @@ void MenuComisiones()
         Console.Write("> ");
 
         var opcion = Console.ReadLine();
+        if (opcion is null)
+            return;
 
         try
         {
@@ -160,6 +168,8 @@ void MenuClases()
         Console.Write("> ");
 
         var opcion = Console.ReadLine();
+        if (opcion is null)
+            return;
 
         try
         {
@@ -168,10 +178,10 @@ void MenuClases()
                 case "1":
                     var clases = repositorioClases.ListarClases(ComisionActiva);
                     Console.WriteLine();
-                    Console.WriteLine($"{"Id",-6}Fecha");
-                    Console.WriteLine(new string('-', 20));
+                    Console.WriteLine($"{"Id",-38}Fecha");
+                    Console.WriteLine(new string('-', 56));
                     foreach (var clase in clases)
-                        Console.WriteLine($"{clase.Id,-6}{clase.Fecha:yyyy-MM-dd}");
+                        Console.WriteLine($"{clase.Id,-38}{clase.Fecha:yyyy-MM-dd}");
                     Console.WriteLine($"Total: {clases.Count}");
                     break;
                 case "2":
@@ -210,6 +220,8 @@ void MenuTrabajos()
         Console.Write("> ");
 
         var opcion = Console.ReadLine();
+        if (opcion is null)
+            return;
 
         try
         {
@@ -218,10 +230,10 @@ void MenuTrabajos()
                 case "1":
                     var trabajos = repositorioTrabajos.ListarTrabajos(ComisionActiva);
                     Console.WriteLine();
-                    Console.WriteLine($"{"Id",-6}{"Entrega",-14}Título");
-                    Console.WriteLine(new string('-', 44));
+                    Console.WriteLine($"{"Id",-38}{"Entrega",-14}Título");
+                    Console.WriteLine(new string('-', 76));
                     foreach (var trabajo in trabajos)
-                        Console.WriteLine($"{trabajo.Id,-6}{trabajo.FechaDeEntrega,-14:yyyy-MM-dd}{trabajo.Titulo}");
+                        Console.WriteLine($"{trabajo.Id,-38}{trabajo.FechaDeEntrega,-14:yyyy-MM-dd}{trabajo.Titulo}");
                     Console.WriteLine($"Total: {trabajos.Count}");
                     break;
                 case "2":
@@ -265,26 +277,28 @@ void MenuAsistencias()
         Console.Write("> ");
 
         var opcion = Console.ReadLine();
+        if (opcion is null)
+            return;
 
         try
         {
             switch (opcion)
             {
                 case "1":
-                    var claseId = LeerId("Id de la clase: ");
+                    var claseId = SeleccionarClase();
                     if (claseId is null) break;
                     var asistencias = repositorioAsistencias.ListarPorClase(claseId.Value);
                     Console.WriteLine();
-                    Console.WriteLine($"{"Id",-6}{"Estudiante",-14}Condición");
-                    Console.WriteLine(new string('-', 34));
+                    Console.WriteLine($"{"Id",-38}{"Estudiante",-38}Condición");
+                    Console.WriteLine(new string('-', 82));
                     foreach (var asistencia in asistencias)
-                        Console.WriteLine($"{asistencia.Id,-6}{asistencia.EstudianteId,-14}{asistencia.Condicion}");
+                        Console.WriteLine($"{asistencia.Id,-38}{asistencia.EstudianteId,-38}{asistencia.Condicion}");
                     Console.WriteLine($"Total: {asistencias.Count}");
                     break;
                 case "2":
-                    var claseRegistrar = LeerId("Id de la clase: ");
+                    var claseRegistrar = SeleccionarClase();
                     if (claseRegistrar is null) break;
-                    var estudianteRegistrar = LeerId("Id del estudiante: ");
+                    var estudianteRegistrar = SeleccionarEstudiante();
                     if (estudianteRegistrar is null) break;
                     var condicion = LeerCondicion();
                     if (condicion is null) break;
@@ -297,9 +311,9 @@ void MenuAsistencias()
                     Console.WriteLine("Asistencia registrada.");
                     break;
                 case "3":
-                    var claseCorregir = LeerId("Id de la clase: ");
+                    var claseCorregir = SeleccionarClase();
                     if (claseCorregir is null) break;
-                    var estudianteCorregir = LeerId("Id del estudiante: ");
+                    var estudianteCorregir = SeleccionarEstudiante();
                     if (estudianteCorregir is null) break;
                     var condicionCorregida = LeerCondicion();
                     if (condicionCorregida is null) break;
@@ -336,26 +350,28 @@ void MenuEntregas()
         Console.Write("> ");
 
         var opcion = Console.ReadLine();
+        if (opcion is null)
+            return;
 
         try
         {
             switch (opcion)
             {
                 case "1":
-                    var trabajoId = LeerId("Id del trabajo: ");
+                    var trabajoId = SeleccionarTrabajo();
                     if (trabajoId is null) break;
                     var entregas = repositorioEntregas.ListarPorTrabajo(trabajoId.Value);
                     Console.WriteLine();
-                    Console.WriteLine($"{"Id",-6}{"Estudiante",-14}{"Entregado",-12}Fecha");
-                    Console.WriteLine(new string('-', 44));
+                    Console.WriteLine($"{"Id",-38}{"Estudiante",-38}{"Entregado",-12}Fecha");
+                    Console.WriteLine(new string('-', 98));
                     foreach (var entrega in entregas)
-                        Console.WriteLine($"{entrega.Id,-6}{entrega.EstudianteId,-14}{(entrega.Entregado ? "Sí" : "No"),-12}{entrega.Fecha:yyyy-MM-dd}");
+                        Console.WriteLine($"{entrega.Id,-38}{entrega.EstudianteId,-38}{(entrega.Entregado ? "Sí" : "No"),-12}{entrega.Fecha:yyyy-MM-dd}");
                     Console.WriteLine($"Total: {entregas.Count}");
                     break;
                 case "2":
-                    var trabajoRegistrar = LeerId("Id del trabajo: ");
+                    var trabajoRegistrar = SeleccionarTrabajo();
                     if (trabajoRegistrar is null) break;
-                    var estudianteRegistrar = LeerId("Id del estudiante: ");
+                    var estudianteRegistrar = SeleccionarEstudiante();
                     if (estudianteRegistrar is null) break;
                     var entregado = LeerSiNo("¿Entregado? (S/N): ");
                     if (entregado is null) break;
@@ -371,9 +387,9 @@ void MenuEntregas()
                     Console.WriteLine("Entrega registrada.");
                     break;
                 case "3":
-                    var trabajoCorregir = LeerId("Id del trabajo: ");
+                    var trabajoCorregir = SeleccionarTrabajo();
                     if (trabajoCorregir is null) break;
-                    var estudianteCorregir = LeerId("Id del estudiante: ");
+                    var estudianteCorregir = SeleccionarEstudiante();
                     if (estudianteCorregir is null) break;
                     var entregadoCorregido = LeerSiNo("¿Entregado? (S/N): ");
                     if (entregadoCorregido is null) break;
@@ -400,14 +416,38 @@ void MenuEntregas()
     }
 }
 
-long? LeerId(string etiqueta)
+Guid? Seleccionar<T>(string titulo, List<T> elementos, Func<T, Guid> obtenerId, Func<T, string> formato, string etiqueta)
 {
+    if (elementos.Count == 0)
+    {
+        Console.WriteLine($"No hay {titulo} cargados.");
+        return null;
+    }
+
+    Console.WriteLine();
+    for (var i = 0; i < elementos.Count; i++)
+        Console.WriteLine($"{i + 1}) {formato(elementos[i])}");
+
     Console.Write(etiqueta);
-    if (long.TryParse(Console.ReadLine(), out var id))
-        return id;
-    Console.WriteLine("Id inválido.");
-    return null;
+    if (!int.TryParse(Console.ReadLine(), out var opcion) || opcion < 1 || opcion > elementos.Count)
+    {
+        Console.WriteLine("Opción inválida.");
+        return null;
+    }
+    return obtenerId(elementos[opcion - 1]);
 }
+
+Guid? SeleccionarClase()
+    => Seleccionar("clases", repositorioClases.ListarClases(ComisionActiva),
+        clase => clase.Id, clase => $"{clase.Id}  {clase.Fecha:yyyy-MM-dd}", "Elegir clase: ");
+
+Guid? SeleccionarEstudiante()
+    => Seleccionar("estudiantes", servicioEstudiantes.ListarEstudiantes(ComisionActiva),
+        estudiante => estudiante.Id, estudiante => $"{estudiante.Id}  {estudiante.Legajo} {estudiante.Nombre} {estudiante.Apellido}", "Elegir estudiante: ");
+
+Guid? SeleccionarTrabajo()
+    => Seleccionar("trabajos", repositorioTrabajos.ListarTrabajos(ComisionActiva),
+        trabajo => trabajo.Id, trabajo => $"{trabajo.Id}  {trabajo.FechaDeEntrega:yyyy-MM-dd}  {trabajo.Titulo}", "Elegir trabajo: ");
 
 Condicion? LeerCondicion()
 {

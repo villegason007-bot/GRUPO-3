@@ -40,7 +40,7 @@ namespace Test
             var clases = _repositorio.ListarClases("1K1");
             Assert.AreEqual(1, clases.Count);
             Assert.AreEqual(fecha, clases[0].Fecha);
-            Assert.IsTrue(clases[0].Id > 0);
+            Assert.AreNotEqual(Guid.Empty, clases[0].Id);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Test
             var asistencias = _repositorio.ListarPorClase(claseId);
 
             Assert.AreEqual(2, asistencias.Count);
-            Assert.IsTrue(asistencias[0].Id > 0);
+            Assert.AreNotEqual(Guid.Empty, asistencias[0].Id);
         }
 
         [TestMethod]
@@ -72,17 +72,21 @@ namespace Test
         {
             var claseId = CrearClase();
             var estudianteId = CrearEstudiante();
-            var asistencia = new Asistencia
+            _repositorio.RegistrarAsistencia(new Asistencia
             {
                 ClaseId = claseId,
                 EstudianteId = estudianteId,
                 Condicion = Condicion.Presente,
-            };
-            _repositorio.RegistrarAsistencia(asistencia);
+            });
 
             try
             {
-                _repositorio.RegistrarAsistencia(asistencia);
+                _repositorio.RegistrarAsistencia(new Asistencia
+                {
+                    ClaseId = claseId,
+                    EstudianteId = estudianteId,
+                    Condicion = Condicion.Ausente,
+                });
                 Assert.Fail("Se esperaba una restricción UNIQUE.");
             }
             catch (SqliteException excepcion)
