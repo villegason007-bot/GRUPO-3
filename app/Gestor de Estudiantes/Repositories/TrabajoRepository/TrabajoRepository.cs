@@ -31,10 +31,11 @@ namespace Gestor_de_Estudiantes.Repositories
             using var conexion = BaseDeDatos.Abrir();
             using var comando = conexion.CreateCommand();
             comando.CommandText = """
-                INSERT INTO trabajos (titulo, fecha_entrega, comision_id)
-                VALUES (@titulo, @fechaEntrega,
+                INSERT INTO trabajos (id, titulo, fecha_entrega, comision_id)
+                VALUES (@id, @titulo, @fechaEntrega,
                         (SELECT id FROM comisiones WHERE codigo = @codigo));
                 """;
+            comando.Parameters.AddWithValue("@id", trabajo.Id.ToString("D"));
             comando.Parameters.AddWithValue("@titulo", trabajo.Titulo);
             comando.Parameters.AddWithValue("@fechaEntrega", trabajo.FechaDeEntrega);
             comando.Parameters.AddWithValue("@codigo", codigoComision);
@@ -43,7 +44,7 @@ namespace Gestor_de_Estudiantes.Repositories
 
         private static Trabajo Mapear(SqliteDataReader lector) => new Trabajo
         {
-            Id = lector.GetInt64(0),
+            Id = Guid.Parse(lector.GetString(0)),
             Titulo = lector.GetString(1),
             FechaDeEntrega = lector.GetDateTime(2),
         };

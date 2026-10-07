@@ -16,7 +16,7 @@ namespace Gestor_de_Estudiantes.Repositories
             while (lector.Read())
                 comisiones.Add(new Comision
                 {
-                    Id = lector.GetInt64(0),
+                    Id = Guid.Parse(lector.GetString(0)),
                     Codigo = lector.GetString(1),
                 });
             return comisiones;
@@ -26,7 +26,8 @@ namespace Gestor_de_Estudiantes.Repositories
         {
             using var conexion = BaseDeDatos.Abrir();
             using var comando = conexion.CreateCommand();
-            comando.CommandText = "INSERT INTO comisiones (codigo) VALUES (@codigo);";
+            comando.CommandText = "INSERT INTO comisiones (id, codigo) VALUES (@id, @codigo);";
+            comando.Parameters.AddWithValue("@id", comision.Id.ToString("D"));
             comando.Parameters.AddWithValue("@codigo", comision.Codigo);
             comando.ExecuteNonQuery();
         }

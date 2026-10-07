@@ -3,13 +3,13 @@ namespace Gestor_de_Estudiantes.Entidades;
 public class Asistencia
 {
     // Id de la fila en la base de datos
-    public long Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     // Clave foránea a la clase
-    public long ClaseId { get; set; }
+    public Guid ClaseId { get; set; }
 
     // Clave foránea al estudiante
-    public long EstudianteId { get; set; }
+    public Guid EstudianteId { get; set; }
 
     // Relación con el estudiante
     public Estudiante? Estudiante { get; set; }

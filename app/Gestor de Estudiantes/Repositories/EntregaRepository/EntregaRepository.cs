@@ -11,17 +11,18 @@ namespace Gestor_de_Estudiantes.Repositories
             using var conexion = BaseDeDatos.Abrir();
             using var comando = conexion.CreateCommand();
             comando.CommandText = """
-                INSERT INTO entregas (trabajo_id, estudiante_id, entregado, fecha)
-                VALUES (@trabajoId, @estudianteId, @entregado, @fecha);
+                INSERT INTO entregas (id, trabajo_id, estudiante_id, entregado, fecha)
+                VALUES (@id, @trabajoId, @estudianteId, @entregado, @fecha);
                 """;
-            comando.Parameters.AddWithValue("@trabajoId", entrega.TrabajoId);
-            comando.Parameters.AddWithValue("@estudianteId", entrega.EstudianteId);
+            comando.Parameters.AddWithValue("@id", entrega.Id.ToString("D"));
+            comando.Parameters.AddWithValue("@trabajoId", entrega.TrabajoId.ToString("D"));
+            comando.Parameters.AddWithValue("@estudianteId", entrega.EstudianteId.ToString("D"));
             comando.Parameters.AddWithValue("@entregado", entrega.Entregado);
             comando.Parameters.AddWithValue("@fecha", (object?)entrega.Fecha ?? DBNull.Value);
             comando.ExecuteNonQuery();
         }
 
-        public bool ActualizarEntrega(long trabajoId, long estudianteId, bool entregado, DateTime? fecha)
+        public bool ActualizarEntrega(Guid trabajoId, Guid estudianteId, bool entregado, DateTime? fecha)
         {
             using var conexion = BaseDeDatos.Abrir();
             using var comando = conexion.CreateCommand();
@@ -32,12 +33,12 @@ namespace Gestor_de_Estudiantes.Repositories
                 """;
             comando.Parameters.AddWithValue("@entregado", entregado);
             comando.Parameters.AddWithValue("@fecha", (object?)fecha ?? DBNull.Value);
-            comando.Parameters.AddWithValue("@trabajoId", trabajoId);
-            comando.Parameters.AddWithValue("@estudianteId", estudianteId);
+            comando.Parameters.AddWithValue("@trabajoId", trabajoId.ToString("D"));
+            comando.Parameters.AddWithValue("@estudianteId", estudianteId.ToString("D"));
             return comando.ExecuteNonQuery() > 0;
         }
 
-        public List<Entrega> ListarPorTrabajo(long trabajoId)
+        public List<Entrega> ListarPorTrabajo(Guid trabajoId)
         {
             using var conexion = BaseDeDatos.Abrir();
             using var comando = conexion.CreateCommand();
@@ -47,7 +48,7 @@ namespace Gestor_de_Estudiantes.Repositories
                 WHERE trabajo_id = @trabajoId
                 ORDER BY estudiante_id;
                 """;
-            comando.Parameters.AddWithValue("@trabajoId", trabajoId);
+            comando.Parameters.AddWithValue("@trabajoId", trabajoId.ToString("D"));
 
             var entregas = new List<Entrega>();
             using var lector = comando.ExecuteReader();
@@ -56,7 +57,7 @@ namespace Gestor_de_Estudiantes.Repositories
             return entregas;
         }
 
-        public List<Entrega> ListarPorEstudiante(long estudianteId)
+        public List<Entrega> ListarPorEstudiante(Guid estudianteId)
         {
             using var conexion = BaseDeDatos.Abrir();
             using var comando = conexion.CreateCommand();
@@ -66,7 +67,7 @@ namespace Gestor_de_Estudiantes.Repositories
                 WHERE estudiante_id = @estudianteId
                 ORDER BY trabajo_id;
                 """;
-            comando.Parameters.AddWithValue("@estudianteId", estudianteId);
+            comando.Parameters.AddWithValue("@estudianteId", estudianteId.ToString("D"));
 
             var entregas = new List<Entrega>();
             using var lector = comando.ExecuteReader();
@@ -77,9 +78,9 @@ namespace Gestor_de_Estudiantes.Repositories
 
         private static Entrega Mapear(SqliteDataReader lector) => new Entrega
         {
-            Id = lector.GetInt64(0),
-            TrabajoId = lector.GetInt64(1),
-            EstudianteId = lector.GetInt64(2),
+            Id = Guid.Parse(lector.GetString(0)),
+            TrabajoId = Guid.Parse(lector.GetString(1)),
+            EstudianteId = Guid.Parse(lector.GetString(2)),
             Entregado = lector.GetInt64(3) != 0,
             Fecha = lector.IsDBNull(4) ? null : lector.GetDateTime(4),
         };

@@ -46,10 +46,11 @@ namespace Gestor_de_Estudiantes.Repositories
             using var conexion = BaseDeDatos.Abrir();
             using var comando = conexion.CreateCommand();
             comando.CommandText = """
-                INSERT INTO estudiantes (legajo, nombre, apellido, comision_id)
-                VALUES (@legajo, @nombre, @apellido,
+                INSERT INTO estudiantes (id, legajo, nombre, apellido, comision_id)
+                VALUES (@id, @legajo, @nombre, @apellido,
                         (SELECT id FROM comisiones WHERE codigo = @codigo));
                 """;
+            comando.Parameters.AddWithValue("@id", estudiante.Id.ToString("D"));
             comando.Parameters.AddWithValue("@legajo", estudiante.Legajo);
             comando.Parameters.AddWithValue("@nombre", estudiante.Nombre);
             comando.Parameters.AddWithValue("@apellido", estudiante.Apellido);
@@ -68,7 +69,7 @@ namespace Gestor_de_Estudiantes.Repositories
 
         private static Estudiante Mapear(SqliteDataReader lector) => new Estudiante
         {
-            Id = lector.GetInt64(0),
+            Id = Guid.Parse(lector.GetString(0)),
             Legajo = lector.GetString(1),
             Nombre = lector.GetString(2),
             Apellido = lector.IsDBNull(3) ? string.Empty : lector.GetString(3),

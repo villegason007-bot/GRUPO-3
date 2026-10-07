@@ -2,7 +2,7 @@ namespace Gestor_de_Estudiantes.Entidades
 {
     public class Comision
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string Codigo { get; set; } = string.Empty;
     }
 }
