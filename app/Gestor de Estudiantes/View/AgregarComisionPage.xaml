@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Gestor_de_Estudiantes.Views.AgregarComisionPage"
+             Title="Nueva comisión">
+
+    <VerticalStackLayout Padding="30" Spacing="15" VerticalOptions="Center">
+
+        <Label Text="Nueva comisión" FontSize="22" FontAttributes="Bold" />
+
+        <Entry x:Name="CodigoEntry" Placeholder="Código (ej: 1K1)" />
+        <Entry x:Name="SemanasEntry" Placeholder="Semanas" Keyboard="Numeric" Text="16" />
+
+        <Label x:Name="ErrorLabel" TextColor="Red" IsVisible="False" />
+
+        <HorizontalStackLayout Spacing="10" HorizontalOptions="End">
+            <Button Text="Cancelar" Clicked="OnCancelarClicked" />
+            <Button Text="Guardar" Clicked="OnGuardarClicked" />
+        </HorizontalStackLayout>
+
+    </VerticalStackLayout>
+
+</ContentPage>
