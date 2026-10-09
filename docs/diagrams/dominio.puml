@@ -1,0 +1,49 @@
+@startuml
+skinparam linetype ortho
+title Modelo de dominio — Seguimiento de cursada y alerta temprana
+
+class Comision {
+  + codigo : Texto
+}
+
+class Estudiante {
+  + legajo : Texto
+  + nombre : Texto
+  + apellido : Texto
+  + telefono : Texto
+  + fechaIncorporacion : Fecha
+}
+
+class Clase {
+  + fecha : Fecha
+}
+
+class Asistencia {
+  + condicion : Condicion
+}
+
+enum Condicion {
+  Presente
+  Ausente
+}
+
+class Trabajo {
+  + titulo : Texto
+  + fechaDeEntrega : Fecha
+}
+
+class Entrega {
+  + entregado : SiNo
+  + fecha : Fecha
+}
+
+Comision "1" *-- "0..*" Clase : dicta
+Comision "1" *-- "0..*" Trabajo : define
+Comision "1" --> "1..*" Estudiante : nomina
+Clase "1" *-- "0..*" Asistencia : registra
+Estudiante "1" --> "0..*" Asistencia : tiene
+Trabajo "1" *-- "0..*" Entrega : recibe
+Estudiante "1" --> "0..*" Entrega : presenta
+Asistencia --> Condicion : toma valor de
+
+@enduml
