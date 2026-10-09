@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Gestor_de_Estudiantes.Views.ComisionesPage"
+             Title="Comisiones"
+             Loaded="ContentPage_Loaded">
+
+    <Grid RowDefinitions="*,Auto" Padding="15" RowSpacing="10">
+
+        <ListView Grid.Row="0" ItemsSource="{Binding ListadoComisiones}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Codigo}"
+                              Detail="{Binding Semanas, StringFormat='{0} semanas'}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Button Grid.Row="1"
+                Text="Agregar comisión"
+                Clicked="OnAgregarClicked" />
+    </Grid>
+
+</ContentPage>

@@ -1,4 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
+using Gestor_de_Estudiantes.Repositories;
+using Gestor_de_Estudiantes.Services;
+using Gestor_de_Estudiantes.ViewModel;
+using Gestor_de_Estudiantes.Views;
 
 namespace Gestor_de_Estudiantes
 {
@@ -17,6 +21,14 @@ namespace Gestor_de_Estudiantes
 
 #if DEBUG
     		builder.Logging.AddDebug();
+            builder.Services.AddSingleton<IEstudianteRepository, EstudianteRepository>();
+            builder.Services.AddSingleton<EstudianteService>();
+            builder.Services.AddTransient<EstudiantesViewModel>();
+            builder.Services.AddTransient<EstudiantesPage>();
+            builder.Services.AddSingleton<IComisionRepository, ComisionRepository>();
+            builder.Services.AddSingleton<ComisionService>();
+            builder.Services.AddTransient<ComisionesViewModel>();
+            builder.Services.AddTransient<ComisionesPage>();
 #endif
 
             return builder.Build();
