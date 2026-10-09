@@ -22,9 +22,14 @@ namespace Test
 
         protected static Guid CrearClase()
         {
+            return CrearClase(new DateTime(2026, 10, 5));
+        }
+
+        protected static Guid CrearClase(DateTime fecha)
+        {
             var repositorio = new ClaseRepository();
-            repositorio.AgregarClase(new Clase { Fecha = new DateTime(2026, 10, 5) }, "1K1");
-            return repositorio.ListarClases("1K1")[0].Id;
+            repositorio.AgregarClase(new Clase { Fecha = fecha }, "1K1");
+            return repositorio.ListarClases("1K1").First(clase => clase.Fecha == fecha).Id;
         }
 
         protected static Guid CrearEstudiante()
@@ -41,8 +46,14 @@ namespace Test
 
         protected static Guid CrearTrabajo()
         {
+            return CrearTrabajo(new DateTime(2026, 10, 20));
+        }
+
+        protected static Guid CrearTrabajo(DateTime fechaDeEntrega)
+        {
             var repositorio = new TrabajoRepository();
-            repositorio.AgregarTrabajo(new Trabajo { Titulo = "TP1", FechaDeEntrega = new DateTime(2026, 10, 20) }, "1K1");
+            repositorio.AgregarTrabajo(
+                new Trabajo { Titulo = "TP1", FechaDeEntrega = fechaDeEntrega }, "1K1");
             return repositorio.ListarTrabajos("1K1")[0].Id;
         }
     }

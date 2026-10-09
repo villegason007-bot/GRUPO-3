@@ -30,7 +30,8 @@ namespace Gestor_de_Estudiantes.Config
             esquema.CommandText = """
                 CREATE TABLE IF NOT EXISTS comisiones (
                     id TEXT PRIMARY KEY,
-                    codigo TEXT NOT NULL UNIQUE
+                    codigo TEXT NOT NULL UNIQUE,
+                    semanas INTEGER NOT NULL DEFAULT 16 CHECK (semanas > 0)
                 );
 
                 CREATE TABLE IF NOT EXISTS estudiantes (
@@ -47,7 +48,8 @@ namespace Gestor_de_Estudiantes.Config
                 CREATE TABLE IF NOT EXISTS clases (
                     id TEXT PRIMARY KEY,
                     comision_id TEXT NOT NULL REFERENCES comisiones(id),
-                    fecha TEXT NOT NULL
+                    fecha TEXT NOT NULL,
+                    estado TEXT NOT NULL DEFAULT 'Habil' CHECK (estado IN ('Habil', 'NoHabil'))
                 );
 
                 CREATE TABLE IF NOT EXISTS asistencias (
@@ -73,23 +75,41 @@ namespace Gestor_de_Estudiantes.Config
                     fecha TEXT NULL,
                     UNIQUE (trabajo_id, estudiante_id)
                 );
+
+                CREATE TABLE IF NOT EXISTS parametros_riesgo (
+                    clave TEXT PRIMARY KEY,
+                    valor REAL NOT NULL
+                );
                 """;
             esquema.ExecuteNonQuery();
 
-            // Migración ligera para bases creadas antes de la baja lógica:
+            // Migraciones ligeras para bases creadas antes de las columnas nuevas:
             // SQLite no admite ADD COLUMN IF NOT EXISTS, se ignora si ya existe.
-            try
+            var migraciones = new[]
             {
-                using var migracion = conexion.CreateCommand();
-                migracion.CommandText = "ALTER TABLE estudiantes ADD COLUMN activo INTEGER NOT NULL DEFAULT 1;";
-                migracion.ExecuteNonQuery();
-            }
-            catch (SqliteException)
+                "ALTER TABLE estudiantes ADD COLUMN activo INTEGER NOT NULL DEFAULT 1;",
+                "ALTER TABLE comisiones ADD COLUMN semanas INTEGER NOT NULL DEFAULT 16;",
+                "ALTER TABLE clases ADD COLUMN estado TEXT NOT NULL DEFAULT 'Habil';",
+            };
+
+            foreach (var migracion in migraciones)
             {
+                try
+                {
+                    using var comando = conexion.CreateCommand();
+                    comando.CommandText = migracion;
+                    comando.ExecuteNonQuery();
+                }
+                catch (SqliteException)
+                {
+                }
             }
 
             using var semilla = conexion.CreateCommand();
-            semilla.CommandText = "INSERT OR IGNORE INTO comisiones (id, codigo) VALUES (@id, @codigo);";
+            semilla.CommandText = """
+                INSERT OR IGNORE INTO comisiones (id, codigo, semanas) VALUES (@id, @codigo, 16);
+                INSERT OR IGNORE INTO parametros_riesgo (clave, valor) VALUES ('umbral_riesgo', 50);
+                """;
             semilla.Parameters.AddWithValue("@id", Guid.NewGuid().ToString("D"));
             semilla.Parameters.AddWithValue("@codigo", "1K1");
             semilla.ExecuteNonQuery();

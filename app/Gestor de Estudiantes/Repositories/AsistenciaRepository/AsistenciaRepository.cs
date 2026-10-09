@@ -9,6 +9,11 @@ namespace Gestor_de_Estudiantes.Repositories
         public void RegistrarAsistencia(Asistencia asistencia)
         {
             using var conexion = BaseDeDatos.Abrir();
+
+            if (ClaseRepository.EstadoDe(conexion, asistencia.ClaseId) == EstadoClase.NoHabil)
+                throw new InvalidOperationException(
+                    "La clase no es hábil (feriado o suspensión): no se registra asistencia.");
+
             using var comando = conexion.CreateCommand();
             comando.CommandText = """
                 INSERT INTO asistencias (id, clase_id, estudiante_id, condicion)

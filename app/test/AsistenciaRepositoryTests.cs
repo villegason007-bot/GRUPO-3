@@ -119,5 +119,24 @@ namespace Test
             Assert.AreEqual(1, asistencias.Count);
             Assert.AreEqual(estudianteId, asistencias[0].EstudianteId);
         }
+
+        [TestMethod]
+        public void Given_ClaseNoHabil_When_RegistrarAsistencia_Then_LanzaInvalidOperationException()
+        {
+            var claseId = CrearClase();
+            var estudianteId = CrearEstudiante();
+            new ClaseRepository().MarcarEstado(claseId, EstadoClase.NoHabil);
+
+            var excepcion = Assert.Throws<InvalidOperationException>(
+                () => _repositorio.RegistrarAsistencia(new Asistencia
+                {
+                    ClaseId = claseId,
+                    EstudianteId = estudianteId,
+                    Condicion = Condicion.Presente,
+                }));
+
+            Assert.IsTrue(excepcion.Message.Contains("no es hábil"));
+            Assert.AreEqual(0, _repositorio.ListarPorClase(claseId).Count);
+        }
     }
 }

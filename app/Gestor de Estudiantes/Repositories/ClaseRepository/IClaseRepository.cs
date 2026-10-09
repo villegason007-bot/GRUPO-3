@@ -6,5 +6,6 @@ namespace Gestor_de_Estudiantes.Repositories
     {
         List<Clase> ListarClases(string codigoComision);
         void AgregarClase(Clase clase, string codigoComision);
+        bool MarcarEstado(Guid claseId, EstadoClase estado);
     }
 }

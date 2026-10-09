@@ -16,6 +16,7 @@ var repositorioClases = new ClaseRepository();
 var repositorioTrabajos = new TrabajoRepository();
 var repositorioAsistencias = new AsistenciaRepository();
 var repositorioEntregas = new EntregaRepository();
+var servicioRiesgos = new RiesgoService(new RiesgoRepository(), new EstudianteRepository());
 
 while (true)
 {
@@ -26,6 +27,7 @@ while (true)
     Console.WriteLine("4) Trabajos");
     Console.WriteLine("5) Asistencias");
     Console.WriteLine("6) Entregas");
+    Console.WriteLine("7) Riesgos");
     Console.WriteLine("0) Salir");
     Console.Write("> ");
 
@@ -52,6 +54,9 @@ while (true)
             break;
         case "6":
             MenuEntregas();
+            break;
+        case "7":
+            MenuRiesgos();
             break;
         case "0":
             return;
@@ -118,6 +123,7 @@ void MenuComisiones()
         Console.WriteLine("--- Comisiones ---");
         Console.WriteLine("1) Listar comisiones");
         Console.WriteLine("2) Agregar comisión");
+        Console.WriteLine("3) Ver calendario (clases y trabajos)");
         Console.WriteLine("0) Volver");
         Console.Write("> ");
 
@@ -133,14 +139,26 @@ void MenuComisiones()
                     var comisiones = servicioComisiones.ListarComisiones();
                     Console.WriteLine();
                     foreach (var comision in comisiones)
-                        Console.WriteLine(comision.Codigo);
+                        Console.WriteLine($"{comision.Codigo}  ({comision.Semanas} semanas)");
                     Console.WriteLine($"Total: {comisiones.Count}");
                     break;
                 case "2":
                     Console.Write("Código: ");
                     var codigo = Console.ReadLine() ?? string.Empty;
-                    var agregada = servicioComisiones.AgregarComision(codigo);
-                    Console.WriteLine($"Agregada: {agregada.Codigo}");
+                    Console.Write("Semanas (Enter = 16): ");
+                    var textoSemanas = Console.ReadLine();
+                    var semanas = string.IsNullOrWhiteSpace(textoSemanas) ? 16 : int.Parse(textoSemanas);
+                    var agregada = servicioComisiones.AgregarComision(codigo, semanas);
+                    Console.WriteLine($"Agregada: {agregada.Codigo} ({agregada.Semanas} semanas)");
+                    break;
+                case "3":
+                    var calendario = servicioComisiones.VerCalendario(ComisionActiva);
+                    Console.WriteLine();
+                    Console.WriteLine($"{"Fecha",-12}{"Tipo",-10}Detalle");
+                    Console.WriteLine(new string('-', 56));
+                    foreach (var elemento in calendario)
+                        Console.WriteLine($"{elemento.Fecha,-12:yyyy-MM-dd}{elemento.Tipo,-10}{elemento.Detalle}");
+                    Console.WriteLine($"Total: {calendario.Count}");
                     break;
                 case "0":
                     return;
@@ -164,6 +182,7 @@ void MenuClases()
         Console.WriteLine($"--- Clases · Comisión {ComisionActiva} ---");
         Console.WriteLine("1) Listar clases");
         Console.WriteLine("2) Agregar clase");
+        Console.WriteLine("3) Marcar clase como no hábil / hábil");
         Console.WriteLine("0) Volver");
         Console.Write("> ");
 
@@ -178,10 +197,10 @@ void MenuClases()
                 case "1":
                     var clases = repositorioClases.ListarClases(ComisionActiva);
                     Console.WriteLine();
-                    Console.WriteLine($"{"Id",-38}Fecha");
-                    Console.WriteLine(new string('-', 56));
+                    Console.WriteLine($"{"Id",-38}{"Fecha",-12}Estado");
+                    Console.WriteLine(new string('-', 66));
                     foreach (var clase in clases)
-                        Console.WriteLine($"{clase.Id,-38}{clase.Fecha:yyyy-MM-dd}");
+                        Console.WriteLine($"{clase.Id,-38}{clase.Fecha,-12:yyyy-MM-dd}{clase.Estado}");
                     Console.WriteLine($"Total: {clases.Count}");
                     break;
                 case "2":
@@ -191,8 +210,28 @@ void MenuClases()
                         Console.WriteLine("Fecha inválida.");
                         break;
                     }
-                    repositorioClases.AgregarClase(new Clase { Fecha = fechaClase }, ComisionActiva);
-                    Console.WriteLine($"Clase agregada: {fechaClase:yyyy-MM-dd}");
+                    Console.Write("¿Clase hábil? (S/N, Enter = S): ");
+                    var respuestaHabil = (Console.ReadLine() ?? string.Empty).Trim().ToUpperInvariant();
+                    if (respuestaHabil.Length != 0 && respuestaHabil != "S" && respuestaHabil != "N")
+                    {
+                        Console.WriteLine("Respuesta inválida.");
+                        break;
+                    }
+                    var estadoClase = respuestaHabil == "N" ? EstadoClase.NoHabil : EstadoClase.Habil;
+                    repositorioClases.AgregarClase(
+                        new Clase { Fecha = fechaClase, Estado = estadoClase }, ComisionActiva);
+                    Console.WriteLine($"Clase agregada: {fechaClase:yyyy-MM-dd} ({estadoClase})");
+                    break;
+                case "3":
+                    var claseMarcar = SeleccionarClase();
+                    if (claseMarcar is null) break;
+                    var estadoActual = repositorioClases.ListarClases(ComisionActiva)
+                        .First(clase => clase.Id == claseMarcar.Value).Estado;
+                    var nuevoEstado = estadoActual == EstadoClase.Habil
+                        ? EstadoClase.NoHabil
+                        : EstadoClase.Habil;
+                    repositorioClases.MarcarEstado(claseMarcar.Value, nuevoEstado);
+                    Console.WriteLine($"Clase marcada como {nuevoEstado}.");
                     break;
                 case "0":
                     return;
@@ -416,6 +455,67 @@ void MenuEntregas()
     }
 }
 
+void MenuRiesgos()
+{
+    while (true)
+    {
+        Console.WriteLine();
+        Console.WriteLine($"--- Riesgos · Comisión {ComisionActiva} ---");
+        Console.WriteLine("1) Ver riesgo de la comisión");
+        Console.WriteLine("2) Configurar umbral");
+        Console.WriteLine("0) Volver");
+        Console.Write("> ");
+
+        var opcion = Console.ReadLine();
+        if (opcion is null)
+            return;
+
+        try
+        {
+            switch (opcion)
+            {
+                case "1":
+                    var resultados = servicioRiesgos.CalcularRiesgos(ComisionActiva);
+                    Console.WriteLine();
+                    Console.WriteLine($"{"Legajo",-12}{"Nombre",-24}{"Riesgo",-16}Detalle");
+                    Console.WriteLine(new string('-', 78));
+                    foreach (var resultado in resultados)
+                    {
+                        var riesgo = resultado.SinInformacion
+                            ? "Sin información"
+                            : $"{resultado.Puntaje,3} {(resultado.EnRiesgo ? "EN RIESGO" : "ok")}";
+                        var detalle = resultado.SinInformacion
+                            ? "sin asistencia ni trabajos vencidos"
+                            : $"Faltas {resultado.Faltas}/{resultado.ClasesHabiles} · Trabajos {resultado.NoEntregados}/{resultado.TrabajosVencidos}";
+                        Console.WriteLine($"{resultado.Legajo,-12}{resultado.Nombre,-24}{riesgo,-16}{detalle}");
+                    }
+                    Console.WriteLine(new string('-', 78));
+                    Console.WriteLine($"Total: {resultados.Count} · Umbral: {servicioRiesgos.ObtenerUmbral():0.#}");
+                    break;
+                case "2":
+                    Console.Write($"Umbral actual: {servicioRiesgos.ObtenerUmbral():0.#}. Nuevo umbral (0-100): ");
+                    if (!double.TryParse(Console.ReadLine(), out var umbral))
+                    {
+                        Console.WriteLine("Valor inválido.");
+                        break;
+                    }
+                    servicioRiesgos.GuardarUmbral(umbral);
+                    Console.WriteLine("Umbral actualizado.");
+                    break;
+                case "0":
+                    return;
+                default:
+                    Console.WriteLine("Opción no válida.");
+                    break;
+            }
+        }
+        catch (Exception excepcion) when (excepcion is ArgumentException or InvalidOperationException or SqliteException)
+        {
+            Console.WriteLine($"Error: {excepcion.Message}");
+        }
+    }
+}
+
 Guid? Seleccionar<T>(string titulo, List<T> elementos, Func<T, Guid> obtenerId, Func<T, string> formato, string etiqueta)
 {
     if (elementos.Count == 0)
@@ -439,7 +539,7 @@ Guid? Seleccionar<T>(string titulo, List<T> elementos, Func<T, Guid> obtenerId, 
 
 Guid? SeleccionarClase()
     => Seleccionar("clases", repositorioClases.ListarClases(ComisionActiva),
-        clase => clase.Id, clase => $"{clase.Id}  {clase.Fecha:yyyy-MM-dd}", "Elegir clase: ");
+        clase => clase.Id, clase => $"{clase.Id}  {clase.Fecha:yyyy-MM-dd}  [{clase.Estado}]", "Elegir clase: ");
 
 Guid? SeleccionarEstudiante()
     => Seleccionar("estudiantes", servicioEstudiantes.ListarEstudiantes(ComisionActiva),

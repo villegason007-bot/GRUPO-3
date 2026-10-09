@@ -7,5 +7,6 @@ namespace Gestor_de_Estudiantes.Repositories
         List<Comision> ListarComisiones();
         void AgregarComision(Comision comision);
         bool ExisteComision(string codigo);
+        List<ElementoCalendario> VerCalendario(string codigoComision);
     }
 }
