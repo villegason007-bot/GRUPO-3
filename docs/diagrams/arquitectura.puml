@@ -1,0 +1,48 @@
+@startuml
+!theme plain
+
+title Arquitectura actual y evolución prevista (Sprint 4)
+
+rectangle "Presentación" as capa1 #F9E79F {
+  component "App MAUI\n(Android · iOS · Windows)\n[IU del compañero]" as UI
+  component "Consola de verificación\n(Linux · Mac)\n[nuestra]" as CONSOLA
+}
+
+rectangle "Lógica de aplicación" as capa2 #AED6F1 {
+  component "EstudianteService" as ES
+  component "ComisionService" as CS
+  component "RiesgoService" as RS
+  component "CalculadoraDeRiesgo\n(pura, testeable sin BD)" as CALC
+}
+
+rectangle "Acceso a datos" as capa3 #A9DFBF {
+  component "6 Repositorios\n+ RiesgoRepository" as REPO
+  component "BaseDeDatos\n(factory Abrir() + using)" as CONFIG
+}
+
+database "SQLite hoy\nppii.db · ids TEXT (Guid)" as SQLITE
+database "SQL Server mañana" as MSSQL
+
+UI --> ES : servicios
+UI --> RS
+CONSOLA --> ES
+CONSOLA --> CS
+CONSOLA --> RS
+
+ES --> REPO
+CS --> REPO
+RS --> REPO
+RS --> CALC
+REPO --> CONFIG : Abrir() con using
+CONFIG --> SQLITE
+
+CONFIG .> MSSQL : "evolución: cambiar\nCadenaDeConexion\ny Abrir()"
+
+note bottom of CONFIG
+  Sin Singleton: cada operación
+  abre su conexión y la cierra
+  con using → nada queda abierta.
+  SQL Server usa el pool de ADO.NET.
+end note
+
+@enduml

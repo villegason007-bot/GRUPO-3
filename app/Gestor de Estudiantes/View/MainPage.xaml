@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Gestor_de_Estudiantes.MainPage"
+             Title="Inicio">
+
+    <VerticalStackLayout
+        Padding="30,0"
+        Spacing="25"
+        VerticalOptions="Center">
+
+        <Button
+            Text="Ver estudiantes"
+            Clicked="OnVerEstudiantesClicked"
+            HorizontalOptions="Center" />
+
+        <Button Text="Ver comisiones"
+        Clicked="OnVerComisionesClicked"
+        HorizontalOptions="Center" />
+
+    </VerticalStackLayout>
+
+</ContentPage>
