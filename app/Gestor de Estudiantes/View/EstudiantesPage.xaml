@@ -2,7 +2,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Gestor_de_Estudiantes.Views.EstudiantesPage"
-             Title="Estudiantes"
              Loaded="ContentPage_Loaded">
 
     <Grid RowDefinitions="*,Auto" Padding="15" RowSpacing="10">

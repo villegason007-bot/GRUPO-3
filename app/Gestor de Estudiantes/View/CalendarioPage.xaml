@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Gestor_de_Estudiantes.Views.CalendarioPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#090D18">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <!-- Superficies Liquid Glass -->
+            <Style x:Key="GlassCard" TargetType="Border">
+                <Setter Property="Background" Value="#16FFFFFF" />
+                <Setter Property="Stroke" Value="#30FFFFFF" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="Padding" Value="22" />
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="22" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="InnerGlassCard" TargetType="Border">
+                <Setter Property="Background" Value="#12FFFFFF" />
+                <Setter Property="Stroke" Value="#25FFFFFF" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="Padding" Value="15" />
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="16" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="GlassButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#7667F5" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="CornerRadius" Value="12" />
+                <Setter Property="Padding" Value="17,12" />
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="MinimumHeightRequest" Value="46" />
+            </Style>
+
+            <Style x:Key="SecondaryGlassButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#18FFFFFF" />
+                <Setter Property="TextColor" Value="#E2E8F0" />
+                <Setter Property="BorderColor" Value="#35FFFFFF" />
+                <Setter Property="BorderWidth" Value="1" />
+                <Setter Property="CornerRadius" Value="11" />
+                <Setter Property="Padding" Value="13,9" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="MinimumHeightRequest" Value="40" />
+            </Style>
+
+            <Style x:Key="GlassEntry" TargetType="Entry">
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="PlaceholderColor" Value="#8290AA" />
+                <Setter Property="BackgroundColor" Value="#182235" />
+                <Setter Property="HeightRequest" Value="50" />
+                <Setter Property="Margin" Value="0,3,0,0" />
+            </Style>
+
+            <Style x:Key="SectionTitle" TargetType="Label">
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="#F8FAFC" />
+            </Style>
+
+            <Style x:Key="SecondaryText" TargetType="Label">
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="TextColor" Value="#AEBBD0" />
+                <Setter Property="LineBreakMode" Value="WordWrap" />
+            </Style>
+
+            <Style x:Key="FormLabel" TargetType="Label">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="#C8D2E5" />
+            </Style>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+
+        <!-- Fondo ambiental -->
+        <Grid InputTransparent="True">
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#090D18" Offset="0" />
+                    <GradientStop Color="#11182A" Offset="0.55" />
+                    <GradientStop Color="#201C43" Offset="1" />
+                </LinearGradientBrush>
+            </Grid.Background>
+
+            <Ellipse
+                WidthRequest="390"
+                HeightRequest="390"
+                HorizontalOptions="End"
+                VerticalOptions="Start"
+                TranslationX="155"
+                TranslationY="-200">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#405B4CF0" Offset="0" />
+                        <GradientStop Color="#005B4CF0" Offset="1" />
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+
+            <Ellipse
+                WidthRequest="300"
+                HeightRequest="300"
+                HorizontalOptions="Start"
+                VerticalOptions="End"
+                TranslationX="-190"
+                TranslationY="140">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#302D75DB" Offset="0" />
+                        <GradientStop Color="#002D75DB" Offset="1" />
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+        </Grid>
+
+        <!-- Contenido Principal -->
+        <ScrollView>
+            <VerticalStackLayout
+                Padding="26,26,26,34"
+                Spacing="22">
+
+                <!-- Encabezado -->
+                <Grid
+                    ColumnDefinitions="*,Auto"
+                    ColumnSpacing="12">
+
+                    <VerticalStackLayout Spacing="7">
+                        <Label
+                            Text="PLANIFICACIÓN ACADÉMICA"
+                            FontSize="10"
+                            FontAttributes="Bold"
+                            CharacterSpacing="1.7"
+                            TextColor="#A5B4FC" />
+
+                        <Label
+                            Text="Calendario de cursada"
+                            FontSize="32"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+
+                        <Label
+                            Text="Organizá las clases y las fechas de entrega de cada comisión."
+                            FontSize="14"
+                            TextColor="#AEBBD0"
+                            LineBreakMode="WordWrap" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- Comisión activa -->
+                <Border Style="{StaticResource GlassCard}">
+                    <VerticalStackLayout Spacing="14">
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                Text="01 / COMISIÓN"
+                                FontSize="10"
+                                FontAttributes="Bold"
+                                CharacterSpacing="1.5"
+                                TextColor="#A5B4FC" />
+                            <Label
+                                Text="Comisión activa"
+                                Style="{StaticResource SectionTitle}" />
+                            <Label
+                                Text="Seleccioná una comisión para ver su agenda."
+                                Style="{StaticResource SecondaryText}" />
+                        </VerticalStackLayout>
+
+                        <Border Style="{StaticResource InnerGlassCard}">
+                            <Picker
+                                Title="Seleccioná una comisión"
+                                ItemsSource="{Binding Comisiones}"
+                                SelectedItem="{Binding ComisionSeleccionada}"
+                                ItemDisplayBinding="{Binding Codigo}"
+                                TextColor="White"
+                                TitleColor="#A5B4FC"
+                                BackgroundColor="Transparent" />
+                        </Border>
+
+                        <Button
+                            Text="↻  Actualizar calendario"
+                            Command="{Binding RecargarCommand}"
+                            Style="{StaticResource SecondaryGlassButton}"
+                            HorizontalOptions="Fill" />
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Topbar -->
+                <Border
+                    Background="#16FFFFFF"
+                    Stroke="#30FFFFFF"
+                    StrokeThickness="1"
+                    Padding="6"
+                    StrokeShape="RoundRectangle 16">
+
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="6">
+
+                        <Button
+                            x:Name="TabCalendarioButton"
+                            Grid.Column="0"
+                            Text="▦ Calendario"
+                            BackgroundColor="#7667F5"
+                            TextColor="White"
+                            CornerRadius="12"
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            Padding="6,13"
+                            Clicked="MostrarCalendarioTab_Clicked" />
+
+                        <Button
+                            x:Name="TabClaseButton"
+                            Grid.Column="1"
+                            Text="+ Clase"
+                            BackgroundColor="Transparent"
+                            TextColor="#AEBBD0"
+                            CornerRadius="12"
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            Padding="6,13"
+                            Clicked="MostrarClaseTab_Clicked" />
+
+                        <Button
+                            x:Name="TabTrabajoButton"
+                            Grid.Column="2"
+                            Text="+ Trabajo"
+                            BackgroundColor="Transparent"
+                            TextColor="#AEBBD0"
+                            CornerRadius="12"
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            Padding="6,13"
+                            Clicked="MostrarTrabajoTab_Clicked" />
+
+                    </Grid>
+                </Border>
+
+                <!-- Panel Calendario -->
+                <Border
+                    x:Name="CalendarioPanel"
+                    Style="{StaticResource GlassCard}">
+
+                    <VerticalStackLayout Spacing="16">
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                Text="02 / AGENDA"
+                                FontSize="10"
+                                FontAttributes="Bold"
+                                CharacterSpacing="1.5"
+                                TextColor="#A5B4FC" />
+                            <Label
+                                Text="Eventos de la comisión"
+                                Style="{StaticResource SectionTitle}" />
+                            <Label
+                                Text="Consultá las clases y las próximas fechas de entrega."
+                                Style="{StaticResource SecondaryText}" />
+                        </VerticalStackLayout>
+
+                        <Label
+                            Text="{Binding Mensaje}"
+                            TextColor="#93C5FD"
+                            FontSize="13" />
+
+                        <Border
+                            Style="{StaticResource InnerGlassCard}"
+                            IsVisible="{Binding SinEventos}">
+
+                            <VerticalStackLayout
+                                Spacing="6"
+                                HorizontalOptions="Center">
+
+                                <Label
+                                    Text="▦"
+                                    FontSize="28"
+                                    TextColor="#A5B4FC"
+                                    HorizontalTextAlignment="Center" />
+
+                                <Label
+                                    Text="Todavía no hay eventos"
+                                    FontAttributes="Bold"
+                                    TextColor="White"
+                                    HorizontalTextAlignment="Center" />
+
+                                <Label
+                                    Text="Registrá una clase o un trabajo para esta comisión."
+                                    TextColor="#AEBBD0"
+                                    FontSize="12"
+                                    HorizontalTextAlignment="Center" />
+
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <CollectionView
+                            ItemsSource="{Binding Eventos}"
+                            SelectionMode="None"
+                            HeightRequest="480">
+
+                            <CollectionView.EmptyView>
+                                <Label Text="" />
+                            </CollectionView.EmptyView>
+
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout
+                                    Orientation="Vertical"
+                                    ItemSpacing="10" />
+                            </CollectionView.ItemsLayout>
+
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border
+                                        Background="#14FFFFFF"
+                                        Stroke="#2DFFFFFF"
+                                        StrokeThickness="1"
+                                        Padding="15"
+                                        StrokeShape="RoundRectangle 16">
+
+                                        <Grid
+                                            ColumnDefinitions="*,Auto"
+                                            RowDefinitions="Auto,Auto,Auto"
+                                            ColumnSpacing="12"
+                                            RowSpacing="8">
+
+                                            <Label
+                                                Grid.Row="0"
+                                                Grid.Column="0"
+                                                Text="{Binding Titulo}"
+                                                FontSize="16"
+                                                FontAttributes="Bold"
+                                                TextColor="White" />
+
+                                            <Border
+                                                Grid.Row="0"
+                                                Grid.Column="1"
+                                                BackgroundColor="#342F66"
+                                                StrokeThickness="0"
+                                                Padding="9,5"
+                                                StrokeShape="RoundRectangle 8">
+
+                                                <Label
+                                                    Text="{Binding Tipo}"
+                                                    FontSize="11"
+                                                    FontAttributes="Bold"
+                                                    TextColor="#C7D2FE"
+                                                    VerticalOptions="Center" />
+                                            </Border>
+
+                                            <Label
+                                                Grid.Row="1"
+                                                Grid.ColumnSpan="2"
+                                                Text="{Binding Fecha, StringFormat='{0:dddd dd/MM/yyyy}'}"
+                                                FontSize="14"
+                                                TextColor="#CBD5E1" />
+
+                                            <Label
+                                                Grid.Row="2"
+                                                Grid.ColumnSpan="2"
+                                                Text="{Binding Detalle}"
+                                                FontSize="12"
+                                                TextColor="#AEBBD0" />
+
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Panel Registrar Clase -->
+                <Border
+                    x:Name="ClasePanel"
+                    Style="{StaticResource GlassCard}"
+                    IsVisible="False">
+
+                    <VerticalStackLayout Spacing="16">
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                Text="03 / CLASE"
+                                FontSize="10"
+                                FontAttributes="Bold"
+                                CharacterSpacing="1.5"
+                                TextColor="#A5B4FC" />
+                            <Label
+                                Text="Registrar clase"
+                                Style="{StaticResource SectionTitle}" />
+                            <Label
+                                Text="Seleccioná la fecha de cursada para la comisión activa."
+                                Style="{StaticResource SecondaryText}" />
+                        </VerticalStackLayout>
+
+                        <Label
+                            Text="FECHA DE LA CLASE"
+                            Style="{StaticResource FormLabel}" />
+
+                        <Border Style="{StaticResource InnerGlassCard}">
+                            <DatePicker
+                                Date="{Binding FechaClase}"
+                                TextColor="White"
+                                BackgroundColor="Transparent" />
+                        </Border>
+
+                        <Button
+                            Text="Registrar clase"
+                            Command="{Binding RegistrarClaseCommand}"
+                            Style="{StaticResource GlassButton}" />
+
+                        <Label
+                            Text="{Binding Mensaje}"
+                            TextColor="#93C5FD"
+                            FontSize="13" />
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Panel Registrar Trabajo -->
+                <Border
+                    x:Name="TrabajoPanel"
+                    Style="{StaticResource GlassCard}"
+                    IsVisible="False">
+
+                    <VerticalStackLayout Spacing="16">
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                Text="04 / TRABAJO"
+                                FontSize="10"
+                                FontAttributes="Bold"
+                                CharacterSpacing="1.5"
+                                TextColor="#A5B4FC" />
+                            <Label
+                                Text="Registrar trabajo"
+                                Style="{StaticResource SectionTitle}" />
+                            <Label
+                                Text="Definí el título y la fecha de entrega del trabajo."
+                                Style="{StaticResource SecondaryText}" />
+                        </VerticalStackLayout>
+
+                        <Label
+                            Text="TÍTULO DEL TRABAJO"
+                            Style="{StaticResource FormLabel}" />
+
+                        <Entry
+                            Placeholder="Ej.: Trabajo práctico 1"
+                            Text="{Binding TituloTrabajo}"
+                            Style="{StaticResource GlassEntry}" />
+
+                        <Label
+                            Text="FECHA DE ENTREGA"
+                            Style="{StaticResource FormLabel}" />
+
+                        <Border Style="{StaticResource InnerGlassCard}">
+                            <DatePicker
+                                Date="{Binding FechaEntrega}"
+                                TextColor="White"
+                                BackgroundColor="Transparent" />
+                        </Border>
+
+                        <Button
+                            Text="Registrar trabajo"
+                            Command="{Binding RegistrarTrabajoCommand}"
+                            Style="{StaticResource GlassButton}" />
+
+                        <Label
+                            Text="{Binding Mensaje}"
+                            TextColor="#93C5FD"
+                            FontSize="13" />
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Pie -->
+                <Label
+                    Text="GESTOR DE ESTUDIANTES  ·  ESPACIO ACADÉMICO"
+                    FontSize="10"
+                    CharacterSpacing="1.1"
+                    TextColor="#64748B"
+                    HorizontalTextAlignment="Center"
+                    Margin="0,4,0,0" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+</ContentPage>

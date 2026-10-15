@@ -9,5 +9,11 @@ namespace Gestor_de_Estudiantes.Repositories
         (int ClasesHabiles, int Faltas, bool TieneRegistro) ContarAsistencias(
             Guid estudianteId, string codigoComision);
         (int TrabajosVencidos, int Entregados) ContarTrabajos(Guid estudianteId, string codigoComision);
+
+        int ObtenerMaxFaltasPermitidas();
+        void GuardarMaxFaltasPermitidas(int cantidad);
+
+        int ObtenerMaxTrabajosNoEntregadosPermitidos();
+        void GuardarMaxTrabajosNoEntregadosPermitidos(int cantidad);
     }
 }
