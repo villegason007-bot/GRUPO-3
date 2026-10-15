@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Gestor_de_Estudiantes.Views.AsistenciaEntregasPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#090D18">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <!-- Superficies Liquid Glass -->
+            <Style x:Key="GlassCard" TargetType="Border">
+                <Setter Property="Background" Value="#16FFFFFF" />
+                <Setter Property="Stroke" Value="#30FFFFFF" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="Padding" Value="22" />
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="22" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="InnerGlassCard" TargetType="Border">
+                <Setter Property="Background" Value="#12FFFFFF" />
+                <Setter Property="Stroke" Value="#25FFFFFF" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="Padding" Value="15" />
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="16" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="GlassButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#7667F5" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="CornerRadius" Value="12" />
+                <Setter Property="Padding" Value="17,12" />
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="MinimumHeightRequest" Value="46" />
+            </Style>
+
+            <Style x:Key="SecondaryGlassButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#18FFFFFF" />
+                <Setter Property="TextColor" Value="#E2E8F0" />
+                <Setter Property="BorderColor" Value="#35FFFFFF" />
+                <Setter Property="BorderWidth" Value="1" />
+                <Setter Property="CornerRadius" Value="11" />
+                <Setter Property="Padding" Value="13,9" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="MinimumHeightRequest" Value="40" />
+            </Style>
+
+            <Style x:Key="GlassEntry" TargetType="Entry">
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="PlaceholderColor" Value="#8290AA" />
+                <Setter Property="BackgroundColor" Value="#182235" />
+                <Setter Property="HeightRequest" Value="50" />
+                <Setter Property="Margin" Value="0,3,0,0" />
+            </Style>
+
+            <Style x:Key="SectionTitle" TargetType="Label">
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="#F8FAFC" />
+            </Style>
+
+            <Style x:Key="SecondaryText" TargetType="Label">
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="TextColor" Value="#AEBBD0" />
+                <Setter Property="LineBreakMode" Value="WordWrap" />
+            </Style>
+
+            <Style x:Key="FormLabel" TargetType="Label">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="#C8D2E5" />
+            </Style>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+
+        <!-- Fondo ambiental -->
+        <Grid InputTransparent="True">
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#090D18" Offset="0" />
+                    <GradientStop Color="#11182A" Offset="0.55" />
+                    <GradientStop Color="#201C43" Offset="1" />
+                </LinearGradientBrush>
+            </Grid.Background>
+
+            <Ellipse
+                WidthRequest="390"
+                HeightRequest="390"
+                HorizontalOptions="End"
+                VerticalOptions="Start"
+                TranslationX="155"
+                TranslationY="-200">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#405B4CF0" Offset="0" />
+                        <GradientStop Color="#005B4CF0" Offset="1" />
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+
+            <Ellipse
+                WidthRequest="300"
+                HeightRequest="300"
+                HorizontalOptions="Start"
+                VerticalOptions="End"
+                TranslationX="-190"
+                TranslationY="140">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#302D75DB" Offset="0" />
+                        <GradientStop Color="#002D75DB" Offset="1" />
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+        </Grid>
+
+        <!-- Contenido Principal -->
+        <ScrollView>
+            <VerticalStackLayout
+                Padding="26,26,26,34"
+                Spacing="22">
+
+                <!-- Encabezado -->
+                <Grid
+                    ColumnDefinitions="*,Auto"
+                    ColumnSpacing="12">
+
+                    <VerticalStackLayout Spacing="7">
+                        <Label
+                            Text="GESTIÓN ACADÉMICA"
+                            FontSize="10"
+                            FontAttributes="Bold"
+                            CharacterSpacing="1.7"
+                            TextColor="#A5B4FC" />
+
+                        <Label
+                            Text="Asistencia y entregas"
+                            FontSize="32"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+
+                        <Label
+                            Text="Administrá la asistencia y las entregas de tus estudiantes."
+                            FontSize="14"
+                            TextColor="#AEBBD0"
+                            LineBreakMode="WordWrap" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- Selector de comisión activa -->
+                <Border Style="{StaticResource GlassCard}">
+                    <VerticalStackLayout Spacing="14">
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                Text="01 / COMISIÓN"
+                                FontSize="10"
+                                FontAttributes="Bold"
+                                CharacterSpacing="1.5"
+                                TextColor="#A5B4FC" />
+                            <Label
+                                Text="Comisión activa"
+                                Style="{StaticResource SectionTitle}" />
+                            <Label
+                                Text="Seleccioná la cursada con la que deseas trabajar."
+                                Style="{StaticResource SecondaryText}" />
+                        </VerticalStackLayout>
+
+                        <Border Style="{StaticResource InnerGlassCard}">
+                            <Picker
+                                Title="Seleccionar comisión"
+                                ItemsSource="{Binding Comisiones}"
+                                SelectedItem="{Binding ComisionSeleccionada}"
+                                ItemDisplayBinding="{Binding Codigo}"
+                                TextColor="White"
+                                TitleColor="#A5B4FC"
+                                BackgroundColor="Transparent" />
+                        </Border>
+
+                        <Button
+                            Text="↻  Actualizar información"
+                            Command="{Binding RecargarCommand}"
+                            Style="{StaticResource SecondaryGlassButton}"
+                            HorizontalOptions="Fill" />
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Topbar de pestañas -->
+                <Border
+                    Background="#16FFFFFF"
+                    Stroke="#30FFFFFF"
+                    StrokeThickness="1"
+                    Padding="6"
+                    StrokeShape="RoundRectangle 16">
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="6">
+
+                        <Button
+                            x:Name="TabAsistenciaButton"
+                            Grid.Column="0"
+                            Text="✓   Asistencia"
+                            BackgroundColor="#7667F5"
+                            TextColor="White"
+                            CornerRadius="12"
+                            FontAttributes="Bold"
+                            FontSize="13"
+                            Padding="12,13"
+                            Clicked="MostrarAsistenciaTab_Clicked" />
+
+                        <Button
+                            x:Name="TabEntregasButton"
+                            Grid.Column="1"
+                            Text="▤   Entregas"
+                            BackgroundColor="Transparent"
+                            TextColor="#AEBBD0"
+                            CornerRadius="12"
+                            FontAttributes="Bold"
+                            FontSize="13"
+                            Padding="12,13"
+                            Clicked="MostrarEntregasTab_Clicked" />
+
+                    </Grid>
+                </Border>
+
+                <!-- Pestaña Asistencia -->
+                <Border
+                    x:Name="AsistenciaPanel"
+                    Style="{StaticResource GlassCard}">
+
+                    <VerticalStackLayout Spacing="17">
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                Text="02 / CONTROL"
+                                FontSize="10"
+                                FontAttributes="Bold"
+                                CharacterSpacing="1.5"
+                                TextColor="#A5B4FC" />
+
+                            <Label
+                                Text="Control de asistencia"
+                                FontSize="22"
+                                FontAttributes="Bold"
+                                TextColor="White" />
+
+                            <Label
+                                Text="Seleccioná una clase y marcá quién estuvo presente."
+                                FontSize="13"
+                                TextColor="#AEBBD0" />
+                        </VerticalStackLayout>
+
+                        <Border Style="{StaticResource InnerGlassCard}">
+                            <Picker
+                                Title="Seleccionar clase"
+                                ItemsSource="{Binding Clases}"
+                                SelectedItem="{Binding ClaseSeleccionada}"
+                                ItemDisplayBinding="{Binding Fecha}"
+                                TextColor="White"
+                                TitleColor="#A5B4FC"
+                                BackgroundColor="Transparent" />
+                        </Border>
+
+                        <Border Style="{StaticResource InnerGlassCard}">
+                            <Label
+                                Text="Las casillas marcadas se guardan como presentes. Las que quedan sin marcar se guardan como ausencias."
+                                TextColor="#CBD5E1"
+                                FontSize="12" />
+                        </Border>
+
+                        <!-- Contenedor del listado ampliado -->
+                        <CollectionView
+                            ItemsSource="{Binding Asistencias}"
+                            SelectionMode="None"
+                            HeightRequest="480">
+
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout
+                                    Orientation="Vertical"
+                                    ItemSpacing="10" />
+                            </CollectionView.ItemsLayout>
+
+                            <CollectionView.EmptyView>
+                                <VerticalStackLayout
+                                    Padding="16"
+                                    Spacing="8"
+                                    HorizontalOptions="Center">
+                                    <Label
+                                        Text="No hay estudiantes para mostrar."
+                                        TextColor="#AEBBD0"
+                                        HorizontalTextAlignment="Center" />
+                                </VerticalStackLayout>
+                            </CollectionView.EmptyView>
+
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border
+                                        Background="#14FFFFFF"
+                                        Stroke="#2DFFFFFF"
+                                        StrokeThickness="1"
+                                        Padding="15"
+                                        StrokeShape="RoundRectangle 16">
+
+                                        <Grid
+                                            ColumnDefinitions="*,Auto"
+                                            ColumnSpacing="12">
+
+                                            <VerticalStackLayout
+                                                Grid.Column="0"
+                                                Spacing="4"
+                                                VerticalOptions="Center">
+
+                                                <Label
+                                                    Text="{Binding Estudiante.Nombre}"
+                                                    TextColor="White"
+                                                    FontAttributes="Bold"
+                                                    FontSize="15" />
+
+                                                <Label
+                                                    Text="{Binding Estudiante.Legajo, StringFormat='Legajo: {0}'}"
+                                                    TextColor="#AEBBD0"
+                                                    FontSize="12" />
+
+                                            </VerticalStackLayout>
+
+                                            <VerticalStackLayout
+                                                Grid.Column="1"
+                                                Spacing="2"
+                                                HorizontalOptions="Center"
+                                                VerticalOptions="Center">
+
+                                                <CheckBox
+                                                    IsChecked="{Binding Presente}"
+                                                    Color="#A5B4FC"
+                                                    HorizontalOptions="Center" />
+
+                                                <Label
+                                                    Text="Presente"
+                                                    TextColor="#C7D2FE"
+                                                    FontSize="11"
+                                                    HorizontalTextAlignment="Center" />
+
+                                            </VerticalStackLayout>
+
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                        <Button
+                            Text="Guardar asistencias"
+                            Command="{Binding GuardarAsistenciasCommand}"
+                            Style="{StaticResource GlassButton}" />
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Pestaña Entregas -->
+                <Border
+                    x:Name="EntregasPanel"
+                    Style="{StaticResource GlassCard}"
+                    IsVisible="False">
+
+                    <VerticalStackLayout Spacing="17">
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                Text="03 / TRABAJOS"
+                                FontSize="10"
+                                FontAttributes="Bold"
+                                CharacterSpacing="1.5"
+                                TextColor="#A5B4FC" />
+
+                            <Label
+                                Text="Entregas de trabajos"
+                                FontSize="22"
+                                FontAttributes="Bold"
+                                TextColor="White" />
+
+                            <Label
+                                Text="Elegí el trabajo y registrá las entregas de cada estudiante."
+                                FontSize="13"
+                                TextColor="#AEBBD0" />
+                        </VerticalStackLayout>
+
+                        <Border Style="{StaticResource InnerGlassCard}">
+                            <Picker
+                                Title="Seleccionar trabajo"
+                                ItemsSource="{Binding Trabajos}"
+                                SelectedItem="{Binding TrabajoSeleccionado}"
+                                ItemDisplayBinding="{Binding Titulo}"
+                                TextColor="White"
+                                TitleColor="#A5B4FC"
+                                BackgroundColor="Transparent" />
+                        </Border>
+
+                        <!-- Contenedor del listado ampliado -->
+                        <CollectionView
+                            ItemsSource="{Binding Entregas}"
+                            SelectionMode="None"
+                            HeightRequest="520">
+
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout
+                                    Orientation="Vertical"
+                                    ItemSpacing="10" />
+                            </CollectionView.ItemsLayout>
+
+                            <CollectionView.EmptyView>
+                                <VerticalStackLayout
+                                    Padding="16"
+                                    Spacing="8"
+                                    HorizontalOptions="Center">
+                                    <Label
+                                        Text="No hay estudiantes o trabajos para mostrar."
+                                        TextColor="#AEBBD0"
+                                        HorizontalTextAlignment="Center" />
+                                </VerticalStackLayout>
+                            </CollectionView.EmptyView>
+
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border
+                                        Background="#14FFFFFF"
+                                        Stroke="#2DFFFFFF"
+                                        StrokeThickness="1"
+                                        Padding="15"
+                                        StrokeShape="RoundRectangle 16">
+
+                                        <VerticalStackLayout Spacing="10">
+
+                                            <Label
+                                                Text="{Binding Estudiante.Nombre}"
+                                                FontAttributes="Bold"
+                                                FontSize="15"
+                                                TextColor="White" />
+
+                                            <Label
+                                                Text="{Binding Estudiante.Legajo, StringFormat='Legajo: {0}'}"
+                                                TextColor="#AEBBD0"
+                                                FontSize="12" />
+
+                                            <BoxView
+                                                HeightRequest="1"
+                                                Color="#24FFFFFF" />
+
+                                            <HorizontalStackLayout
+                                                Spacing="8"
+                                                VerticalOptions="Center">
+
+                                                <CheckBox
+                                                    IsChecked="{Binding Entregado}"
+                                                    Color="#A5B4FC" />
+
+                                                <Label
+                                                    Text="Trabajo entregado"
+                                                    TextColor="White"
+                                                    VerticalOptions="Center" />
+
+                                            </HorizontalStackLayout>
+
+                                            <Label
+                                                Text="Fecha de entrega"
+                                                TextColor="#AEBBD0"
+                                                FontSize="12" />
+
+                                            <Border Style="{StaticResource InnerGlassCard}">
+                                                <DatePicker
+                                                    Date="{Binding Fecha}"
+                                                    TextColor="White"
+                                                    BackgroundColor="Transparent" />
+                                            </Border>
+
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                        <Button
+                            Text="Guardar entregas"
+                            Command="{Binding GuardarEntregasCommand}"
+                            Style="{StaticResource GlassButton}" />
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Mensajes del ViewModel -->
+                <Border Style="{StaticResource InnerGlassCard}">
+                    <Label
+                        Text="{Binding Mensaje}"
+                        TextColor="#93C5FD"
+                        FontSize="14" />
+                </Border>
+
+                <!-- Pie -->
+                <Label
+                    Text="GESTOR DE ESTUDIANTES  ·  ESPACIO ACADÉMICO"
+                    FontSize="10"
+                    CharacterSpacing="1.1"
+                    TextColor="#64748B"
+                    HorizontalTextAlignment="Center"
+                    Margin="0,4,0,0" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+</ContentPage>

@@ -1,4 +1,4 @@
-using Gestor_de_Estudiantes.Entidades;
+
 using Gestor_de_Estudiantes.Repositories;
 
 namespace Gestor_de_Estudiantes.Services
@@ -8,7 +8,9 @@ namespace Gestor_de_Estudiantes.Services
         private readonly IRiesgoRepository _riesgos;
         private readonly IEstudianteRepository _estudiantes;
 
-        public RiesgoService(IRiesgoRepository riesgos, IEstudianteRepository estudiantes)
+        public RiesgoService(
+            IRiesgoRepository riesgos,
+            IEstudianteRepository estudiantes)
         {
             _riesgos = riesgos;
             _estudiantes = estudiantes;
@@ -20,22 +22,54 @@ namespace Gestor_de_Estudiantes.Services
         public void GuardarUmbral(double umbral)
             => _riesgos.GuardarUmbral(umbral);
 
-        public List<ResultadoRiesgo> CalcularRiesgos(string codigoComision)
+        public int ObtenerMaxFaltasPermitidas()
+            => _riesgos.ObtenerMaxFaltasPermitidas();
+
+        public void GuardarMaxFaltasPermitidas(int cantidad)
+            => _riesgos.GuardarMaxFaltasPermitidas(cantidad);
+
+        public int ObtenerMaxTrabajosNoEntregadosPermitidos()
+            => _riesgos.ObtenerMaxTrabajosNoEntregadosPermitidos();
+
+        public void GuardarMaxTrabajosNoEntregadosPermitidos(int cantidad)
+            => _riesgos.GuardarMaxTrabajosNoEntregadosPermitidos(cantidad);
+
+        public List<ResultadoRiesgo> CalcularRiesgos(
+            string codigoComision)
         {
             var umbral = _riesgos.ObtenerUmbral();
+            var maxFaltas = _riesgos.ObtenerMaxFaltasPermitidas();
+            var maxTrabajos =
+                _riesgos.ObtenerMaxTrabajosNoEntregadosPermitidos();
+
             var resultados = new List<ResultadoRiesgo>();
 
-            foreach (var estudiante in _estudiantes.ListarEstudiantes(codigoComision))
+            foreach (var estudiante in
+                     _estudiantes.ListarEstudiantes(codigoComision))
             {
                 var (clasesHabiles, faltas, conRegistro) =
-                    _riesgos.ContarAsistencias(estudiante.Id, codigoComision);
-                var (vencidos, entregados) = _riesgos.ContarTrabajos(estudiante.Id, codigoComision);
+                    _riesgos.ContarAsistencias(
+                        estudiante.Id, codigoComision);
+
+                var (vencidos, entregados) =
+                    _riesgos.ContarTrabajos(
+                        estudiante.Id, codigoComision);
 
                 var resultado = CalculadoraDeRiesgo.Calcular(
-                    conRegistro ? clasesHabiles : 0, faltas, vencidos, vencidos - entregados, umbral);
+                    conRegistro ? clasesHabiles : 0,
+                    faltas,
+                    vencidos,
+                    vencidos - entregados,
+                    umbral);
+
                 resultado.EstudianteId = estudiante.Id;
                 resultado.Legajo = estudiante.Legajo;
-                resultado.Nombre = $"{estudiante.Nombre} {estudiante.Apellido}".Trim();
+                resultado.Nombre =
+                    $"{estudiante.Nombre} {estudiante.Apellido}".Trim();
+
+                resultado.MaxFaltasPermitidas = maxFaltas;
+                resultado.MaxTrabajosNoEntregadosPermitidos = maxTrabajos;
+
                 resultados.Add(resultado);
             }
 

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Gestor_de_Estudiantes.Views.ConfiguracionRiesgoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Configuración de riesgo"
+    BackgroundColor="#090D18">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="24"
+            Spacing="20">
+
+            <VerticalStackLayout Spacing="5">
+                <Label
+                    Text="Configuración de riesgo"
+                    FontSize="28"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Label
+                    Text="Definí los límites utilizados para evaluar a los estudiantes."
+                    FontSize="13"
+                    TextColor="#94A3B8" />
+            </VerticalStackLayout>
+
+            <Border
+                Padding="22"
+                BackgroundColor="#111827"
+                Stroke="#263244"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 12">
+
+                <VerticalStackLayout Spacing="20">
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label
+                            Text="Máximo de faltas permitidas"
+                            FontSize="15"
+                            FontAttributes="Bold"
+                            TextColor="#F1F5F9" />
+
+                        <Label
+                            Text="Cantidad máxima de inasistencias antes de superar este límite."
+                            FontSize="12"
+                            TextColor="#94A3B8" />
+
+                        <Entry
+                            Text="{Binding MaxFaltasPermitidasTexto}"
+                            Keyboard="Numeric"
+                            Placeholder="Ej. 3"
+                            TextColor="White"
+                            PlaceholderColor="#64748B"
+                            BackgroundColor="#1E293B" />
+                    </VerticalStackLayout>
+
+                    <BoxView
+                        HeightRequest="1"
+                        Color="#263244" />
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label
+                            Text="Máximo de trabajos no entregados"
+                            FontSize="15"
+                            FontAttributes="Bold"
+                            TextColor="#F1F5F9" />
+
+                        <Label
+                            Text="Cantidad máxima de trabajos vencidos sin entregar antes de superar este límite."
+                            FontSize="12"
+                            TextColor="#94A3B8" />
+
+                        <Entry
+                            Text="{Binding MaxTrabajosNoEntregadosPermitidosTexto}"
+                            Keyboard="Numeric"
+                            Placeholder="Ej. 2"
+                            TextColor="White"
+                            PlaceholderColor="#64748B"
+                            BackgroundColor="#1E293B" />
+                    </VerticalStackLayout>
+
+                    <Label
+                        Text="Estos valores se aplican a todas las comisiones."
+                        FontSize="12"
+                        TextColor="#94A3B8" />
+
+                    <Button
+                        Text="Guardar configuración"
+                        Command="{Binding GuardarCommand}"
+                        BackgroundColor="#4F46E5"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="8"
+                        Padding="16,12" />
+
+                    <Label
+                        Text="{Binding Mensaje}"
+                        TextColor="{Binding MensajeColor}"
+                        FontSize="13" />
+
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

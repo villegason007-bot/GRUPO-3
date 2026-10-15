@@ -31,29 +31,54 @@ namespace Gestor_de_Estudiantes.Repositories
             comando.ExecuteNonQuery();
         }
 
+
         public (int ClasesHabiles, int Faltas, bool TieneRegistro) ContarAsistencias(
             Guid estudianteId, string codigoComision)
         {
             using var conexion = BaseDeDatos.Abrir();
             using var comando = conexion.CreateCommand();
+
             comando.CommandText = """
-                SELECT (SELECT COUNT(*)
-                          FROM clases c
-                          INNER JOIN comisiones com ON com.id = c.comision_id
-                         WHERE com.codigo = @codigo AND c.estado = 'Habil'),
-                       COALESCE(SUM(CASE WHEN a.condicion = 'Ausente' THEN 1 ELSE 0 END), 0),
-                       COUNT(a.id)
-                FROM asistencias a
-                INNER JOIN clases c ON c.id = a.clase_id AND c.estado = 'Habil'
-                WHERE a.estudiante_id = @estudianteId;
-                """;
-            comando.Parameters.AddWithValue("@estudianteId", estudianteId.ToString("D"));
+        SELECT
+            (
+                SELECT COUNT(*)
+                FROM clases c
+                INNER JOIN comisiones com ON com.id = c.comision_id
+                WHERE com.codigo = @codigo
+                  AND c.estado = 'Habil'
+            ),
+            COALESCE(
+                SUM(CASE
+                    WHEN a.condicion = 'Ausente' THEN 1
+                    ELSE 0
+                END),
+                0
+            ),
+            COUNT(a.id)
+        FROM asistencias a
+        INNER JOIN clases c ON c.id = a.clase_id
+        INNER JOIN comisiones com ON com.id = c.comision_id
+        WHERE a.estudiante_id = @estudianteId
+          AND com.codigo = @codigo
+          AND c.estado = 'Habil';
+        """;
+
+            comando.Parameters.AddWithValue(
+                "@estudianteId",
+                estudianteId.ToString("D"));
+
             comando.Parameters.AddWithValue("@codigo", codigoComision);
 
             using var lector = comando.ExecuteReader();
             lector.Read();
-            return (lector.GetInt32(0), lector.GetInt32(1), lector.GetInt32(2) > 0);
+
+            return (
+                lector.GetInt32(0),
+                lector.GetInt32(1),
+                lector.GetInt32(2) > 0
+            );
         }
+
 
         public (int TrabajosVencidos, int Entregados) ContarTrabajos(Guid estudianteId, string codigoComision)
         {
@@ -75,5 +100,72 @@ namespace Gestor_de_Estudiantes.Repositories
             lector.Read();
             return (lector.GetInt32(0), lector.GetInt32(1));
         }
+
+
+        public int ObtenerMaxFaltasPermitidas()
+        {
+            return ObtenerParametroEntero("max_faltas_permitidas", 3);
+        }
+
+        public void GuardarMaxFaltasPermitidas(int cantidad)
+        {
+            if (cantidad < 0)
+                throw new ArgumentException(
+                    "El máximo de faltas no puede ser negativo.");
+
+            GuardarParametro("max_faltas_permitidas", cantidad);
+        }
+
+        public int ObtenerMaxTrabajosNoEntregadosPermitidos()
+        {
+            return ObtenerParametroEntero(
+                "max_trabajos_no_entregados_permitidos", 2);
+        }
+
+        public void GuardarMaxTrabajosNoEntregadosPermitidos(int cantidad)
+        {
+            if (cantidad < 0)
+                throw new ArgumentException(
+                    "El máximo de trabajos no entregados no puede ser negativo.");
+
+            GuardarParametro(
+                "max_trabajos_no_entregados_permitidos", cantidad);
+        }
+
+        private int ObtenerParametroEntero(string clave, int valorPredeterminado)
+        {
+            using var conexion = BaseDeDatos.Abrir();
+            using var comando = conexion.CreateCommand();
+
+            comando.CommandText =
+                "SELECT valor FROM parametros_riesgo WHERE clave = @clave;";
+            comando.Parameters.AddWithValue("@clave", clave);
+
+            var valor = comando.ExecuteScalar();
+
+            if (valor == null || valor == DBNull.Value)
+                return valorPredeterminado;
+
+            return Convert.ToInt32(Convert.ToDouble(valor));
+        }
+
+        private void GuardarParametro(string clave, int valor)
+        {
+            using var conexion = BaseDeDatos.Abrir();
+            using var comando = conexion.CreateCommand();
+
+            comando.CommandText = """
+        INSERT INTO parametros_riesgo (clave, valor)
+        VALUES (@clave, @valor)
+        ON CONFLICT(clave)
+        DO UPDATE SET valor = excluded.valor;
+        """;
+
+            comando.Parameters.AddWithValue("@clave", clave);
+            comando.Parameters.AddWithValue("@valor", valor);
+
+            comando.ExecuteNonQuery();
+        }
+
     }
 }

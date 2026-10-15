@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Gestor_de_Estudiantes.Views.RiesgoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Indicador de riesgo"
+    BackgroundColor="#090D18">
+
+    <Grid Padding="24" RowDefinitions="Auto,Auto,Auto,*" RowSpacing="18">
+
+        <!-- Encabezado -->
+        <VerticalStackLayout Spacing="5">
+            <Label
+                Text="Indicador de riesgo"
+                FontSize="28"
+                FontAttributes="Bold"
+                TextColor="White" />
+
+            <Label
+                Text="Seguimiento de faltas y trabajos no entregados por comisión."
+                FontSize="13"
+                TextColor="#94A3B8" />
+        </VerticalStackLayout>
+
+        <!-- Selector de comisión -->
+        <Border
+            Grid.Row="1"
+            Padding="16"
+            BackgroundColor="#111827"
+            Stroke="#263244"
+            StrokeThickness="1"
+            StrokeShape="RoundRectangle 12">
+
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="18">
+                <Label
+                    Text="Comisión"
+                    FontAttributes="Bold"
+                    TextColor="#E2E8F0"
+                    VerticalOptions="Center" />
+
+                <Picker
+                    Grid.Column="1"
+                    Title="Seleccioná una comisión"
+                    ItemsSource="{Binding Comisiones}"
+                    ItemDisplayBinding="{Binding Codigo}"
+                    SelectedItem="{Binding ComisionSeleccionada}"
+                    TextColor="White"
+                    TitleColor="#94A3B8"
+                    BackgroundColor="#1E293B" />
+            </Grid>
+        </Border>
+
+        <!-- Mensaje de estado -->
+        <Label
+            Grid.Row="2"
+            Text="{Binding Mensaje}"
+            TextColor="#94A3B8"
+            FontSize="13"
+            IsVisible="{Binding MostrarMensaje}" />
+
+        <!-- Tabla -->
+        <Border
+            Grid.Row="3"
+            BackgroundColor="#111827"
+            Stroke="#263244"
+            StrokeThickness="1"
+            StrokeShape="RoundRectangle 12">
+
+            <Grid RowDefinitions="Auto,*">
+
+                <!-- Encabezados de columnas -->
+                <ScrollView
+                    Orientation="Horizontal"
+                    HorizontalScrollBarVisibility="Never">
+
+                    <Grid
+                        Padding="14,16"
+                        ColumnDefinitions="190,150,100,300,135"
+                        ColumnSpacing="12"
+                        BackgroundColor="#1E293B">
+
+                        <Label
+                            Text="Nombre"
+                            FontAttributes="Bold"
+                            TextColor="#CBD5E1"
+                            VerticalOptions="Center" />
+
+                        <Label
+                            Grid.Column="1"
+                            Text="Trabajos no entregados"
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            TextColor="#CBD5E1"
+                            VerticalOptions="Center" />
+
+                        <Label
+                            Grid.Column="2"
+                            Text="Faltas"
+                            FontAttributes="Bold"
+                            TextColor="#CBD5E1"
+                            VerticalOptions="Center" />
+
+                        <Label
+                            Grid.Column="3"
+                            Text="Motivo de riesgo"
+                            FontAttributes="Bold"
+                            TextColor="#CBD5E1"
+                            VerticalOptions="Center" />
+
+                        <Label
+                            Grid.Column="4"
+                            Text="Riesgo"
+                            FontAttributes="Bold"
+                            TextColor="#CBD5E1"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </ScrollView>
+
+                <!-- Filas -->
+                <CollectionView
+                    Grid.Row="1"
+                    ItemsSource="{Binding Estudiantes}"
+                    SelectionMode="None"
+                    EmptyView="No hay estudiantes para mostrar en esta comisión.">
+
+                    <CollectionView.EmptyViewTemplate>
+                        <DataTemplate>
+                            <Label
+                                Text="No hay estudiantes para mostrar en esta comisión."
+                                TextColor="#94A3B8"
+                                HorizontalTextAlignment="Center"
+                                Margin="20" />
+                        </DataTemplate>
+                    </CollectionView.EmptyViewTemplate>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <ScrollView
+                                Orientation="Horizontal"
+                                HorizontalScrollBarVisibility="Never">
+
+                                <Grid
+                                    Padding="14,12"
+                                    ColumnDefinitions="190,150,100,300,135"
+                                    ColumnSpacing="12">
+
+                                    <Label
+                                        Text="{Binding Nombre}"
+                                        TextColor="#F1F5F9"
+                                        FontAttributes="Bold"
+                                        VerticalOptions="Center"
+                                        LineBreakMode="TailTruncation" />
+
+                                    <Label
+                                        Grid.Column="1"
+                                        Text="{Binding TrabajosResumen}"
+                                        TextColor="#CBD5E1"
+                                        VerticalOptions="Center" />
+
+                                    <Label
+                                        Grid.Column="2"
+                                        Text="{Binding FaltasResumen}"
+                                        TextColor="#CBD5E1"
+                                        VerticalOptions="Center" />
+
+                                    <Label
+                                        Grid.Column="3"
+                                        Text="{Binding Motivo}"
+                                        TextColor="#94A3B8"
+                                        FontSize="12"
+                                        VerticalOptions="Center"
+                                        LineBreakMode="WordWrap" />
+
+                                    <Border
+                                        Grid.Column="4"
+                                        Padding="8,5"
+                                        HorizontalOptions="Start"
+                                        VerticalOptions="Center"
+                                        BackgroundColor="{Binding BadgeColor}"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 8">
+
+                                        <Label
+                                            Text="{Binding Estado}"
+                                            TextColor="{Binding BadgeTextColor}"
+                                            FontSize="11"
+                                            FontAttributes="Bold"
+                                            HorizontalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+                            </ScrollView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </Border>
+    </Grid>
+</ContentPage>
