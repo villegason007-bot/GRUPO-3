@@ -55,6 +55,9 @@ namespace Test
         public void Given_PuntajeBajoElUmbral_When_Calcular_Then_NoEnRiesgo()
         {
             var resultado = CalculadoraDeRiesgo.Calcular(10, 4, 0, 0, umbral: 50);
+            // El estado es híbrido: el límite de faltas debe quedar por encima
+            // para que decida solo el puntaje (como cuando la UI guarda los topes).
+            resultado.MaxFaltasPermitidas = 5;
 
             Assert.AreEqual(40, resultado.Puntaje);
             Assert.IsFalse(resultado.EnRiesgo);
