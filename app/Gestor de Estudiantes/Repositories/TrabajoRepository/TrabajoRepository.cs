@@ -4,8 +4,12 @@ using Microsoft.Data.Sqlite;
 
 namespace Gestor_de_Estudiantes.Repositories
 {
+    /// <summary>
+    /// Persistencia de trabajos prácticos sobre SQLite (H5).
+    /// </summary>
     public class TrabajoRepository : ITrabajoRepository
     {
+        /// <summary>Devuelve los trabajos de la comisión, ordenados por fecha de entrega.</summary>
         public List<Trabajo> ListarTrabajos(string codigoComision)
         {
             using var conexion = BaseDeDatos.Abrir();
@@ -26,6 +30,7 @@ namespace Gestor_de_Estudiantes.Repositories
             return trabajos;
         }
 
+        /// <summary>Inserta un trabajo nuevo en la comisión indicada por código.</summary>
         public void AgregarTrabajo(Trabajo trabajo, string codigoComision)
         {
             using var conexion = BaseDeDatos.Abrir();

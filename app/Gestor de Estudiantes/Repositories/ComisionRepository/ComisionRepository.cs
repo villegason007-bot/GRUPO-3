@@ -3,8 +3,13 @@ using Gestor_de_Estudiantes.Entidades;
 
 namespace Gestor_de_Estudiantes.Repositories
 {
+    /// <summary>
+    /// Persistencia de comisiones y de su calendario unificado sobre
+    /// SQLite (H1/H2).
+    /// </summary>
     public class ComisionRepository : IComisionRepository
     {
+        /// <summary>Devuelve todas las comisiones, ordenadas por código.</summary>
         public List<Comision> ListarComisiones()
         {
             using var conexion = BaseDeDatos.Abrir();
@@ -23,6 +28,7 @@ namespace Gestor_de_Estudiantes.Repositories
             return comisiones;
         }
 
+        /// <summary>Inserta una comisión nueva; el código debe ser único.</summary>
         public void AgregarComision(Comision comision)
         {
             using var conexion = BaseDeDatos.Abrir();
@@ -34,6 +40,7 @@ namespace Gestor_de_Estudiantes.Repositories
             comando.ExecuteNonQuery();
         }
 
+        /// <summary>Indica si ya existe una comisión con ese código.</summary>
         public bool ExisteComision(string codigo)
         {
             using var conexion = BaseDeDatos.Abrir();
@@ -43,6 +50,10 @@ namespace Gestor_de_Estudiantes.Repositories
             return Convert.ToInt64(comando.ExecuteScalar()) > 0;
         }
 
+        /// <summary>
+        /// Une por fecha las clases (con su estado) y los trabajos (con su
+        /// título) de la comisión, para el calendario (H2, Escenario 3).
+        /// </summary>
         public List<ElementoCalendario> VerCalendario(string codigoComision)
         {
             using var conexion = BaseDeDatos.Abrir();

@@ -4,8 +4,12 @@ using Microsoft.Data.Sqlite;
 
 namespace Gestor_de_Estudiantes.Repositories
 {
+    /// <summary>
+    /// Persistencia de entregas de trabajos sobre SQLite (H5).
+    /// </summary>
     public class EntregaRepository : IEntregaRepository
     {
+        /// <summary>Inserta un registro de entrega nuevo.</summary>
         public void RegistrarEntrega(Entrega entrega)
         {
             using var conexion = BaseDeDatos.Abrir();
@@ -22,6 +26,8 @@ namespace Gestor_de_Estudiantes.Repositories
             comando.ExecuteNonQuery();
         }
 
+        /// <summary>Actualiza entregado y fecha de un registro existente (la fecha queda null si no entregó).</summary>
+        /// <returns>true si había registro y se actualizó.</returns>
         public bool ActualizarEntrega(Guid trabajoId, Guid estudianteId, bool entregado, DateTime? fecha)
         {
             using var conexion = BaseDeDatos.Abrir();
@@ -38,6 +44,7 @@ namespace Gestor_de_Estudiantes.Repositories
             return comando.ExecuteNonQuery() > 0;
         }
 
+        /// <summary>Devuelve los registros de entrega de un trabajo, ordenados por estudiante.</summary>
         public List<Entrega> ListarPorTrabajo(Guid trabajoId)
         {
             using var conexion = BaseDeDatos.Abrir();
@@ -57,6 +64,7 @@ namespace Gestor_de_Estudiantes.Repositories
             return entregas;
         }
 
+        /// <summary>Devuelve los registros de entrega de un estudiante, ordenados por trabajo.</summary>
         public List<Entrega> ListarPorEstudiante(Guid estudianteId)
         {
             using var conexion = BaseDeDatos.Abrir();

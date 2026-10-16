@@ -1,26 +1,41 @@
 namespace Gestor_de_Estudiantes.Entidades;
 
+/// <summary>
+/// Registro de asistencia de un estudiante a una clase: qué condición
+/// (presente o ausente) quedó cargada para ese encuentro. Es la primera
+/// de las dos señales que alimentan el indicador de riesgo (H6).
+/// </summary>
 public class Asistencia
 {
-    // Id de la fila en la base de datos
+    /// <summary>Identificador único del registro.</summary>
     public Guid Id { get; set; } = Guid.NewGuid();
 
-    // Clave foránea a la clase
+    /// <summary>Clave foránea a la <see cref="Clase"/> a la que corresponde.</summary>
     public Guid ClaseId { get; set; }
 
-    // Clave foránea al estudiante
+    /// <summary>Clave foránea al <see cref="Estudiante"/> al que corresponde.</summary>
     public Guid EstudianteId { get; set; }
 
-    // Relación con el estudiante
+    /// <summary>
+    /// Relación de navegación con el estudiante; hoy las consultas del
+    /// repositorio no la poblan (se llena solo si otro código la asigna).
+    /// </summary>
     public Estudiante? Estudiante { get; set; }
 
-    // Relación con la clase
+    /// <summary>
+    /// Relación de navegación con la clase; hoy las consultas del
+    /// repositorio no la poblan (se llena solo si otro código la asigna).
+    /// </summary>
     public Clase? Clase { get; set; }
 
-    // El tipo de dato oficial requerido por el diagrama
+    /// <summary>Condición del encuentro según el modelo de dominio (Presente | Ausente).</summary>
     public Condicion Condicion { get; set; }
 
-    // Propiedad puente que lee y modifica la condición
+    /// <summary>
+    /// Vista booleana de <see cref="Condicion"/> para las pantallas:
+    /// leer devuelve true si es Presente; escribir traduce el bool a
+    /// Presente o Ausente.
+    /// </summary>
     public bool EstaPresente
     {
         get => Condicion == Condicion.Presente;

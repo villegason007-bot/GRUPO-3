@@ -4,8 +4,13 @@ using Microsoft.Data.Sqlite;
 
 namespace Gestor_de_Estudiantes.Repositories
 {
+    /// <summary>
+    /// Persistencia de la nómina de estudiantes sobre SQLite (H1).
+    /// Las consultas filtran por <c>activo</c> y la baja es lógica.
+    /// </summary>
     public class EstudianteRepository : IEstudianteRepository
     {
+        /// <summary>Devuelve los estudiantes activos de la comisión, ordenados por legajo.</summary>
         public List<Estudiante> ListarEstudiantes(string codigoComision)
         {
             using var conexion = BaseDeDatos.Abrir();
@@ -26,6 +31,7 @@ namespace Gestor_de_Estudiantes.Repositories
             return estudiantes;
         }
 
+        /// <summary>Busca un estudiante activo por legajo; null si no existe o está dado de baja.</summary>
         public Estudiante? BuscarEstudiante(string legajo)
         {
             using var conexion = BaseDeDatos.Abrir();
@@ -41,6 +47,11 @@ namespace Gestor_de_Estudiantes.Repositories
             return lector.Read() ? Mapear(lector) : null;
         }
 
+        /// <summary>
+        /// Inserta un estudiante en la comisión; <c>activo</c> toma su
+        /// valor por defecto (1). Teléfono y fecha de incorporación no se
+        /// persisten en el alta actual.
+        /// </summary>
         public void AgregarEstudiante(Estudiante estudiante, string codigoComision)
         {
             using var conexion = BaseDeDatos.Abrir();
@@ -58,6 +69,8 @@ namespace Gestor_de_Estudiantes.Repositories
             comando.ExecuteNonQuery();
         }
 
+        /// <summary>Da de baja lógica: marca <c>activo = 0</c> sin borrar la fila.</summary>
+        /// <returns>true si estaba activo y se dio de baja.</returns>
         public bool EliminarEstudiante(string legajo)
         {
             using var conexion = BaseDeDatos.Abrir();

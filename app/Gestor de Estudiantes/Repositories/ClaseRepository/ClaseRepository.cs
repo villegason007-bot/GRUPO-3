@@ -4,8 +4,12 @@ using Microsoft.Data.Sqlite;
 
 namespace Gestor_de_Estudiantes.Repositories
 {
+    /// <summary>
+    /// Persistencia de clases del calendario sobre SQLite (H2).
+    /// </summary>
     public class ClaseRepository : IClaseRepository
     {
+        /// <summary>Devuelve las clases de la comisión, ordenadas por fecha.</summary>
         public List<Clase> ListarClases(string codigoComision)
         {
             using var conexion = BaseDeDatos.Abrir();
@@ -26,6 +30,7 @@ namespace Gestor_de_Estudiantes.Repositories
             return clases;
         }
 
+        /// <summary>Inserta una clase nueva en la comisión indicada por código.</summary>
         public void AgregarClase(Clase clase, string codigoComision)
         {
             using var conexion = BaseDeDatos.Abrir();
@@ -42,6 +47,8 @@ namespace Gestor_de_Estudiantes.Repositories
             comando.ExecuteNonQuery();
         }
 
+        /// <summary>Actualiza el estado (hábil/no hábil) de una clase.</summary>
+        /// <returns>true si la clase existía y se actualizó.</returns>
         public bool MarcarEstado(Guid claseId, EstadoClase estado)
         {
             using var conexion = BaseDeDatos.Abrir();
@@ -52,6 +59,11 @@ namespace Gestor_de_Estudiantes.Repositories
             return comando.ExecuteNonQuery() > 0;
         }
 
+        /// <summary>
+        /// Lee el estado de una clase sobre una conexión ya abierta; si la
+        /// fila no existe asume Habil. Lo usan otros repositorios (por
+        /// ejemplo asistencias) sin abrir otra conexión.
+        /// </summary>
         internal static EstadoClase EstadoDe(SqliteConnection conexion, Guid claseId)
         {
             using var comando = conexion.CreateCommand();

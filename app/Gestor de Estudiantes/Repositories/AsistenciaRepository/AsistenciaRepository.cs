@@ -4,8 +4,17 @@ using Microsoft.Data.Sqlite;
 
 namespace Gestor_de_Estudiantes.Repositories
 {
+    /// <summary>
+    /// Persistencia de asistencias sobre SQLite (H3/H4).
+    /// </summary>
     public class AsistenciaRepository : IAsistenciaRepository
     {
+        /// <summary>
+        /// Inserta una asistencia; se niega si la clase no es hábil
+        /// (feriado o suspensión no reciben asistencia).
+        /// </summary>
+        /// <param name="asistencia">Registro a crear.</param>
+        /// <exception cref="InvalidOperationException">Si la clase es no hábil.</exception>
         public void RegistrarAsistencia(Asistencia asistencia)
         {
             using var conexion = BaseDeDatos.Abrir();
@@ -26,6 +35,8 @@ namespace Gestor_de_Estudiantes.Repositories
             comando.ExecuteNonQuery();
         }
 
+        /// <summary>Cambia la condición (presente/ausente) de un registro existente.</summary>
+        /// <returns>true si había registro y se actualizó.</returns>
         public bool ActualizarCondicion(Guid claseId, Guid estudianteId, Condicion condicion)
         {
             using var conexion = BaseDeDatos.Abrir();
@@ -41,6 +52,7 @@ namespace Gestor_de_Estudiantes.Repositories
             return comando.ExecuteNonQuery() > 0;
         }
 
+        /// <summary>Devuelve las asistencias de una clase, ordenadas por estudiante.</summary>
         public List<Asistencia> ListarPorClase(Guid claseId)
         {
             using var conexion = BaseDeDatos.Abrir();
@@ -60,6 +72,7 @@ namespace Gestor_de_Estudiantes.Repositories
             return asistencias;
         }
 
+        /// <summary>Devuelve las asistencias de un estudiante, ordenadas por clase.</summary>
         public List<Asistencia> ListarPorEstudiante(Guid estudianteId)
         {
             using var conexion = BaseDeDatos.Abrir();

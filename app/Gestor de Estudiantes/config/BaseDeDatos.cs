@@ -2,10 +2,20 @@ using Microsoft.Data.Sqlite;
 
 namespace Gestor_de_Estudiantes.Config
 {
+    /// <summary>
+    /// Acceso a la base de datos SQLite embebida: ruta del archivo,
+    /// cadena de conexión, apertura y creación del esquema.
+    /// </summary>
     public static class BaseDeDatos
     {
+        /// <summary>
+        /// Ruta del archivo <c>ppii.db</c>. Se resuelve una vez subiendo
+        /// desde el binario hasta encontrar la raíz del repositorio (carpeta
+        /// con <c>.git</c>); si no la encuentra, usa <c>data/</c> junto al ejecutable.
+        /// </summary>
         public static string Ruta { get; set; } = ResolverRuta();
 
+        /// <summary>Cadena de conexión Microsoft.Data.Sqlite hacia <see cref="Ruta"/> (modo ReadWriteCreate).</summary>
         public static string CadenaDeConexion
             => new SqliteConnectionStringBuilder
             {
@@ -13,6 +23,11 @@ namespace Gestor_de_Estudiantes.Config
                 Mode = SqliteOpenMode.ReadWriteCreate,
             }.ToString();
 
+        /// <summary>
+        /// Crea y abre una conexión nueva. Cada operación la usa con
+        /// <c>using</c> y la cierra al terminar; no se comparte una
+        /// conexión única entre operaciones.
+        /// </summary>
         public static SqliteConnection Abrir()
         {
             var conexion = new SqliteConnection(CadenaDeConexion);
@@ -20,6 +35,12 @@ namespace Gestor_de_Estudiantes.Config
             return conexion;
         }
 
+        /// <summary>
+        /// Inicializa la base: crea el directorio si hace falta, ejecuta el
+        /// esquema (<c>CREATE TABLE IF NOT EXISTS</c>), aplica las
+        /// migraciones ligeras de columnas nuevas y siembra la comisión
+        /// inicial 1K1 con el umbral de riesgo por defecto.
+        /// </summary>
         public static void Inicializar()
         {
             Directory.CreateDirectory(Path.GetDirectoryName(Ruta)!);
@@ -115,6 +136,7 @@ namespace Gestor_de_Estudiantes.Config
             semilla.ExecuteNonQuery();
         }
 
+        /// <summary>Busca la raíz del repositorio subiendo desde <c>AppContext.BaseDirectory</c> para ubicar <c>data/ppii.db</c>.</summary>
         private static string ResolverRuta()
         {
             var directorio = new DirectoryInfo(AppContext.BaseDirectory);
