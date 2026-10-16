@@ -1,22 +1,25 @@
 @startuml
 !theme plain
 
-title Arquitectura actual y evolución prevista (Sprint 4)
+title Arquitectura del sistema
 
 rectangle "Presentación" as capa1 #F9E79F {
-  component "App MAUI\n(Android · iOS · Windows)\n[IU del compañero]" as UI
-  component "Consola de verificación\n(Linux · Mac)\n[nuestra]" as CONSOLA
+  component "App MAUI\n(páginas + ViewModels ·\nAndroid · iOS · Windows)" as UI
 }
 
 rectangle "Lógica de aplicación" as capa2 #AED6F1 {
-  component "EstudianteService" as ES
-  component "ComisionService" as CS
-  component "RiesgoService" as RS
+  component EstudianteService as ES
+  component ComisionService as CS
+  component ClaseService as CLS
+  component AsistenciaService as AS
+  component TrabajoService as TS
+  component EntregaService as EN
+  component RiesgoService as RS
   component "CalculadoraDeRiesgo\n(pura, testeable sin BD)" as CALC
 }
 
 rectangle "Acceso a datos" as capa3 #A9DFBF {
-  component "6 Repositorios\n+ RiesgoRepository" as REPO
+  component "Repositorios (7)" as REPO
   component "BaseDeDatos\n(factory Abrir() + using)" as CONFIG
 }
 
@@ -24,25 +27,46 @@ database "SQLite hoy\nppii.db · ids TEXT (Guid)" as SQLITE
 database "SQL Server mañana" as MSSQL
 
 UI --> ES : servicios
+UI --> CS
+UI --> CLS
+UI --> AS
+UI --> TS
+UI --> EN
 UI --> RS
-CONSOLA --> ES
-CONSOLA --> CS
-CONSOLA --> RS
 
 ES --> REPO
 CS --> REPO
+CLS --> REPO
+AS --> REPO
+TS --> REPO
+EN --> REPO
 RS --> REPO
-RS --> CALC
+RS --> CALC : puntaje
+
 REPO --> CONFIG : Abrir() con using
 CONFIG --> SQLITE
 
 CONFIG .> MSSQL : "evolución: cambiar\nCadenaDeConexion\ny Abrir()"
 
+note bottom of CALC
+  Umbrales en parametros_riesgo:
+  límites absolutos configurables
+  desde la UI (máx. faltas = 3 ·
+  máx. trabajos no entregados = 2)
+  + umbral porcentual interno (50).
+  El panel muestra el detalle
+  como fracción (faltas / límite).
+end note
+
 note bottom of CONFIG
-  Sin Singleton: cada operación
-  abre su conexión y la cierra
-  con using → nada queda abierta.
-  SQL Server usa el pool de ADO.NET.
+  Cada operación abre su conexión
+  y la cierra con using → nada queda
+  abierta (sin singleton).
+
+  Próximo ciclo: refactor SOLID (SRP)
+  de las clases con responsabilidades
+  múltiples y migración de las queries
+  a Entity Framework Core.
 end note
 
 @enduml

@@ -1,4 +1,4 @@
-# Grupo 3
+	# Grupo 3
 
 ## Integrantes
 
@@ -26,6 +26,14 @@ Decisiones de modelado que responden a reglas de negocio:
 
 ## Modelo de arquitectura
 
-Capas: Presentación (MAUI + consola) → Lógica (Services + calculadora pura) → Acceso a datos (repositorios con `using` + factory `BaseDeDatos.Abrir()`) → SQLite. La migración futura a SQL Server se concentra en `Abrir()` / `CadenaDeConexion` sin tocar el resto de las capas.
+El sistema a producir se organiza en tres capas:
+
+- **Presentación**: App MAUI (páginas + ViewModels) para Android, iOS y Windows.
+- **Lógica de aplicación**: siete servicios (`Estudiante`, `Comision`, `Clase`, `Asistencia`, `Trabajo`, `Entrega`, `Riesgo`) y `CalculadoraDeRiesgo`, una clase pura testeable sin base de datos.
+- **Acceso a datos**: siete repositorios sobre `BaseDeDatos.Abrir()` (factory; cada operación abre y cierra su conexión con `using`, sin singleton) → SQLite (`ppii.db`, ids `TEXT`/Guid).
+
+Los umbrales del indicador de riesgo viven en la tabla `parametros_riesgo`: **límites absolutos configurables desde la UI** (máx. faltas = 3 · máx. trabajos no entregados = 2) y un **umbral porcentual interno** (50). El panel muestra el detalle como fracción —por ejemplo `2/3` faltas— junto con el motivo del riesgo.
+
+Evolución prevista: la migración a SQL Server se concentra en `CadenaDeConexion`/`Abrir()`; el próximo ciclo agrega el **refactor SOLID (SRP)** de las clases con responsabilidades múltiples y la **migración de las queries a Entity Framework Core**.
 
 ![Modelo de arquitectura](docs/diagrams/arquitectura.png)
