@@ -1,0 +1,24 @@
+@startuml
+!theme plain
+left to right direction
+title Casos de uso — Panel de seguimiento y alerta temprana
+
+actor "Tutor de comisión" as Tutor
+
+rectangle "Seguimiento de cursada y alerta temprana" {
+  usecase "Ver la comisión ordenada\npor riesgo con el detalle" as UC8
+  usecase "Calcular el riesgo de\ncada estudiante" as UC6
+  usecase "Ver la ficha de un\nestudiante con su historial" as UC9
+  usecase "Registrar un contacto con\nun estudiante y su resultado" as UC10
+  usecase "Ver quién ya se contactó\ny cuándo" as UC11
+
+  UC8 .> UC6 : «include»
+  UC11 .> UC8 : «include»
+}
+
+Tutor --> UC8
+Tutor --> UC9
+Tutor --> UC10
+Tutor --> UC11
+
+@enduml
