@@ -1,0 +1,27 @@
+@startuml
+!theme plain
+left to right direction
+title Casos de uso — Registro y configuración de la cursada
+
+actor "Tutor de comisión" as Tutor
+
+rectangle "Seguimiento de cursada y alerta temprana" {
+  usecase "Cargar y ver la nómina\nde estudiantes" as UC1
+  usecase "Agregar un estudiante\na la comisión" as UC1b
+  usecase "Definir el calendario de\nclases y trabajos" as UC2
+  usecase "Registrar la asistencia\nde una clase" as UC3
+  usecase "Corregir la asistencia de\nuna fecha ya registrada" as UC4
+  usecase "Registrar la entrega o no\nentrega de un trabajo" as UC5
+  usecase "Configurar los umbrales\ndel cálculo de riesgo" as UC7
+
+  UC1b .> UC1 : «extend»
+  UC4 .> UC3 : «extend»
+}
+
+Tutor --> UC1
+Tutor --> UC2
+Tutor --> UC3
+Tutor --> UC5
+Tutor --> UC7
+
+@enduml

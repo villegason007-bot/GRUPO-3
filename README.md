@@ -37,3 +37,19 @@ Los umbrales del indicador de riesgo viven en la tabla `parametros_riesgo`: **l�
 Evolución prevista: la migración a SQL Server se concentra en `CadenaDeConexion`/`Abrir()`; el próximo ciclo agrega el **refactor SOLID (SRP)** de las clases con responsabilidades múltiples y la **migración de las queries a Entity Framework Core**.
 
 ![Modelo de arquitectura](docs/diagrams/arquitectura.png)
+
+## Casos de uso
+
+Dos vistas del alcance según el momento del ciclo: primero cómo se cargan y configuran los datos, después cómo se consume la decisión.
+
+### Registro y configuración de la cursada
+
+Cubre la entrada de datos: nómina (H1, con la carga de estudiantes como extensión), calendario (H2), asistencia (H3, con la corrección de fechas ya registradas como extensión H4), entregas (H5) y umbrales del riesgo (H7).
+
+![Casos de uso — Registro y configuración](docs/diagrams/casos-de-uso-registro.png)
+
+### Panel de seguimiento y alerta temprana
+
+Cubre la salida de decisión: el panel ordenado por riesgo con el detalle que justifica cada valor (H8, que **incluye** el cálculo H6), la ficha del estudiante con su historial (H9), el registro de contactos (H10) y la vista de quién ya fue contactado y cuándo (H11, que **incluye** la vista del panel).
+
+![Casos de uso — Panel de seguimiento](docs/diagrams/casos-de-uso-panel.png)
