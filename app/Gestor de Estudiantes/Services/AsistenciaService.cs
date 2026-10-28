@@ -8,7 +8,7 @@ namespace Gestor_de_Estudiantes.Services
     /// clase con la semántica de alta o corrección (si ya existe el
     /// registro del estudiante, actualiza su condición).
     /// </summary>
-    public class AsistenciaService
+    public class AsistenciaService : IAsistenciaService
     {
         private readonly IAsistenciaRepository _asistencias;
 

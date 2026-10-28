@@ -1,3 +1,4 @@
+using Gestor_de_Estudiantes.Entidades;
 using Microsoft.Data.Sqlite;
 
 namespace Gestor_de_Estudiantes.Config
@@ -109,7 +110,7 @@ namespace Gestor_de_Estudiantes.Config
             var migraciones = new[]
             {
                 "ALTER TABLE estudiantes ADD COLUMN activo INTEGER NOT NULL DEFAULT 1;",
-                "ALTER TABLE comisiones ADD COLUMN semanas INTEGER NOT NULL DEFAULT 16;",
+                $"ALTER TABLE comisiones ADD COLUMN semanas INTEGER NOT NULL DEFAULT {Comision.SemanasPorDefecto};",
                 "ALTER TABLE clases ADD COLUMN estado TEXT NOT NULL DEFAULT 'Habil';",
             };
 
@@ -128,11 +129,12 @@ namespace Gestor_de_Estudiantes.Config
 
             using var semilla = conexion.CreateCommand();
             semilla.CommandText = """
-                INSERT OR IGNORE INTO comisiones (id, codigo, semanas) VALUES (@id, @codigo, 16);
+                INSERT OR IGNORE INTO comisiones (id, codigo, semanas) VALUES (@id, @codigo, @semanas);
                 INSERT OR IGNORE INTO parametros_riesgo (clave, valor) VALUES ('umbral_riesgo', 50);
                 """;
             semilla.Parameters.AddWithValue("@id", Guid.NewGuid().ToString("D"));
             semilla.Parameters.AddWithValue("@codigo", "1K1");
+            semilla.Parameters.AddWithValue("@semanas", Comision.SemanasPorDefecto);
             semilla.ExecuteNonQuery();
         }
 

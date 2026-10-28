@@ -6,7 +6,7 @@ namespace Gestor_de_Estudiantes.Services
     /// % de trabajos vencidos no entregados (0-100).
     /// Sin datos de ningún tipo → sin información (nunca división por cero).
     /// </summary>
-    public static class CalculadoraDeRiesgo
+    public class CalculadoraDeRiesgo : ICalculadoraDeRiesgo
     {
         /// <summary>
         /// Calcula el puntaje de riesgo de un estudiante a partir de sus
@@ -20,7 +20,7 @@ namespace Gestor_de_Estudiantes.Services
         /// <param name="umbral">Umbral porcentual (0-100) a partir del cual el puntaje se considera en riesgo.</param>
         /// <returns>Resultado con puntaje 0-100, o sin puntaje si no hay ningún componente con datos.</returns>
         /// <exception cref="ArgumentException">Si alguna cantidad es negativa o supera su denominador.</exception>
-        public static ResultadoRiesgo Calcular(
+        public ResultadoRiesgo Calcular(
             int clasesHabiles, int faltas,
             int trabajosVencidos, int noEntregados,
             double umbral)

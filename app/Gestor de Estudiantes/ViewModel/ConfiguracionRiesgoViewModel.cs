@@ -9,7 +9,7 @@ namespace Gestor_de_Estudiantes.ViewModel
 {
     public class ConfiguracionRiesgoViewModel : INotifyPropertyChanged
     {
-        private readonly RiesgoService _riesgoService;
+        private readonly IRiesgoService _riesgoService;
 
         private string _maxFaltasPermitidasTexto = string.Empty;
         private string _maxTrabajosNoEntregadosPermitidosTexto = string.Empty;
@@ -70,7 +70,7 @@ namespace Gestor_de_Estudiantes.ViewModel
 
         public ICommand GuardarCommand { get; }
 
-        public ConfiguracionRiesgoViewModel(RiesgoService riesgoService)
+        public ConfiguracionRiesgoViewModel(IRiesgoService riesgoService)
         {
             _riesgoService = riesgoService;
 

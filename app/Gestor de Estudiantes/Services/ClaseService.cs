@@ -7,7 +7,7 @@ namespace Gestor_de_Estudiantes.Services
     /// Fachada del calendario de clases (H2): lista las clases de una
     /// comisión, da de alta clases nuevas y marca su estado hábil/no hábil.
     /// </summary>
-    public class ClaseService
+    public class ClaseService : IClaseService
     {
         private readonly IClaseRepository _clases;
         private readonly IComisionRepository _comisiones;

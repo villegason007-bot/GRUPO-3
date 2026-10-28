@@ -46,7 +46,9 @@ namespace Test
 
         protected static Guid CrearTrabajo()
         {
-            return CrearTrabajo(new DateTime(2026, 10, 20));
+            // Fecha relativa (una semana atrás): un trabajo ya vencido,
+            // sin depender del calendario real al correr la suite.
+            return CrearTrabajo(DateTime.Today.AddDays(-7));
         }
 
         protected static Guid CrearTrabajo(DateTime fechaDeEntrega)

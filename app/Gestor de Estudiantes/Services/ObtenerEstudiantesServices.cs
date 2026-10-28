@@ -7,7 +7,7 @@ namespace Gestor_de_Estudiantes.Services
     /// tocar la base. Solo para probar pantallas; el flujo real (H1) usa
     /// <see cref="EstudianteService"/> con <c>EstudianteRepository</c>.
     /// </summary>
-    internal class ObtenerEstudiantesServices
+    internal class ObtenerEstudiantesServices : IObtenerEstudiantesService
     {
         /// <summary>Crea el mock.</summary>
         public ObtenerEstudiantesServices()

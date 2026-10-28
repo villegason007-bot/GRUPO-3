@@ -19,7 +19,7 @@ namespace Gestor_de_Estudiantes.ViewModel
         }
         public void MostrarEstudiantes()
         {
-            ObtenerEstudiantesServices services = new ObtenerEstudiantesServices();
+            IObtenerEstudiantesService services = new ObtenerEstudiantesServices();
             
 
             foreach (Estudiante est in services.ObtenerEstudiantes())

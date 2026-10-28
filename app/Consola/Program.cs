@@ -16,7 +16,7 @@ var repositorioClases = new ClaseRepository();
 var repositorioTrabajos = new TrabajoRepository();
 var repositorioAsistencias = new AsistenciaRepository();
 var repositorioEntregas = new EntregaRepository();
-var servicioRiesgos = new RiesgoService(new RiesgoRepository(), new EstudianteRepository());
+var servicioRiesgos = new RiesgoService(new RiesgoRepository(), new EstudianteRepository(), new CalculadoraDeRiesgo());
 
 while (true)
 {
@@ -145,9 +145,11 @@ void MenuComisiones()
                 case "2":
                     Console.Write("Código: ");
                     var codigo = Console.ReadLine() ?? string.Empty;
-                    Console.Write("Semanas (Enter = 16): ");
+                    Console.Write($"Semanas (Enter = {Comision.SemanasPorDefecto}): ");
                     var textoSemanas = Console.ReadLine();
-                    var semanas = string.IsNullOrWhiteSpace(textoSemanas) ? 16 : int.Parse(textoSemanas);
+                    var semanas = string.IsNullOrWhiteSpace(textoSemanas)
+                        ? Comision.SemanasPorDefecto
+                        : int.Parse(textoSemanas);
                     var agregada = servicioComisiones.AgregarComision(codigo, semanas);
                     Console.WriteLine($"Agregada: {agregada.Codigo} ({agregada.Semanas} semanas)");
                     break;

@@ -7,7 +7,7 @@ namespace Gestor_de_Estudiantes.Services
     /// Fachada de comisiones (H1/H2): alta de comisiones, listado y
     /// consulta del calendario unificado de la comisión.
     /// </summary>
-    public class ComisionService
+    public class ComisionService : IComisionService
     {
         private readonly IComisionRepository _comisiones;
 
@@ -37,7 +37,7 @@ namespace Gestor_de_Estudiantes.Services
         /// <returns>La comisión creada.</returns>
         /// <exception cref="ArgumentException">Si el código está vacío o las semanas son menores a 1.</exception>
         /// <exception cref="InvalidOperationException">Si ya existe una comisión con ese código.</exception>
-        public Comision AgregarComision(string codigo, int semanas = 16)
+        public Comision AgregarComision(string codigo, int semanas = Comision.SemanasPorDefecto)
         {
             codigo = (codigo ?? string.Empty).Trim();
 

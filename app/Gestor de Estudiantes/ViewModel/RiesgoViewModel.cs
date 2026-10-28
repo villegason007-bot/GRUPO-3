@@ -10,8 +10,8 @@ namespace Gestor_de_Estudiantes.ViewModel
 {
     public class RiesgoViewModel : INotifyPropertyChanged
     {
-        private readonly ComisionService _comisionService;
-        private readonly RiesgoService _riesgoService;
+        private readonly IComisionService _comisionService;
+        private readonly IRiesgoService _riesgoService;
 
         private Comision? _comisionSeleccionada;
         private string _mensaje = string.Empty;
@@ -62,8 +62,8 @@ namespace Gestor_de_Estudiantes.ViewModel
         }
 
         public RiesgoViewModel(
-            ComisionService comisionService,
-            RiesgoService riesgoService)
+            IComisionService comisionService,
+            IRiesgoService riesgoService)
         {
             _comisionService = comisionService;
             _riesgoService = riesgoService;

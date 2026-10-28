@@ -7,13 +7,16 @@ namespace Gestor_de_Estudiantes.Entidades
     /// </summary>
     public class Comision
     {
+        /// <summary>Semanas del cuatrimestre por defecto (calendario del curso): única fuente del valor 16.</summary>
+        public const int SemanasPorDefecto = 16;
+
         /// <summary>Identificador único de la comisión.</summary>
         public Guid Id { get; set; } = Guid.NewGuid();
 
         /// <summary>Código visible de la comisión (por ejemplo «1K1»), único entre comisiones.</summary>
         public string Codigo { get; set; } = string.Empty;
 
-        /// <summary>Semanas del cuatrimestre (default 16 según calendario del curso).</summary>
-        public int Semanas { get; set; } = 16;
+        /// <summary>Semanas del cuatrimestre (por defecto <see cref="SemanasPorDefecto"/>).</summary>
+        public int Semanas { get; set; } = SemanasPorDefecto;
     }
 }

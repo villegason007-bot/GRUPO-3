@@ -106,7 +106,7 @@ namespace Test
         [TestMethod]
         public void Given_TrabajoFuturo_When_ContarTrabajos_Then_NoSeCuentaComoVencido()
         {
-            CrearTrabajo(); // fecha 2026-10-20, futura
+            CrearTrabajo(DateTime.Today.AddDays(30)); // fecha futura
 
             var (vencidos, entregados) = _repositorio.ContarTrabajos(Guid.NewGuid(), "1K1");
 

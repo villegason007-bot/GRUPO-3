@@ -6,11 +6,11 @@ namespace Gestor_de_Estudiantes.ViewModel
 {
     public class EstudiantesViewModel
     {
-        private readonly EstudianteService _service;
+        private readonly IEstudianteService _service;
 
         public ObservableCollection<Estudiante> ListadoEstudiantes { get; } = new();
 
-        public EstudiantesViewModel(EstudianteService service)
+        public EstudiantesViewModel(IEstudianteService service)
         {
             _service = service;
         }

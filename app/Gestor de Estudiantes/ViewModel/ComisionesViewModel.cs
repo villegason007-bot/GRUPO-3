@@ -9,8 +9,8 @@ namespace Gestor_de_Estudiantes.ViewModel
 {
     public class ComisionesViewModel : INotifyPropertyChanged
     {
-        private readonly ComisionService _comisionService;
-        private readonly EstudianteService _estudianteService;
+        private readonly IComisionService _comisionService;
+        private readonly IEstudianteService _estudianteService;
 
         private Comision? _comisionSeleccionada;
         private bool _estaCargando;
@@ -57,8 +57,8 @@ namespace Gestor_de_Estudiantes.ViewModel
         public ICommand RecargarEstudiantesCommand { get; }
 
         public ComisionesViewModel(
-            ComisionService comisionService,
-            EstudianteService estudianteService)
+            IComisionService comisionService,
+            IEstudianteService estudianteService)
         {
             _comisionService = comisionService;
             _estudianteService = estudianteService;
@@ -161,7 +161,7 @@ namespace Gestor_de_Estudiantes.ViewModel
 
         public bool AgregarComision(
             string? codigo,
-            int semanas = 16)
+            int semanas = Comision.SemanasPorDefecto)
         {
             try
             {
@@ -218,6 +218,62 @@ namespace Gestor_de_Estudiantes.ViewModel
                 Mensaje = ex.Message;
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Crea una comisión desde el texto del formulario (código y
+        /// duración en semanas como texto), validando la duración antes de
+        /// delegar en <see cref="AgregarComision(string?, int)"/>.
+        /// </summary>
+        public bool AgregarComision(string? codigo, string? semanasTexto)
+        {
+            if (!int.TryParse(semanasTexto, out var semanas) || semanas < 1)
+            {
+                Mensaje = "La duración debe ser de al menos una semana.";
+                return false;
+            }
+
+            return AgregarComision(codigo, semanas);
+        }
+
+        /// <summary>
+        /// Agrega un estudiante a la comisión indicada desde el formulario,
+        /// validando los campos obligatorios y seleccionando la comisión
+        /// antes de delegar en <see cref="AgregarEstudiante(DatosNuevoEstudiante?)"/>.
+        /// </summary>
+        public bool AgregarEstudiante(
+            string? legajo,
+            string? nombre,
+            Comision? comision)
+        {
+            if (string.IsNullOrWhiteSpace(legajo))
+            {
+                Mensaje = "Ingresá el legajo del estudiante.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(nombre))
+            {
+                Mensaje = "Ingresá el nombre del estudiante.";
+                return false;
+            }
+
+            if (comision is null)
+            {
+                Mensaje = "Seleccioná una comisión.";
+                return false;
+            }
+
+            // Usar la comisión que se está consultando.
+            ComisionSeleccionada =
+                Comisiones.FirstOrDefault(c => c.Id == comision.Id)
+                ?? comision;
+
+            return AgregarEstudiante(new DatosNuevoEstudiante
+            {
+                Legajo = legajo.Trim(),
+                Nombre = nombre.Trim()
+            });
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

@@ -1,4 +1,5 @@
 using Gestor_de_Estudiantes.Config;
+using Gestor_de_Estudiantes.Entidades;
 
 namespace Gestor_de_Estudiantes.Repositories
 {
@@ -57,11 +58,11 @@ namespace Gestor_de_Estudiantes.Repositories
                         FROM clases c
                         INNER JOIN comisiones com ON com.id = c.comision_id
                         WHERE com.codigo = @codigo
-                          AND c.estado = 'Habil'
+                          AND c.estado = @estadoHabil
                     ),
                     COALESCE(
                         SUM(CASE
-                            WHEN a.condicion = 'Ausente' THEN 1
+                            WHEN a.condicion = @condicionAusente THEN 1
                             ELSE 0
                         END),
                         0
@@ -72,8 +73,16 @@ namespace Gestor_de_Estudiantes.Repositories
                 INNER JOIN comisiones com ON com.id = c.comision_id
                 WHERE a.estudiante_id = @estudianteId
                   AND com.codigo = @codigo
-                  AND c.estado = 'Habil';
+                  AND c.estado = @estadoHabil;
                 """;
+
+            comando.Parameters.AddWithValue(
+                "@estadoHabil",
+                EstadoClase.Habil.ToString());
+
+            comando.Parameters.AddWithValue(
+                "@condicionAusente",
+                Condicion.Ausente.ToString());
 
             comando.Parameters.AddWithValue(
                 "@estudianteId",

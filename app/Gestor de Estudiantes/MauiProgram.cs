@@ -35,7 +35,7 @@ namespace Gestor_de_Estudiantes
                 IEstudianteRepository,
                 EstudianteRepository>();
 
-            builder.Services.AddSingleton<EstudianteService>();
+            builder.Services.AddSingleton<IEstudianteService, EstudianteService>();
             builder.Services.AddTransient<EstudiantesViewModel>();
             builder.Services.AddTransient<EstudiantesPage>();
 
@@ -44,7 +44,7 @@ namespace Gestor_de_Estudiantes
                 IComisionRepository,
                 ComisionRepository>();
 
-            builder.Services.AddSingleton<ComisionService>();
+            builder.Services.AddSingleton<IComisionService, ComisionService>();
             builder.Services.AddTransient<ComisionesViewModel>();
             builder.Services.AddTransient<ComisionesPage>();
 
@@ -53,16 +53,17 @@ namespace Gestor_de_Estudiantes
                 IClaseRepository,
                 ClaseRepository>();
 
-            builder.Services.AddTransient<ClaseService>();
+            builder.Services.AddTransient<IClaseService, ClaseService>();
 
             // Trabajos
             builder.Services.AddSingleton<
                 ITrabajoRepository,
                 TrabajoRepository>();
 
-            builder.Services.AddTransient<TrabajoService>();
+            builder.Services.AddTransient<ITrabajoService, TrabajoService>();
 
             // Calendario
+            builder.Services.AddSingleton<ConstructorDeEventosDeCalendario>();
             builder.Services.AddTransient<CalendarioViewModel>();
             builder.Services.AddTransient<CalendarioPage>();
 
@@ -75,8 +76,8 @@ namespace Gestor_de_Estudiantes
                 IEntregaRepository,
                 EntregaRepository>();
 
-            builder.Services.AddTransient<AsistenciaService>();
-            builder.Services.AddTransient<EntregaService>();
+            builder.Services.AddTransient<IAsistenciaService, AsistenciaService>();
+            builder.Services.AddTransient<IEntregaService, EntregaService>();
 
             builder.Services.AddTransient<AsistenciaEntregasViewModel>();
             builder.Services.AddTransient<AsistenciaEntregasPage>();
@@ -86,7 +87,8 @@ namespace Gestor_de_Estudiantes
                 IRiesgoRepository,
                 RiesgoRepository>();
 
-            builder.Services.AddSingleton<RiesgoService>();
+            builder.Services.AddSingleton<ICalculadoraDeRiesgo, CalculadoraDeRiesgo>();
+            builder.Services.AddSingleton<IRiesgoService, RiesgoService>();
 
             builder.Services.AddTransient<RiesgoViewModel>();
             builder.Services.AddTransient<RiesgoPage>();

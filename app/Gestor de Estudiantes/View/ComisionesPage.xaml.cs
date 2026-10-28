@@ -1,122 +1,73 @@
 using Gestor_de_Estudiantes.Entidades;
-using Gestor_de_Estudiantes.Services;
+using Gestor_de_Estudiantes.ViewModel;
 
 namespace Gestor_de_Estudiantes.Views;
 
+/// <summary>
+/// Pestaña de comisiones y nómina. La lógica (carga, validación y guardado)
+/// vive en <see cref="ComisionesViewModel"/>; el code-behind solo delega y
+/// sincroniza los controles.
+/// </summary>
 public partial class ComisionesPage : ContentPage
 {
-    private readonly ComisionService _comisionService;
-    private readonly EstudianteService _estudianteService;
+    private readonly ComisionesViewModel _vm;
 
-    private List<Comision> _comisiones = new();
-
-    public ComisionesPage(
-        ComisionService comisionService,
-        EstudianteService estudianteService)
+    public ComisionesPage(ComisionesViewModel vm)
     {
         InitializeComponent();
 
-        _comisionService = comisionService;
-        _estudianteService = estudianteService;
+        _vm = vm;
 
-        CargarComisiones();
+        var seleccionada = _vm.ComisionSeleccionada;
+
+        SincronizarPickers();
+        ComisionFiltroPicker.SelectedItem = seleccionada;
+        _vm.ComisionSeleccionada = seleccionada;
+
+        ActualizarNomina();
     }
 
-    private void CargarComisiones()
+    /// <summary>Publica la colección del ViewModel en la lista y los pickers (se actualizan solos al cambiar).</summary>
+    private void SincronizarPickers()
     {
-        try
-        {
-            _comisiones = _comisionService.ListarComisiones();
+        ComisionesList.ItemsSource = _vm.Comisiones;
+        ComisionFiltroPicker.ItemsSource = _vm.Comisiones;
+        ComisionEstudiantePicker.ItemsSource = _vm.Comisiones;
 
-            ComisionesList.ItemsSource = _comisiones;
-            ComisionFiltroPicker.ItemsSource = _comisiones;
-            ComisionEstudiantePicker.ItemsSource = _comisiones;
-
-            SinComisionesLabel.IsVisible = _comisiones.Count == 0;
-
-            if (_comisiones.Count > 0)
-            {
-                ComisionFiltroPicker.SelectedIndex = 0;
-            }
-            else
-            {
-                EstudiantesList.ItemsSource = null;
-                TituloNominaLabel.Text = "Estudiantes";
-                SinEstudiantesLabel.Text =
-                    "Primero tenés que crear una comisión.";
-                SinEstudiantesLabel.IsVisible = true;
-            }
-        }
-        catch (Exception ex)
-        {
-            MostrarError(
-                "No se pudieron cargar las comisiones.",
-                ex);
-        }
+        SinComisionesLabel.IsVisible = _vm.Comisiones.Count == 0;
     }
 
-    private void CargarEstudiantes(string codigoComision)
+    /// <summary>Refresca la nómina mostrada según la comisión seleccionada en el ViewModel.</summary>
+    private void ActualizarNomina()
     {
-        try
-        {
-            var estudiantes =
-                _estudianteService.ListarEstudiantes(codigoComision);
-
-            EstudiantesList.ItemsSource = estudiantes;
-
-            TituloNominaLabel.Text =
-                $"Estudiantes de {codigoComision}";
-
-            SinEstudiantesLabel.Text = estudiantes.Count == 0
-                ? "Esta comisión todavía no tiene estudiantes."
-                : string.Empty;
-
-            SinEstudiantesLabel.IsVisible =
-                estudiantes.Count == 0;
-        }
-        catch (Exception ex)
+        if (_vm.ComisionSeleccionada is null)
         {
             EstudiantesList.ItemsSource = null;
-            SinEstudiantesLabel.Text =
-                "No se pudo cargar la nómina.";
+            TituloNominaLabel.Text = "Estudiantes";
+            SinEstudiantesLabel.Text = _vm.Comisiones.Count == 0
+                ? "Primero tenés que crear una comisión."
+                : "Seleccioná una comisión para consultar la nómina.";
             SinEstudiantesLabel.IsVisible = true;
-
-            MostrarError(
-                "No se pudieron cargar los estudiantes.",
-                ex);
+            return;
         }
+
+        EstudiantesList.ItemsSource = _vm.Estudiantes;
+        TituloNominaLabel.Text =
+            $"Estudiantes de {_vm.ComisionSeleccionada.Codigo}";
+        SinEstudiantesLabel.Text = _vm.Estudiantes.Count == 0
+            ? "Esta comisión todavía no tiene estudiantes."
+            : string.Empty;
+        SinEstudiantesLabel.IsVisible = _vm.Estudiantes.Count == 0;
     }
 
     private void ComisionFiltro_Changed(
         object sender,
         EventArgs e)
     {
-        if (ComisionFiltroPicker.SelectedItem is Comision comision)
-        {
-            CargarEstudiantes(comision.Codigo);
-        }
-        else
-        {
-            EstudiantesList.ItemsSource = null;
-            TituloNominaLabel.Text = "Estudiantes";
-            SinEstudiantesLabel.Text =
-                "Seleccioná una comisión para consultar la nómina.";
-            SinEstudiantesLabel.IsVisible = true;
-        }
-    }
+        _vm.ComisionSeleccionada =
+            ComisionFiltroPicker.SelectedItem as Comision;
 
-    private void ConsultarComision_Clicked(
-        object sender,
-        EventArgs e)
-    {
-        if (sender is Button boton &&
-            boton.CommandParameter is Comision comision)
-        {
-            ComisionFiltroPicker.SelectedItem =
-                _comisiones.FirstOrDefault(c => c.Id == comision.Id);
-
-            CargarEstudiantes(comision.Codigo);
-        }
+        ActualizarNomina();
     }
 
     private void AbrirModalComision_Clicked(
@@ -124,7 +75,7 @@ public partial class ComisionesPage : ContentPage
         EventArgs e)
     {
         CodigoComisionEntry.Text = string.Empty;
-        SemanasEntry.Text = "16";
+        SemanasEntry.Text = Comision.SemanasPorDefecto.ToString();
 
         ErrorComisionLabel.Text = string.Empty;
         ErrorComisionLabel.IsVisible = false;
@@ -137,7 +88,7 @@ public partial class ComisionesPage : ContentPage
         object sender,
         EventArgs e)
     {
-        if (_comisiones.Count == 0)
+        if (_vm.Comisiones.Count == 0)
         {
             MostrarAviso(
                 "Primero tenés que crear una comisión.");
@@ -153,7 +104,7 @@ public partial class ComisionesPage : ContentPage
         // Usar la comisión que se está consultando.
         ComisionEstudiantePicker.SelectedItem =
             ComisionFiltroPicker.SelectedItem
-            ?? _comisiones.FirstOrDefault();
+            ?? _vm.Comisiones.FirstOrDefault();
 
         ModalComision.IsVisible = false;
         ModalEstudiante.IsVisible = true;
@@ -171,120 +122,53 @@ public partial class ComisionesPage : ContentPage
         object sender,
         EventArgs e)
     {
-        var codigo = CodigoComisionEntry.Text?.Trim();
+        var guardada = _vm.AgregarComision(
+            CodigoComisionEntry.Text,
+            SemanasEntry.Text);
 
-        if (string.IsNullOrWhiteSpace(codigo))
+        if (!guardada)
         {
             MostrarErrorModal(
                 ErrorComisionLabel,
-                "Ingresá el código de la comisión.");
+                _vm.Mensaje);
             return;
         }
 
-        if (!int.TryParse(SemanasEntry.Text, out var semanas)
-            || semanas < 1)
-        {
-            MostrarErrorModal(
-                ErrorComisionLabel,
-                "La duración debe ser de al menos una semana.");
-            return;
-        }
+        ModalComision.IsVisible = false;
 
-        try
-        {
-            _comisionService.AgregarComision(codigo, semanas);
+        SinComisionesLabel.IsVisible = false;
+        ComisionFiltroPicker.SelectedItem =
+            _vm.ComisionSeleccionada;
 
-            ModalComision.IsVisible = false;
-
-            CargarComisiones();
-
-            MostrarAviso("La comisión se creó correctamente.");
-        }
-        catch (ArgumentException ex)
-        {
-            MostrarErrorModal(ErrorComisionLabel, ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            MostrarErrorModal(ErrorComisionLabel, ex.Message);
-        }
-        catch (Exception ex)
-        {
-            MostrarErrorModal(
-                ErrorComisionLabel,
-                $"No se pudo guardar la comisión: {ex.Message}");
-        }
+        MostrarAviso(_vm.Mensaje);
     }
 
     private void GuardarEstudiante_Clicked(
         object sender,
         EventArgs e)
     {
-        var legajo = LegajoEntry.Text?.Trim();
-        var nombre = NombreEstudianteEntry.Text?.Trim();
+        var guardado = _vm.AgregarEstudiante(
+            LegajoEntry.Text,
+            NombreEstudianteEntry.Text,
+            ComisionEstudiantePicker.SelectedItem as Comision);
 
-        if (string.IsNullOrWhiteSpace(legajo))
+        if (!guardado)
         {
             MostrarErrorModal(
                 ErrorEstudianteLabel,
-                "Ingresá el legajo del estudiante.");
+                _vm.Mensaje);
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(nombre))
-        {
-            MostrarErrorModal(
-                ErrorEstudianteLabel,
-                "Ingresá el nombre del estudiante.");
-            return;
-        }
+        ModalEstudiante.IsVisible = false;
 
-        if (ComisionEstudiantePicker.SelectedItem
-            is not Comision comision)
-        {
-            MostrarErrorModal(
-                ErrorEstudianteLabel,
-                "Seleccioná una comisión.");
-            return;
-        }
+        // Refrescar la nómina de la comisión elegida.
+        ComisionFiltroPicker.SelectedItem =
+            _vm.ComisionSeleccionada;
 
-        try
-        {
-            _estudianteService.AgregarEstudiante(
-                legajo,
-                nombre,
-                comision.Codigo);
+        ActualizarNomina();
 
-            ModalEstudiante.IsVisible = false;
-
-            // Refrescar la nómina de la comisión elegida.
-            ComisionFiltroPicker.SelectedItem =
-                _comisiones.FirstOrDefault(
-                    c => c.Id == comision.Id);
-
-            CargarEstudiantes(comision.Codigo);
-
-            MostrarAviso(
-                "El estudiante se agregó correctamente.");
-        }
-        catch (ArgumentException ex)
-        {
-            MostrarErrorModal(
-                ErrorEstudianteLabel,
-                ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            MostrarErrorModal(
-                ErrorEstudianteLabel,
-                ex.Message);
-        }
-        catch (Exception ex)
-        {
-            MostrarErrorModal(
-                ErrorEstudianteLabel,
-                $"No se pudo guardar el estudiante: {ex.Message}");
-        }
+        MostrarAviso(_vm.Mensaje);
     }
 
     private static void MostrarErrorModal(
@@ -299,26 +183,6 @@ public partial class ComisionesPage : ContentPage
     {
         await DisplayAlert("Gestión de estudiantes", mensaje, "Aceptar");
     }
-
-    private async void MostrarError(
-        string mensaje,
-        Exception ex)
-    {
-        System.Diagnostics.Debug.WriteLine(ex);
-
-        await DisplayAlert(
-            "Error",
-            $"{mensaje}\n{ex.Message}",
-            "Aceptar");
-    }
-
-    private async void Volver_Clicked(
-        object sender,
-        EventArgs e)
-    {
-        await Shell.Current.GoToAsync("..");
-    }
-
 
     private void MostrarComisionesTab_Clicked(object sender, EventArgs e)
     {
@@ -346,8 +210,8 @@ public partial class ComisionesPage : ContentPage
         // Si ya hay una comisión seleccionada, refrescar su nómina.
         if (ComisionFiltroPicker.SelectedItem is Comision comision)
         {
-            CargarEstudiantes(comision.Codigo);
+            _vm.ComisionSeleccionada = comision;
+            ActualizarNomina();
         }
     }
-
 }

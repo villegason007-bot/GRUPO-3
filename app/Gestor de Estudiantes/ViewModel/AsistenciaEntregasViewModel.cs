@@ -10,12 +10,12 @@ namespace Gestor_de_Estudiantes.ViewModel
 {
     public class AsistenciaEntregasViewModel : INotifyPropertyChanged
     {
-        private readonly ComisionService _comisionService;
-        private readonly ClaseService _claseService;
-        private readonly TrabajoService _trabajoService;
-        private readonly EstudianteService _estudianteService;
-        private readonly AsistenciaService _asistenciaService;
-        private readonly EntregaService _entregaService;
+        private readonly IComisionService _comisionService;
+        private readonly IClaseService _claseService;
+        private readonly ITrabajoService _trabajoService;
+        private readonly IEstudianteService _estudianteService;
+        private readonly IAsistenciaService _asistenciaService;
+        private readonly IEntregaService _entregaService;
 
         private Comision? _comisionSeleccionada;
         private Clase? _claseSeleccionada;
@@ -78,12 +78,12 @@ namespace Gestor_de_Estudiantes.ViewModel
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public AsistenciaEntregasViewModel(
-            ComisionService comisionService,
-            ClaseService claseService,
-            TrabajoService trabajoService,
-            EstudianteService estudianteService,
-            AsistenciaService asistenciaService,
-            EntregaService entregaService)
+            IComisionService comisionService,
+            IClaseService claseService,
+            ITrabajoService trabajoService,
+            IEstudianteService estudianteService,
+            IAsistenciaService asistenciaService,
+            IEntregaService entregaService)
         {
             _comisionService = comisionService;
             _claseService = claseService;

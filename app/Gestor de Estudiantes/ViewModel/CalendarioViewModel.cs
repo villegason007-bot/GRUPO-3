@@ -9,9 +9,10 @@ namespace Gestor_de_Estudiantes.ViewModel
 {
     public class CalendarioViewModel : INotifyPropertyChanged
     {
-        private readonly ComisionService _comisionService;
-        private readonly ClaseService _claseService;
-        private readonly TrabajoService _trabajoService;
+        private readonly IComisionService _comisionService;
+        private readonly IClaseService _claseService;
+        private readonly ITrabajoService _trabajoService;
+        private readonly ConstructorDeEventosDeCalendario _constructorDeEventos;
 
         private Comision? _comisionSeleccionada;
         private DateTime _fechaClase = DateTime.Today;
@@ -75,13 +76,15 @@ namespace Gestor_de_Estudiantes.ViewModel
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public CalendarioViewModel(
-            ComisionService comisionService,
-            ClaseService claseService,
-            TrabajoService trabajoService)
+            IComisionService comisionService,
+            IClaseService claseService,
+            ITrabajoService trabajoService,
+            ConstructorDeEventosDeCalendario constructorDeEventos)
         {
             _comisionService = comisionService;
             _claseService = claseService;
             _trabajoService = trabajoService;
+            _constructorDeEventos = constructorDeEventos;
 
             RecargarCommand = new Command(CargarCalendario);
             RegistrarClaseCommand = new Command(RegistrarClase);
@@ -140,32 +143,15 @@ namespace Gestor_de_Estudiantes.ViewModel
             {
                 var codigo = ComisionSeleccionada.Codigo;
 
-                var clases = _claseService.ListarClases(codigo);
-                var trabajos = _trabajoService.ListarTrabajos(codigo);
+                var eventos = _constructorDeEventos.Construir(
+                    _claseService.ListarClases(codigo),
+                    _trabajoService.ListarTrabajos(codigo));
 
-                foreach (var clase in clases)
+                foreach (var evento in eventos)
                 {
-                    Eventos.Add(new EventoCalendario
-                    {
-                        Fecha = clase.Fecha,
-                        Tipo = "CLASE",
-                        Titulo = "Clase",
-                        Detalle = $"Estado: {clase.Estado}"
-                    });
+                    Eventos.Add(evento);
                 }
 
-                foreach (var trabajo in trabajos)
-                {
-                    Eventos.Add(new EventoCalendario
-                    {
-                        Fecha = trabajo.FechaDeEntrega,
-                        Tipo = "TRABAJO",
-                        Titulo = trabajo.Titulo,
-                        Detalle = "Fecha de entrega"
-                    });
-                }
-
-                OrdenarEventos();
                 NotificarSinEventos();
                 Mensaje = Eventos.Count == 0
                     ? "Todavía no hay eventos para esta comisión."
@@ -229,21 +215,6 @@ namespace Gestor_de_Estudiantes.ViewModel
             catch (Exception ex)
             {
                 Mensaje = $"No se pudo registrar el trabajo: {ex.Message}";
-            }
-        }
-
-        private void OrdenarEventos()
-        {
-            var ordenados = Eventos
-                .OrderBy(e => e.Fecha)
-                .ThenBy(e => e.Tipo)
-                .ToList();
-
-            Eventos.Clear();
-
-            foreach (var evento in ordenados)
-            {
-                Eventos.Add(evento);
             }
         }
 

@@ -1,3 +1,4 @@
+using Gestor_de_Estudiantes.Entidades;
 using Gestor_de_Estudiantes.Repositories;
 
 namespace Gestor_de_Estudiantes.Services
@@ -7,18 +8,21 @@ namespace Gestor_de_Estudiantes.Services
     /// parámetros de riesgo y arma la lista de resultados de una comisión
     /// para el panel.
     /// </summary>
-    public class RiesgoService
+    public class RiesgoService : IRiesgoService
     {
         private readonly IRiesgoRepository _riesgos;
         private readonly IEstudianteRepository _estudiantes;
+        private readonly ICalculadoraDeRiesgo _calculadora;
 
-        /// <summary>Crea el servicio con los repositorios de riesgo y estudiantes.</summary>
+        /// <summary>Crea el servicio con los repositorios de riesgo y estudiantes y la calculadora.</summary>
         public RiesgoService(
             IRiesgoRepository riesgos,
-            IEstudianteRepository estudiantes)
+            IEstudianteRepository estudiantes,
+            ICalculadoraDeRiesgo calculadora)
         {
             _riesgos = riesgos;
             _estudiantes = estudiantes;
+            _calculadora = calculadora;
         }
 
         /// <summary>Devuelve el umbral porcentual vigente (0-100) guardado en parámetros.</summary>
@@ -50,9 +54,8 @@ namespace Gestor_de_Estudiantes.Services
 
         /// <summary>
         /// Calcula el riesgo de todos los estudiantes activos de la
-        /// comisión (H8): por cada uno cuenta asistencias y trabajos,
-        /// llama a la <see cref="CalculadoraDeRiesgo"/> con el umbral
-        /// vigente y adjunta los límites configurados.
+        /// comisión (H8): recorre la nómina y, por cada uno, delega en
+        /// <see cref="CalcularRiesgoDe"/>.
         /// </summary>
         /// <param name="codigoComision">Comisión a evaluar.</param>
         /// <returns>Un <see cref="ResultadoRiesgo"/> por estudiante, en el orden de la nómina.</returns>
@@ -69,33 +72,52 @@ namespace Gestor_de_Estudiantes.Services
             foreach (var estudiante in
                      _estudiantes.ListarEstudiantes(codigoComision))
             {
-                var (clasesHabiles, faltas, conRegistro) =
-                    _riesgos.ContarAsistencias(
-                        estudiante.Id, codigoComision);
-
-                var (vencidos, entregados) =
-                    _riesgos.ContarTrabajos(
-                        estudiante.Id, codigoComision);
-
-                var resultado = CalculadoraDeRiesgo.Calcular(
-                    conRegistro ? clasesHabiles : 0,
-                    faltas,
-                    vencidos,
-                    vencidos - entregados,
-                    umbral);
-
-                resultado.EstudianteId = estudiante.Id;
-                resultado.Legajo = estudiante.Legajo;
-                resultado.Nombre =
-                    $"{estudiante.Nombre} {estudiante.Apellido}".Trim();
-
-                resultado.MaxFaltasPermitidas = maxFaltas;
-                resultado.MaxTrabajosNoEntregadosPermitidos = maxTrabajos;
-
-                resultados.Add(resultado);
+                resultados.Add(CalcularRiesgoDe(
+                    estudiante,
+                    codigoComision,
+                    umbral,
+                    maxFaltas,
+                    maxTrabajos));
             }
 
             return resultados;
+        }
+
+        /// <summary>
+        /// Cuenta asistencias y trabajos de un estudiante y calcula su
+        /// resultado individual, adjuntando los límites configurados.
+        /// </summary>
+        private ResultadoRiesgo CalcularRiesgoDe(
+            Estudiante estudiante,
+            string codigoComision,
+            double umbral,
+            int maxFaltas,
+            int maxTrabajos)
+        {
+            var (clasesHabiles, faltas, conRegistro) =
+                _riesgos.ContarAsistencias(
+                    estudiante.Id, codigoComision);
+
+            var (vencidos, entregados) =
+                _riesgos.ContarTrabajos(
+                    estudiante.Id, codigoComision);
+
+            var resultado = _calculadora.Calcular(
+                conRegistro ? clasesHabiles : 0,
+                faltas,
+                vencidos,
+                vencidos - entregados,
+                umbral);
+
+            resultado.EstudianteId = estudiante.Id;
+            resultado.Legajo = estudiante.Legajo;
+            resultado.Nombre =
+                $"{estudiante.Nombre} {estudiante.Apellido}".Trim();
+
+            resultado.MaxFaltasPermitidas = maxFaltas;
+            resultado.MaxTrabajosNoEntregadosPermitidos = maxTrabajos;
+
+            return resultado;
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Gestor_de_Estudiantes.Services
     /// Fachada de la nómina de estudiantes (H1): listado, búsqueda por
     /// legajo, alta y baja lógica.
     /// </summary>
-    public class EstudianteService
+    public class EstudianteService : IEstudianteService
     {
         private readonly IEstudianteRepository _estudiantes;
 

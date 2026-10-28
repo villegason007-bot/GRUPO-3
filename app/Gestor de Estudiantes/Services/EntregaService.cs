@@ -8,7 +8,7 @@ namespace Gestor_de_Estudiantes.Services
     /// un trabajo, con semántica de alta o corrección (si ya existe el
     /// registro, lo actualiza).
     /// </summary>
-    public class EntregaService
+    public class EntregaService : IEntregaService
     {
         private readonly IEntregaRepository _entregas;
 

@@ -7,7 +7,7 @@ namespace Gestor_de_Estudiantes.Services
     /// Fachada de trabajos prácticos (H5): lista los trabajos de una
     /// comisión y da de alta trabajos nuevos con su fecha de entrega.
     /// </summary>
-    public class TrabajoService
+    public class TrabajoService : ITrabajoService
     {
         private readonly ITrabajoRepository _trabajos;
         private readonly IComisionRepository _comisiones;
