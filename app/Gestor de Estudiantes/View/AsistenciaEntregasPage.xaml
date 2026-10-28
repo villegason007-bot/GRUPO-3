@@ -5,84 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     BackgroundColor="#090D18">
 
-    <ContentPage.Resources>
-        <ResourceDictionary>
-
-            <!-- Superficies Liquid Glass -->
-            <Style x:Key="GlassCard" TargetType="Border">
-                <Setter Property="Background" Value="#16FFFFFF" />
-                <Setter Property="Stroke" Value="#30FFFFFF" />
-                <Setter Property="StrokeThickness" Value="1" />
-                <Setter Property="Padding" Value="22" />
-                <Setter Property="StrokeShape">
-                    <Setter.Value>
-                        <RoundRectangle CornerRadius="22" />
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <Style x:Key="InnerGlassCard" TargetType="Border">
-                <Setter Property="Background" Value="#12FFFFFF" />
-                <Setter Property="Stroke" Value="#25FFFFFF" />
-                <Setter Property="StrokeThickness" Value="1" />
-                <Setter Property="Padding" Value="15" />
-                <Setter Property="StrokeShape">
-                    <Setter.Value>
-                        <RoundRectangle CornerRadius="16" />
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <Style x:Key="GlassButton" TargetType="Button">
-                <Setter Property="BackgroundColor" Value="#7667F5" />
-                <Setter Property="TextColor" Value="White" />
-                <Setter Property="CornerRadius" Value="12" />
-                <Setter Property="Padding" Value="17,12" />
-                <Setter Property="FontSize" Value="13" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="MinimumHeightRequest" Value="46" />
-            </Style>
-
-            <Style x:Key="SecondaryGlassButton" TargetType="Button">
-                <Setter Property="BackgroundColor" Value="#18FFFFFF" />
-                <Setter Property="TextColor" Value="#E2E8F0" />
-                <Setter Property="BorderColor" Value="#35FFFFFF" />
-                <Setter Property="BorderWidth" Value="1" />
-                <Setter Property="CornerRadius" Value="11" />
-                <Setter Property="Padding" Value="13,9" />
-                <Setter Property="FontSize" Value="12" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="MinimumHeightRequest" Value="40" />
-            </Style>
-
-            <Style x:Key="GlassEntry" TargetType="Entry">
-                <Setter Property="TextColor" Value="White" />
-                <Setter Property="PlaceholderColor" Value="#8290AA" />
-                <Setter Property="BackgroundColor" Value="#182235" />
-                <Setter Property="HeightRequest" Value="50" />
-                <Setter Property="Margin" Value="0,3,0,0" />
-            </Style>
-
-            <Style x:Key="SectionTitle" TargetType="Label">
-                <Setter Property="FontSize" Value="20" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="TextColor" Value="#F8FAFC" />
-            </Style>
-
-            <Style x:Key="SecondaryText" TargetType="Label">
-                <Setter Property="FontSize" Value="13" />
-                <Setter Property="TextColor" Value="#AEBBD0" />
-                <Setter Property="LineBreakMode" Value="WordWrap" />
-            </Style>
-
-            <Style x:Key="FormLabel" TargetType="Label">
-                <Setter Property="FontSize" Value="12" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="TextColor" Value="#C8D2E5" />
-            </Style>
-
-        </ResourceDictionary>
-    </ContentPage.Resources>
 
     <Grid>
 
@@ -155,7 +77,7 @@
                         <Label
                             Text="Administrá la asistencia y las entregas de tus estudiantes."
                             FontSize="14"
-                            TextColor="#AEBBD0"
+                            TextColor="{StaticResource TextoSecundario}"
                             LineBreakMode="WordWrap" />
                     </VerticalStackLayout>
                 </Grid>
@@ -213,7 +135,7 @@
                             x:Name="TabAsistenciaButton"
                             Grid.Column="0"
                             Text="✓   Asistencia"
-                            BackgroundColor="#7667F5"
+                            BackgroundColor="{StaticResource Acento}"
                             TextColor="White"
                             CornerRadius="12"
                             FontAttributes="Bold"
@@ -226,7 +148,7 @@
                             Grid.Column="1"
                             Text="▤   Entregas"
                             BackgroundColor="Transparent"
-                            TextColor="#AEBBD0"
+                            TextColor="{StaticResource TextoSecundario}"
                             CornerRadius="12"
                             FontAttributes="Bold"
                             FontSize="13"
@@ -260,7 +182,7 @@
                             <Label
                                 Text="Seleccioná una clase y marcá quién estuvo presente."
                                 FontSize="13"
-                                TextColor="#AEBBD0" />
+                                TextColor="{StaticResource TextoSecundario}" />
                         </VerticalStackLayout>
 
                         <Border Style="{StaticResource InnerGlassCard}">
@@ -300,7 +222,7 @@
                                     HorizontalOptions="Center">
                                     <Label
                                         Text="No hay estudiantes para mostrar."
-                                        TextColor="#AEBBD0"
+                                        TextColor="{StaticResource TextoSecundario}"
                                         HorizontalTextAlignment="Center" />
                                 </VerticalStackLayout>
                             </CollectionView.EmptyView>
@@ -331,7 +253,7 @@
 
                                                 <Label
                                                     Text="{Binding Estudiante.Legajo, StringFormat='Legajo: {0}'}"
-                                                    TextColor="#AEBBD0"
+                                                    TextColor="{StaticResource TextoSecundario}"
                                                     FontSize="12" />
 
                                             </VerticalStackLayout>
@@ -394,7 +316,7 @@
                             <Label
                                 Text="Elegí el trabajo y registrá las entregas de cada estudiante."
                                 FontSize="13"
-                                TextColor="#AEBBD0" />
+                                TextColor="{StaticResource TextoSecundario}" />
                         </VerticalStackLayout>
 
                         <Border Style="{StaticResource InnerGlassCard}">
@@ -427,7 +349,7 @@
                                     HorizontalOptions="Center">
                                     <Label
                                         Text="No hay estudiantes o trabajos para mostrar."
-                                        TextColor="#AEBBD0"
+                                        TextColor="{StaticResource TextoSecundario}"
                                         HorizontalTextAlignment="Center" />
                                 </VerticalStackLayout>
                             </CollectionView.EmptyView>
@@ -451,7 +373,7 @@
 
                                             <Label
                                                 Text="{Binding Estudiante.Legajo, StringFormat='Legajo: {0}'}"
-                                                TextColor="#AEBBD0"
+                                                TextColor="{StaticResource TextoSecundario}"
                                                 FontSize="12" />
 
                                             <BoxView
@@ -475,7 +397,7 @@
 
                                             <Label
                                                 Text="Fecha de entrega"
-                                                TextColor="#AEBBD0"
+                                                TextColor="{StaticResource TextoSecundario}"
                                                 FontSize="12" />
 
                                             <Border Style="{StaticResource InnerGlassCard}">

@@ -28,6 +28,12 @@
     <Color x:Key="Gray900">#212121</Color>
     <Color x:Key="Gray950">#141414</Color>
 
+    <!-- Paleta real de la app (antes hardcodeada en cada pagina).
+         Espejo de Resources/Paleta.cs del lado C#. -->
+    <Color x:Key="Acento">#7667F5</Color>
+    <Color x:Key="TextoSecundario">#AEBBD0</Color>
+    <Color x:Key="Fondo">#090D18</Color>
+
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
     <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>

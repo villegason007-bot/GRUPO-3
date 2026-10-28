@@ -1,5 +1,6 @@
 using Gestor_de_Estudiantes.Entidades;
 using Gestor_de_Estudiantes.ViewModel;
+using Gestor_de_Estudiantes.Resources;
 
 namespace Gestor_de_Estudiantes.Views;
 
@@ -189,11 +190,11 @@ public partial class ComisionesPage : ContentPage
         ComisionesPanel.IsVisible = true;
         EstudiantesPanel.IsVisible = false;
 
-        TabComisionesButton.BackgroundColor = Color.FromArgb("#7667F5");
+        TabComisionesButton.BackgroundColor = Paleta.Acento;
         TabComisionesButton.TextColor = Colors.White;
 
         TabEstudiantesButton.BackgroundColor = Colors.Transparent;
-        TabEstudiantesButton.TextColor = Color.FromArgb("#AEBBD0");
+        TabEstudiantesButton.TextColor = Paleta.TextoSecundario;
     }
 
     private void MostrarEstudiantesTab_Clicked(object sender, EventArgs e)
@@ -201,11 +202,11 @@ public partial class ComisionesPage : ContentPage
         ComisionesPanel.IsVisible = false;
         EstudiantesPanel.IsVisible = true;
 
-        TabEstudiantesButton.BackgroundColor = Color.FromArgb("#7667F5");
+        TabEstudiantesButton.BackgroundColor = Paleta.Acento;
         TabEstudiantesButton.TextColor = Colors.White;
 
         TabComisionesButton.BackgroundColor = Colors.Transparent;
-        TabComisionesButton.TextColor = Color.FromArgb("#AEBBD0");
+        TabComisionesButton.TextColor = Paleta.TextoSecundario;
 
         // Si ya hay una comisión seleccionada, refrescar su nómina.
         if (ComisionFiltroPicker.SelectedItem is Comision comision)

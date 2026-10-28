@@ -1,5 +1,6 @@
 
 using Gestor_de_Estudiantes.ViewModel;
+using Gestor_de_Estudiantes.Resources;
 
 namespace Gestor_de_Estudiantes.Views
 {
@@ -18,11 +19,11 @@ namespace Gestor_de_Estudiantes.Views
             AsistenciaPanel.IsVisible = true;
             EntregasPanel.IsVisible = false;
 
-            TabAsistenciaButton.BackgroundColor = Color.FromArgb("#7667F5");
+            TabAsistenciaButton.BackgroundColor = Paleta.Acento;
             TabAsistenciaButton.TextColor = Colors.White;
 
             TabEntregasButton.BackgroundColor = Colors.Transparent;
-            TabEntregasButton.TextColor = Color.FromArgb("#AEBBD0");
+            TabEntregasButton.TextColor = Paleta.TextoSecundario;
         }
 
         private void MostrarEntregasTab_Clicked(object sender, EventArgs e)
@@ -30,11 +31,11 @@ namespace Gestor_de_Estudiantes.Views
             AsistenciaPanel.IsVisible = false;
             EntregasPanel.IsVisible = true;
 
-            TabEntregasButton.BackgroundColor = Color.FromArgb("#7667F5");
+            TabEntregasButton.BackgroundColor = Paleta.Acento;
             TabEntregasButton.TextColor = Colors.White;
 
             TabAsistenciaButton.BackgroundColor = Colors.Transparent;
-            TabAsistenciaButton.TextColor = Color.FromArgb("#AEBBD0");
+            TabAsistenciaButton.TextColor = Paleta.TextoSecundario;
         }
 
     }
