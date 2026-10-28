@@ -1,4 +1,5 @@
 ﻿
+using Gestor_de_Estudiantes.Config;
 using Gestor_de_Estudiantes.Repositories;
 using Gestor_de_Estudiantes.Services;
 using Gestor_de_Estudiantes.ViewModel;
@@ -95,6 +96,12 @@ namespace Gestor_de_Estudiantes
 
             builder.Services.AddTransient<ConfiguracionRiesgoViewModel>();
             builder.Services.AddTransient<ConfiguracionRiesgoPage>();
+
+            // Crear la base (esquema + semilla) al iniciar la app: en una
+            // máquina recién clonada no hay base y sin esto la primera
+            // pantalla falla con «SQLite Error 14» (la consola no corre en
+            // el celular).
+            BaseDeDatos.Inicializar();
 
             return builder.Build();
         }
