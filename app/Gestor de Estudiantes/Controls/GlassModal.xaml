@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="Gestor_de_Estudiantes.Controls.GlassModal"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Name="Raiz">
+
+    <!-- Overlay + tarjeta del modal. El formulario va en la propiedad Formulario;
+         el mensaje de error y los botones Cancelar/Confirmar son del propio modal. -->
+    <Grid BackgroundColor="#D9090D18" Padding="20">
+
+        <Border
+            Background="#F0162035"
+            Stroke="#557C70FF"
+            StrokeThickness="1"
+            StrokeShape="RoundRectangle 24"
+            Padding="23"
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            MaximumWidthRequest="440"
+            WidthRequest="340">
+
+            <ScrollView>
+                <VerticalStackLayout Spacing="15">
+
+                    <!-- Ícono del modal -->
+                    <Border
+                        WidthRequest="48"
+                        HeightRequest="48"
+                        HorizontalOptions="Start"
+                        Background="{Binding IconoFondo, Source={x:Reference Raiz}}"
+                        Stroke="{Binding IconoBorde, Source={x:Reference Raiz}}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 15">
+                        <Label
+                            Text="{Binding Icono, Source={x:Reference Raiz}}"
+                            FontSize="{Binding IconoTamano, Source={x:Reference Raiz}}"
+                            TextColor="{Binding IconoColor, Source={x:Reference Raiz}}"
+                            HorizontalTextAlignment="Center"
+                            VerticalTextAlignment="Center" />
+                    </Border>
+
+                    <!-- Título y subtítulo -->
+                    <VerticalStackLayout Spacing="5">
+                        <Label
+                            Text="{Binding Titulo, Source={x:Reference Raiz}}"
+                            FontSize="23"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+
+                        <Label
+                            Text="{Binding Subtitulo, Source={x:Reference Raiz}}"
+                            FontSize="13"
+                            TextColor="{StaticResource TextoSecundario}" />
+                    </VerticalStackLayout>
+
+                    <!-- Slot del formulario (campos de la página) -->
+                    <ContentView x:Name="SlotFormulario" />
+
+                    <!-- Mensaje de error del formulario -->
+                    <Label
+                        x:Name="ErrorLabel"
+                        TextColor="#FDA4AF"
+                        FontSize="12"
+                        IsVisible="False" />
+
+                    <!-- Acciones -->
+                    <Grid
+                        ColumnDefinitions="*,*"
+                        ColumnSpacing="10"
+                        Margin="0,5,0,0">
+
+                        <Button
+                            Text="Cancelar"
+                            BackgroundColor="#20FFFFFF"
+                            TextColor="#E2E8F0"
+                            BorderColor="#35FFFFFF"
+                            BorderWidth="1"
+                            CornerRadius="12"
+                            MinimumHeightRequest="46"
+                            Clicked="CancelarInterno_Clicked" />
+
+                        <Button
+                            Grid.Column="1"
+                            Text="{Binding TextoConfirmar, Source={x:Reference Raiz}}"
+                            Style="{StaticResource GlassButton}"
+                            Clicked="ConfirmarInterno_Clicked" />
+                    </Grid>
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </Border>
+    </Grid>
+</ContentView>

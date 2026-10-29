@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="Gestor_de_Estudiantes.Controls.SelectorComision"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Name="Raiz">
+
+    <!-- Tarjeta "Comisión activa" con el picker de comisión y el botón de refresco.
+         Los elementos (Comisiones, ComisionSeleccionada, RecargarCommand) se
+         resuelven contra el BindingContext de la página. -->
+    <Border Style="{StaticResource GlassCard}">
+        <VerticalStackLayout Spacing="14">
+
+            <VerticalStackLayout Spacing="4">
+                <Label
+                    Text="01 / COMISIÓN"
+                    FontSize="10"
+                    FontAttributes="Bold"
+                    CharacterSpacing="1.5"
+                    TextColor="#A5B4FC" />
+                <Label
+                    Text="Comisión activa"
+                    Style="{StaticResource SectionTitle}" />
+                <Label
+                    Text="{Binding Subtitulo, Source={x:Reference Raiz}}"
+                    Style="{StaticResource SecondaryText}" />
+            </VerticalStackLayout>
+
+            <Border Style="{StaticResource InnerGlassCard}">
+                <Picker
+                    Title="{Binding TituloPicker, Source={x:Reference Raiz}}"
+                    ItemsSource="{Binding Comisiones}"
+                    SelectedItem="{Binding ComisionSeleccionada}"
+                    ItemDisplayBinding="{Binding Codigo}"
+                    TextColor="White"
+                    TitleColor="#A5B4FC"
+                    BackgroundColor="Transparent" />
+            </Border>
+
+            <Button
+                Text="{Binding TextoBoton, Source={x:Reference Raiz}}"
+                Command="{Binding RecargarCommand}"
+                Style="{StaticResource SecondaryGlassButton}"
+                HorizontalOptions="Fill" />
+
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

@@ -78,8 +78,7 @@ public partial class ComisionesPage : ContentPage
         CodigoComisionEntry.Text = string.Empty;
         SemanasEntry.Text = Comision.SemanasPorDefecto.ToString();
 
-        ErrorComisionLabel.Text = string.Empty;
-        ErrorComisionLabel.IsVisible = false;
+        ModalComision.LimpiarError();
 
         ModalEstudiante.IsVisible = false;
         ModalComision.IsVisible = true;
@@ -99,8 +98,7 @@ public partial class ComisionesPage : ContentPage
         LegajoEntry.Text = string.Empty;
         NombreEstudianteEntry.Text = string.Empty;
 
-        ErrorEstudianteLabel.Text = string.Empty;
-        ErrorEstudianteLabel.IsVisible = false;
+        ModalEstudiante.LimpiarError();
 
         // Usar la comisión que se está consultando.
         ComisionEstudiantePicker.SelectedItem =
@@ -129,9 +127,7 @@ public partial class ComisionesPage : ContentPage
 
         if (!guardada)
         {
-            MostrarErrorModal(
-                ErrorComisionLabel,
-                _vm.Mensaje);
+            ModalComision.MostrarError(_vm.Mensaje);
             return;
         }
 
@@ -155,9 +151,7 @@ public partial class ComisionesPage : ContentPage
 
         if (!guardado)
         {
-            MostrarErrorModal(
-                ErrorEstudianteLabel,
-                _vm.Mensaje);
+            ModalEstudiante.MostrarError(_vm.Mensaje);
             return;
         }
 
@@ -170,14 +164,6 @@ public partial class ComisionesPage : ContentPage
         ActualizarNomina();
 
         MostrarAviso(_vm.Mensaje);
-    }
-
-    private static void MostrarErrorModal(
-        Label etiqueta,
-        string mensaje)
-    {
-        etiqueta.Text = mensaje;
-        etiqueta.IsVisible = true;
     }
 
     private async void MostrarAviso(string mensaje)
