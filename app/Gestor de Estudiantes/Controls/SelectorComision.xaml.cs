@@ -1,3 +1,5 @@
+using Microsoft.Maui.Graphics;
+
 namespace Gestor_de_Estudiantes.Controls;
 
 /// <summary>
@@ -9,18 +11,26 @@ namespace Gestor_de_Estudiantes.Controls;
 public partial class SelectorComision : ContentView
 {
     public static readonly BindableProperty SubtituloProperty =
-        BindableProperty.Create(nameof(Subtitulo), typeof(string), typeof(SelectorComision), string.Empty);
+        BindableProperty.Create(nameof(Subtitulo), typeof(string), typeof(SelectorComision), string.Empty,
+            propertyChanged: (bindable, oldValue, newValue) => ((SelectorComision)bindable).SubtituloLabel.Text = (string)newValue);
 
     public static readonly BindableProperty TituloPickerProperty =
         BindableProperty.Create(nameof(TituloPicker), typeof(string), typeof(SelectorComision),
-            "Seleccionar comisión");
+            "Seleccionar comisión",
+            propertyChanged: (bindable, oldValue, newValue) => ((SelectorComision)bindable).ComisionPicker.Title = (string)newValue);
 
     public static readonly BindableProperty TextoBotonProperty =
-        BindableProperty.Create(nameof(TextoBoton), typeof(string), typeof(SelectorComision), "Actualizar");
+        BindableProperty.Create(nameof(TextoBoton), typeof(string), typeof(SelectorComision), "Actualizar",
+            propertyChanged: (bindable, oldValue, newValue) => ((SelectorComision)bindable).ActualizarButton.Text = (string)newValue);
 
     public SelectorComision()
     {
         InitializeComponent();
+
+        // Aplicar los valores por defecto (propertyChanged no se dispara hasta que cambien).
+        SubtituloLabel.Text = Subtitulo;
+        ComisionPicker.Title = TituloPicker;
+        ActualizarButton.Text = TextoBoton;
     }
 
     /// <summary>Frase de ayuda debajo del título de la tarjeta.</summary>

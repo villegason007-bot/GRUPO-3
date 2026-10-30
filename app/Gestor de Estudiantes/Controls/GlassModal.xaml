@@ -2,11 +2,11 @@
 <ContentView
     x:Class="Gestor_de_Estudiantes.Controls.GlassModal"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Name="Raiz">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <!-- Overlay + tarjeta del modal. El formulario va en la propiedad Formulario;
-         el mensaje de error y los botones Cancelar/Confirmar son del propio modal. -->
+         el mensaje de error y los botones Cancelar/Confirmar son del propio modal.
+         Los textos/colores se sincronizan desde el code-behind (sin bindings con Source). -->
     <Grid BackgroundColor="#D9090D18" Padding="20">
 
         <Border
@@ -25,17 +25,16 @@
 
                     <!-- Ícono del modal -->
                     <Border
+                        x:Name="IconoBorder"
                         WidthRequest="48"
                         HeightRequest="48"
                         HorizontalOptions="Start"
-                        Background="{Binding IconoFondo, Source={x:Reference Raiz}}"
-                        Stroke="{Binding IconoBorde, Source={x:Reference Raiz}}"
                         StrokeThickness="1"
                         StrokeShape="RoundRectangle 15">
                         <Label
-                            Text="{Binding Icono, Source={x:Reference Raiz}}"
-                            FontSize="{Binding IconoTamano, Source={x:Reference Raiz}}"
-                            TextColor="{Binding IconoColor, Source={x:Reference Raiz}}"
+                            x:Name="IconoLabel"
+                            Text="＋"
+                            FontSize="27"
                             HorizontalTextAlignment="Center"
                             VerticalTextAlignment="Center" />
                     </Border>
@@ -43,13 +42,13 @@
                     <!-- Título y subtítulo -->
                     <VerticalStackLayout Spacing="5">
                         <Label
-                            Text="{Binding Titulo, Source={x:Reference Raiz}}"
+                            x:Name="TituloLabel"
                             FontSize="23"
                             FontAttributes="Bold"
                             TextColor="White" />
 
                         <Label
-                            Text="{Binding Subtitulo, Source={x:Reference Raiz}}"
+                            x:Name="SubtituloLabel"
                             FontSize="13"
                             TextColor="{StaticResource TextoSecundario}" />
                     </VerticalStackLayout>
@@ -81,8 +80,8 @@
                             Clicked="CancelarInterno_Clicked" />
 
                         <Button
+                            x:Name="ConfirmarButton"
                             Grid.Column="1"
-                            Text="{Binding TextoConfirmar, Source={x:Reference Raiz}}"
                             Style="{StaticResource GlassButton}"
                             Clicked="ConfirmarInterno_Clicked" />
                     </Grid>

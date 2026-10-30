@@ -3,6 +3,7 @@
     x:Class="Gestor_de_Estudiantes.Views.AsistenciaEntregasPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:Gestor_de_Estudiantes.Controls"
     BackgroundColor="#090D18">
 
 
@@ -83,43 +84,10 @@
                 </Grid>
 
                 <!-- Selector de comisión activa -->
-                <Border Style="{StaticResource GlassCard}">
-                    <VerticalStackLayout Spacing="14">
-
-                        <VerticalStackLayout Spacing="4">
-                            <Label
-                                Text="01 / COMISIÓN"
-                                FontSize="10"
-                                FontAttributes="Bold"
-                                CharacterSpacing="1.5"
-                                TextColor="#A5B4FC" />
-                            <Label
-                                Text="Comisión activa"
-                                Style="{StaticResource SectionTitle}" />
-                            <Label
-                                Text="Seleccioná la cursada con la que deseas trabajar."
-                                Style="{StaticResource SecondaryText}" />
-                        </VerticalStackLayout>
-
-                        <Border Style="{StaticResource InnerGlassCard}">
-                            <Picker
-                                Title="Seleccionar comisión"
-                                ItemsSource="{Binding Comisiones}"
-                                SelectedItem="{Binding ComisionSeleccionada}"
-                                ItemDisplayBinding="{Binding Codigo}"
-                                TextColor="White"
-                                TitleColor="#A5B4FC"
-                                BackgroundColor="Transparent" />
-                        </Border>
-
-                        <Button
-                            Text="↻  Actualizar información"
-                            Command="{Binding RecargarCommand}"
-                            Style="{StaticResource SecondaryGlassButton}"
-                            HorizontalOptions="Fill" />
-
-                    </VerticalStackLayout>
-                </Border>
+                <controls:SelectorComision
+                    Subtitulo="Seleccioná la cursada con la que deseas trabajar."
+                    TituloPicker="Seleccionar comisión"
+                    TextoBoton="↻  Actualizar información" />
 
                 <!-- Topbar de pestañas -->
                 <Border
@@ -216,15 +184,10 @@
                             </CollectionView.ItemsLayout>
 
                             <CollectionView.EmptyView>
-                                <VerticalStackLayout
-                                    Padding="16"
-                                    Spacing="8"
-                                    HorizontalOptions="Center">
-                                    <Label
-                                        Text="No hay estudiantes para mostrar."
-                                        TextColor="{StaticResource TextoSecundario}"
-                                        HorizontalTextAlignment="Center" />
-                                </VerticalStackLayout>
+                                <controls:EstadoVacio
+                                    Text="No hay estudiantes para mostrar."
+                                    Margin="16"
+                                    HorizontalOptions="Center" />
                             </CollectionView.EmptyView>
 
                             <CollectionView.ItemTemplate>
@@ -343,15 +306,10 @@
                             </CollectionView.ItemsLayout>
 
                             <CollectionView.EmptyView>
-                                <VerticalStackLayout
-                                    Padding="16"
-                                    Spacing="8"
-                                    HorizontalOptions="Center">
-                                    <Label
-                                        Text="No hay estudiantes o trabajos para mostrar."
-                                        TextColor="{StaticResource TextoSecundario}"
-                                        HorizontalTextAlignment="Center" />
-                                </VerticalStackLayout>
+                                <controls:EstadoVacio
+                                    Text="No hay estudiantes o trabajos para mostrar."
+                                    Margin="16"
+                                    HorizontalOptions="Center" />
                             </CollectionView.EmptyView>
 
                             <CollectionView.ItemTemplate>

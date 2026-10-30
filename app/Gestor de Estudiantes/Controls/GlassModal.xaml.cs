@@ -10,13 +10,16 @@ namespace Gestor_de_Estudiantes.Controls;
 public partial class GlassModal : ContentView
 {
     public static readonly BindableProperty TituloProperty =
-        BindableProperty.Create(nameof(Titulo), typeof(string), typeof(GlassModal), string.Empty);
+        BindableProperty.Create(nameof(Titulo), typeof(string), typeof(GlassModal), string.Empty,
+            propertyChanged: (bindable, oldValue, newValue) => ((GlassModal)bindable).TituloLabel.Text = (string)newValue);
 
     public static readonly BindableProperty SubtituloProperty =
-        BindableProperty.Create(nameof(Subtitulo), typeof(string), typeof(GlassModal), string.Empty);
+        BindableProperty.Create(nameof(Subtitulo), typeof(string), typeof(GlassModal), string.Empty,
+            propertyChanged: (bindable, oldValue, newValue) => ((GlassModal)bindable).SubtituloLabel.Text = (string)newValue);
 
     public static readonly BindableProperty TextoConfirmarProperty =
-        BindableProperty.Create(nameof(TextoConfirmar), typeof(string), typeof(GlassModal), "Guardar");
+        BindableProperty.Create(nameof(TextoConfirmar), typeof(string), typeof(GlassModal), "Guardar",
+            propertyChanged: (bindable, oldValue, newValue) => ((GlassModal)bindable).ConfirmarButton.Text = (string)newValue);
 
     public static readonly BindableProperty FormularioProperty =
         BindableProperty.Create(nameof(Formulario), typeof(View), typeof(GlassModal),
@@ -24,26 +27,41 @@ public partial class GlassModal : ContentView
                 ((GlassModal)bindable).SlotFormulario.Content = newValue as View);
 
     public static readonly BindableProperty IconoProperty =
-        BindableProperty.Create(nameof(Icono), typeof(string), typeof(GlassModal), "＋");
+        BindableProperty.Create(nameof(Icono), typeof(string), typeof(GlassModal), "＋",
+            propertyChanged: (bindable, oldValue, newValue) => ((GlassModal)bindable).IconoLabel.Text = (string)newValue);
 
     public static readonly BindableProperty IconoFondoProperty =
         BindableProperty.Create(nameof(IconoFondo), typeof(Color), typeof(GlassModal),
-            Color.FromArgb("#302F2A75"));
+            Color.FromArgb("#302F2A75"),
+            propertyChanged: (bindable, oldValue, newValue) => ((GlassModal)bindable).IconoBorder.Background = (Color)newValue);
 
     public static readonly BindableProperty IconoBordeProperty =
         BindableProperty.Create(nameof(IconoBorde), typeof(Color), typeof(GlassModal),
-            Color.FromArgb("#505B5CF6"));
+            Color.FromArgb("#505B5CF6"),
+            propertyChanged: (bindable, oldValue, newValue) => ((GlassModal)bindable).IconoBorder.Stroke = (Color)newValue);
 
     public static readonly BindableProperty IconoColorProperty =
         BindableProperty.Create(nameof(IconoColor), typeof(Color), typeof(GlassModal),
-            Color.FromArgb("#C7D2FE"));
+            Color.FromArgb("#C7D2FE"),
+            propertyChanged: (bindable, oldValue, newValue) => ((GlassModal)bindable).IconoLabel.TextColor = (Color)newValue);
 
     public static readonly BindableProperty IconoTamanoProperty =
-        BindableProperty.Create(nameof(IconoTamano), typeof(double), typeof(GlassModal), 27d);
+        BindableProperty.Create(nameof(IconoTamano), typeof(double), typeof(GlassModal), 27d,
+            propertyChanged: (bindable, oldValue, newValue) => ((GlassModal)bindable).IconoLabel.FontSize = (double)newValue);
 
     public GlassModal()
     {
         InitializeComponent();
+
+        // Aplicar los valores por defecto (propertyChanged no se dispara hasta que cambien).
+        TituloLabel.Text = Titulo;
+        SubtituloLabel.Text = Subtitulo;
+        ConfirmarButton.Text = TextoConfirmar;
+        IconoLabel.Text = Icono;
+        IconoBorder.Background = IconoFondo;
+        IconoBorder.Stroke = IconoBorde;
+        IconoLabel.TextColor = IconoColor;
+        IconoLabel.FontSize = IconoTamano;
     }
 
     public string Titulo

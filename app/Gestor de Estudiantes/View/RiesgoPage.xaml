@@ -3,6 +3,7 @@
     x:Class="Gestor_de_Estudiantes.Views.RiesgoPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:Gestor_de_Estudiantes.Controls"
     Title="Indicador de riesgo"
     BackgroundColor="#090D18">
 
@@ -120,18 +121,14 @@
                 <CollectionView
                     Grid.Row="1"
                     ItemsSource="{Binding Estudiantes}"
-                    SelectionMode="None"
-                    EmptyView="No hay estudiantes para mostrar en esta comisión.">
+                    SelectionMode="None">
 
-                    <CollectionView.EmptyViewTemplate>
-                        <DataTemplate>
-                            <Label
-                                Text="No hay estudiantes para mostrar en esta comisión."
-                                TextColor="#94A3B8"
-                                HorizontalTextAlignment="Center"
-                                Margin="20" />
-                        </DataTemplate>
-                    </CollectionView.EmptyViewTemplate>
+                    <CollectionView.EmptyView>
+                        <controls:EstadoVacio
+                            Text="No hay estudiantes para mostrar en esta comisión."
+                            ColorTexto="#94A3B8"
+                            Margin="20" />
+                    </CollectionView.EmptyView>
 
                     <CollectionView.ItemTemplate>
                         <DataTemplate>

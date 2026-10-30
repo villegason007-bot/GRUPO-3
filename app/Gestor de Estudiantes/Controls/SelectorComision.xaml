@@ -2,8 +2,7 @@
 <ContentView
     x:Class="Gestor_de_Estudiantes.Controls.SelectorComision"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Name="Raiz">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <!-- Tarjeta "Comisión activa" con el picker de comisión y el botón de refresco.
          Los elementos (Comisiones, ComisionSeleccionada, RecargarCommand) se
@@ -22,13 +21,13 @@
                     Text="Comisión activa"
                     Style="{StaticResource SectionTitle}" />
                 <Label
-                    Text="{Binding Subtitulo, Source={x:Reference Raiz}}"
+                    x:Name="SubtituloLabel"
                     Style="{StaticResource SecondaryText}" />
             </VerticalStackLayout>
 
             <Border Style="{StaticResource InnerGlassCard}">
                 <Picker
-                    Title="{Binding TituloPicker, Source={x:Reference Raiz}}"
+                    x:Name="ComisionPicker"
                     ItemsSource="{Binding Comisiones}"
                     SelectedItem="{Binding ComisionSeleccionada}"
                     ItemDisplayBinding="{Binding Codigo}"
@@ -38,7 +37,7 @@
             </Border>
 
             <Button
-                Text="{Binding TextoBoton, Source={x:Reference Raiz}}"
+                x:Name="ActualizarButton"
                 Command="{Binding RecargarCommand}"
                 Style="{StaticResource SecondaryGlassButton}"
                 HorizontalOptions="Fill" />

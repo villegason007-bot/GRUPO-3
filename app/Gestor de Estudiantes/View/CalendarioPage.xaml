@@ -3,6 +3,7 @@
     x:Class="Gestor_de_Estudiantes.Views.CalendarioPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:Gestor_de_Estudiantes.Controls"
     BackgroundColor="#090D18">
 
 
@@ -83,43 +84,10 @@
                 </Grid>
 
                 <!-- Comisión activa -->
-                <Border Style="{StaticResource GlassCard}">
-                    <VerticalStackLayout Spacing="14">
-
-                        <VerticalStackLayout Spacing="4">
-                            <Label
-                                Text="01 / COMISIÓN"
-                                FontSize="10"
-                                FontAttributes="Bold"
-                                CharacterSpacing="1.5"
-                                TextColor="#A5B4FC" />
-                            <Label
-                                Text="Comisión activa"
-                                Style="{StaticResource SectionTitle}" />
-                            <Label
-                                Text="Seleccioná una comisión para ver su agenda."
-                                Style="{StaticResource SecondaryText}" />
-                        </VerticalStackLayout>
-
-                        <Border Style="{StaticResource InnerGlassCard}">
-                            <Picker
-                                Title="Seleccioná una comisión"
-                                ItemsSource="{Binding Comisiones}"
-                                SelectedItem="{Binding ComisionSeleccionada}"
-                                ItemDisplayBinding="{Binding Codigo}"
-                                TextColor="White"
-                                TitleColor="#A5B4FC"
-                                BackgroundColor="Transparent" />
-                        </Border>
-
-                        <Button
-                            Text="↻  Actualizar calendario"
-                            Command="{Binding RecargarCommand}"
-                            Style="{StaticResource SecondaryGlassButton}"
-                            HorizontalOptions="Fill" />
-
-                    </VerticalStackLayout>
-                </Border>
+                <controls:SelectorComision
+                    Subtitulo="Seleccioná una comisión para ver su agenda."
+                    TituloPicker="Seleccioná una comisión"
+                    TextoBoton="↻  Actualizar calendario" />
 
                 <!-- Topbar -->
                 <Border
