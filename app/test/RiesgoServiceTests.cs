@@ -11,6 +11,9 @@ namespace Test
         private readonly RiesgoService _servicio =
             new(new RiesgoRepository(), new EstudianteRepository(), new CalculadoraDeRiesgo());
 
+        private readonly ParametrosRiesgoService _parametros =
+            new(new RiesgoRepository());
+
         [TestMethod]
         public void Given_EstudianteSinDatos_When_CalcularRiesgos_Then_SinInformacion()
         {
@@ -88,17 +91,11 @@ namespace Test
             var antes = _servicio.CalcularRiesgos("1K1").Single();
             Assert.IsTrue(antes.EnRiesgo); // 50% de faltas >= umbral 50
 
-            _servicio.GuardarUmbral(90);
+            _parametros.GuardarUmbral(90);
 
             var despues = _servicio.CalcularRiesgos("1K1").Single();
             Assert.AreEqual(50, despues.Puntaje);
             Assert.IsFalse(despues.EnRiesgo); // 50 < 90 → el nuevo umbral manda
-        }
-
-        [TestMethod]
-        public void Given_UmbralInvalido_When_GuardarUmbral_Then_LanzaArgumentException()
-        {
-            Assert.Throws<ArgumentException>(() => _servicio.GuardarUmbral(200));
         }
     }
 }

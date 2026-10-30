@@ -50,6 +50,13 @@ namespace Gestor_de_Estudiantes.Services
                     "La fecha de la clase es obligatoria.");
             }
 
+            // QA002: la misma comisión no puede tener dos clases el mismo día.
+            if (_clases.ExisteClaseEnFecha(codigoComision.Trim(), fecha.Date))
+            {
+                throw new InvalidOperationException(
+                    $"Ya hay una clase registrada el {fecha.Date:dd/MM/yyyy} en la comisión {codigoComision.Trim()}.");
+            }
+
             var clase = new Clase
             {
                 Fecha = fecha.Date,

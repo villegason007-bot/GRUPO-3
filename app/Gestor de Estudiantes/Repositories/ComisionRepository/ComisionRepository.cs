@@ -40,48 +40,15 @@ namespace Gestor_de_Estudiantes.Repositories
             comando.ExecuteNonQuery();
         }
 
-        /// <summary>Indica si ya existe una comisión con ese código.</summary>
+        /// <summary>Indica si ya existe una comisión con ese código, sin distinguir mayúsculas (QA002: '1k1' ≡ '1K1').</summary>
         public bool ExisteComision(string codigo)
         {
             using var conexion = BaseDeDatos.Abrir();
             using var comando = conexion.CreateCommand();
-            comando.CommandText = "SELECT COUNT(*) FROM comisiones WHERE codigo = @codigo;";
+            comando.CommandText =
+                "SELECT COUNT(*) FROM comisiones WHERE codigo COLLATE NOCASE = @codigo;";
             comando.Parameters.AddWithValue("@codigo", codigo);
             return Convert.ToInt64(comando.ExecuteScalar()) > 0;
-        }
-
-        /// <summary>
-        /// Une por fecha las clases (con su estado) y los trabajos (con su
-        /// título) de la comisión, para el calendario (H2, Escenario 3).
-        /// </summary>
-        public List<ElementoCalendario> VerCalendario(string codigoComision)
-        {
-            using var conexion = BaseDeDatos.Abrir();
-            using var comando = conexion.CreateCommand();
-            comando.CommandText = """
-                SELECT fecha, 'Clase', estado
-                FROM clases c
-                INNER JOIN comisiones com ON com.id = c.comision_id
-                WHERE com.codigo = @codigo
-                UNION ALL
-                SELECT fecha_entrega, 'Trabajo', titulo
-                FROM trabajos t
-                INNER JOIN comisiones com ON com.id = t.comision_id
-                WHERE com.codigo = @codigo
-                ORDER BY 1;
-                """;
-            comando.Parameters.AddWithValue("@codigo", codigoComision);
-
-            var elementos = new List<ElementoCalendario>();
-            using var lector = comando.ExecuteReader();
-            while (lector.Read())
-                elementos.Add(new ElementoCalendario
-                {
-                    Fecha = lector.GetDateTime(0),
-                    Tipo = lector.GetString(1),
-                    Detalle = lector.GetString(2),
-                });
-            return elementos;
         }
     }
 }

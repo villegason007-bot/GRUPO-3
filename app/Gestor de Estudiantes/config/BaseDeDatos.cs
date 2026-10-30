@@ -102,6 +102,17 @@ namespace Gestor_de_Estudiantes.Config
                     clave TEXT PRIMARY KEY,
                     valor REAL NOT NULL
                 );
+
+                CREATE TABLE IF NOT EXISTS materias (
+                    id TEXT PRIMARY KEY,
+                    nombre TEXT NOT NULL COLLATE NOCASE UNIQUE
+                );
+
+                CREATE TABLE IF NOT EXISTS materia_comision (
+                    materia_id TEXT NOT NULL REFERENCES materias(id),
+                    comision_id TEXT NOT NULL REFERENCES comisiones(id),
+                    PRIMARY KEY (materia_id, comision_id)
+                );
                 """;
             esquema.ExecuteNonQuery();
 
@@ -112,6 +123,10 @@ namespace Gestor_de_Estudiantes.Config
                 "ALTER TABLE estudiantes ADD COLUMN activo INTEGER NOT NULL DEFAULT 1;",
                 $"ALTER TABLE comisiones ADD COLUMN semanas INTEGER NOT NULL DEFAULT {Comision.SemanasPorDefecto};",
                 "ALTER TABLE clases ADD COLUMN estado TEXT NOT NULL DEFAULT 'Habil';",
+                // QA002: '1k1' no debe chocar con '1K1'. El índice único
+                // sin distinguir caja se agrega después del esquema porque
+                // en bases viejas la columna UNIQUE era case-sensitive.
+                "CREATE UNIQUE INDEX IF NOT EXISTS ux_comisiones_codigo_nocase ON comisiones(codigo COLLATE NOCASE);",
             };
 
             foreach (var migracion in migraciones)

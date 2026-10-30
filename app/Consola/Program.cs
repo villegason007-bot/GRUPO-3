@@ -17,6 +17,8 @@ var repositorioTrabajos = new TrabajoRepository();
 var repositorioAsistencias = new AsistenciaRepository();
 var repositorioEntregas = new EntregaRepository();
 var servicioRiesgos = new RiesgoService(new RiesgoRepository(), new EstudianteRepository(), new CalculadoraDeRiesgo());
+var servicioParametros = new ParametrosRiesgoService(new RiesgoRepository());
+var servicioCalendario = new CalendarioService(new CalendarioRepository());
 
 while (true)
 {
@@ -154,7 +156,7 @@ void MenuComisiones()
                     Console.WriteLine($"Agregada: {agregada.Codigo} ({agregada.Semanas} semanas)");
                     break;
                 case "3":
-                    var calendario = servicioComisiones.VerCalendario(ComisionActiva);
+                    var calendario = servicioCalendario.VerCalendario(ComisionActiva);
                     Console.WriteLine();
                     Console.WriteLine($"{"Fecha",-12}{"Tipo",-10}Detalle");
                     Console.WriteLine(new string('-', 56));
@@ -492,16 +494,16 @@ void MenuRiesgos()
                         Console.WriteLine($"{resultado.Legajo,-12}{resultado.Nombre,-24}{riesgo,-16}{detalle}");
                     }
                     Console.WriteLine(new string('-', 78));
-                    Console.WriteLine($"Total: {resultados.Count} · Umbral: {servicioRiesgos.ObtenerUmbral():0.#}");
+                    Console.WriteLine($"Total: {resultados.Count} · Umbral: {servicioParametros.ObtenerUmbral():0.#}");
                     break;
                 case "2":
-                    Console.Write($"Umbral actual: {servicioRiesgos.ObtenerUmbral():0.#}. Nuevo umbral (0-100): ");
+                    Console.Write($"Umbral actual: {servicioParametros.ObtenerUmbral():0.#}. Nuevo umbral (0-100): ");
                     if (!double.TryParse(Console.ReadLine(), out var umbral))
                     {
                         Console.WriteLine("Valor inválido.");
                         break;
                     }
-                    servicioRiesgos.GuardarUmbral(umbral);
+                    servicioParametros.GuardarUmbral(umbral);
                     Console.WriteLine("Umbral actualizado.");
                     break;
                 case "0":

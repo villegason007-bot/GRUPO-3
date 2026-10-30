@@ -21,5 +21,13 @@ namespace Gestor_de_Estudiantes.Repositories
         /// <param name="estado">Nuevo estado.</param>
         /// <returns>true si la clase existía y se actualizó.</returns>
         bool MarcarEstado(Guid claseId, EstadoClase estado);
+
+        /// <summary>
+        /// Indica si la comisión ya tiene una clase en esa fecha (QA002:
+        /// evita registrar dos veces el mismo día).
+        /// </summary>
+        /// <param name="codigoComision">Código de la comisión.</param>
+        /// <param name="fecha">Fecha a verificar (se compara por día).</param>
+        bool ExisteClaseEnFecha(string codigoComision, DateTime fecha);
     }
 }

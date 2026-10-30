@@ -4,8 +4,7 @@ using Gestor_de_Estudiantes.Repositories;
 namespace Gestor_de_Estudiantes.Services
 {
     /// <summary>
-    /// Fachada de comisiones (H1/H2): alta de comisiones, listado y
-    /// consulta del calendario unificado de la comisión.
+    /// Fachada de comisiones (H1): alta de comisiones y listado.
     /// </summary>
     public class ComisionService : IComisionService
     {
@@ -20,14 +19,6 @@ namespace Gestor_de_Estudiantes.Services
         /// <summary>Devuelve todas las comisiones ordenadas por código.</summary>
         public List<Comision> ListarComisiones()
             => _comisiones.ListarComisiones();
-
-        /// <summary>
-        /// Devuelve el calendario de la comisión: clases y trabajos unidos
-        /// por fecha (H2, Escenario 3).
-        /// </summary>
-        /// <param name="codigoComision">Código de la comisión.</param>
-        public List<ElementoCalendario> VerCalendario(string codigoComision)
-            => _comisiones.VerCalendario(codigoComision);
 
         /// <summary>
         /// Crea una comisión validando código y semanas (H1).
