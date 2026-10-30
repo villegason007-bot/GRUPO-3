@@ -113,6 +113,14 @@ namespace Gestor_de_Estudiantes.Config
                     comision_id TEXT NOT NULL REFERENCES comisiones(id),
                     PRIMARY KEY (materia_id, comision_id)
                 );
+
+                CREATE TABLE IF NOT EXISTS contactos (
+                    id TEXT PRIMARY KEY,
+                    estudiante_id TEXT NOT NULL REFERENCES estudiantes(id),
+                    fecha TEXT NOT NULL,
+                    medio TEXT NOT NULL CHECK (medio IN ('Llamada', 'Mensaje')),
+                    resultado TEXT NOT NULL CHECK (resultado IN ('Contesto', 'QuedoEnVeremos', 'SinRespuesta'))
+                );
                 """;
             esquema.ExecuteNonQuery();
 

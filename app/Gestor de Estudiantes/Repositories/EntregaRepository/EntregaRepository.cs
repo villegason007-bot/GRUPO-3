@@ -84,6 +84,37 @@ namespace Gestor_de_Estudiantes.Repositories
             return entregas;
         }
 
+        /// <summary>
+        /// Devuelve el historial de entregas del estudiante (H13): todos
+        /// los trabajos de su comisión con su estado de entrega.
+        /// </summary>
+        public List<(string Titulo, DateTime FechaDeEntrega, bool Entregado, DateTime? Fecha)> ListarHistorialDeEstudiante(Guid estudianteId)
+        {
+            using var conexion = BaseDeDatos.Abrir();
+            using var comando = conexion.CreateCommand();
+            comando.CommandText = """
+                SELECT t.titulo, t.fecha_entrega,
+                       COALESCE(en.entregado, 0), en.fecha
+                FROM trabajos t
+                INNER JOIN comisiones com ON com.id = t.comision_id
+                INNER JOIN estudiantes e ON e.comision_id = com.id
+                LEFT JOIN entregas en ON en.trabajo_id = t.id AND en.estudiante_id = e.id
+                WHERE e.id = @estudianteId
+                ORDER BY t.fecha_entrega;
+                """;
+            comando.Parameters.AddWithValue("@estudianteId", estudianteId.ToString("D"));
+
+            var historial = new List<(string Titulo, DateTime FechaDeEntrega, bool Entregado, DateTime? Fecha)>();
+            using var lector = comando.ExecuteReader();
+            while (lector.Read())
+                historial.Add((
+                    lector.GetString(0),
+                    lector.GetDateTime(1),
+                    lector.GetInt64(2) != 0,
+                    lector.IsDBNull(3) ? null : lector.GetDateTime(3)));
+            return historial;
+        }
+
         private static Entrega Mapear(SqliteDataReader lector) => new Entrega
         {
             Id = Guid.Parse(lector.GetString(0)),

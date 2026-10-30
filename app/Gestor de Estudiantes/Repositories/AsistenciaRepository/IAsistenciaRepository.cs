@@ -25,5 +25,13 @@ namespace Gestor_de_Estudiantes.Repositories
         /// <summary>Devuelve todas las asistencias de un estudiante, ordenadas por clase.</summary>
         /// <param name="estudianteId">Estudiante a consultar.</param>
         List<Asistencia> ListarPorEstudiante(Guid estudianteId);
+
+        /// <summary>
+        /// Devuelve el historial de asistencia del estudiante (H12): la
+        /// fecha de cada clase con registro y la condición (presente o
+        /// ausente), ordenado por fecha.
+        /// </summary>
+        /// <param name="estudianteId">Estudiante a consultar.</param>
+        List<(DateTime Fecha, Condicion Condicion)> ListarHistorialDeEstudiante(Guid estudianteId);
     }
 }

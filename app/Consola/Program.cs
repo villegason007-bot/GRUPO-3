@@ -16,7 +16,7 @@ var repositorioClases = new ClaseRepository();
 var repositorioTrabajos = new TrabajoRepository();
 var repositorioAsistencias = new AsistenciaRepository();
 var repositorioEntregas = new EntregaRepository();
-var servicioRiesgos = new RiesgoService(new RiesgoRepository(), new EstudianteRepository(), new CalculadoraDeRiesgo());
+var servicioRiesgos = new RiesgoService(new RiesgoRepository(), new EstudianteRepository(), new CalculadoraDeRiesgo(), new ContactoRepository());
 var servicioParametros = new ParametrosRiesgoService(new RiesgoRepository());
 var servicioCalendario = new CalendarioService(new CalendarioRepository());
 

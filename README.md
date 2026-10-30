@@ -36,9 +36,11 @@ Un panel para que quien sigue una comisión sepa a qué estudiantes contactar es
 | H6 | Calcular el riesgo de cada estudiante a partir de asistencia y entregas | Implementada |
 | H7 | Configurar los umbrales del cálculo sin tocar el código | Implementada |
 | H8 | Ver la comisión ordenada por riesgo, con el detalle que justifica cada valor | Implementada |
-| H9 | Ver la ficha de un estudiante con su historial | Pendiente |
-| H10 | Registrar un contacto con un estudiante y su resultado | Pendiente |
-| H11 | Que el panel muestre a quién ya se contactó y cuándo | Pendiente |
+| H9 | Ver la ficha de un estudiante con su historial | Implementada |
+| H10 | Registrar un contacto con un estudiante y su resultado | Implementada |
+| H11 | Que el panel muestre a quién ya se contactó y cuándo | Implementada |
+| H12 | Consultar el historial de asistencia de un estudiante | Implementada |
+| H13 | Consultar el historial de entregas y el indicador de riesgo de un estudiante | Implementada |
 
 ## Casos de uso
 

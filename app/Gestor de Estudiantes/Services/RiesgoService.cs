@@ -13,22 +13,26 @@ namespace Gestor_de_Estudiantes.Services
         private readonly IRiesgoRepository _riesgos;
         private readonly IEstudianteRepository _estudiantes;
         private readonly ICalculadoraDeRiesgo _calculadora;
+        private readonly IContactoRepository _contactos;
 
-        /// <summary>Crea el servicio con los repositorios de riesgo y estudiantes y la calculadora.</summary>
+        /// <summary>Crea el servicio con los repositorios de riesgo, estudiantes, contactos y la calculadora.</summary>
         public RiesgoService(
             IRiesgoRepository riesgos,
             IEstudianteRepository estudiantes,
-            ICalculadoraDeRiesgo calculadora)
+            ICalculadoraDeRiesgo calculadora,
+            IContactoRepository contactos)
         {
             _riesgos = riesgos;
             _estudiantes = estudiantes;
             _calculadora = calculadora;
+            _contactos = contactos;
         }
 
         /// <summary>
         /// Calcula el riesgo de todos los estudiantes activos de la
         /// comisión (H8): recorre la nómina y, por cada uno, delega en
-        /// <see cref="CalcularRiesgoDe"/>.
+        /// <see cref="CalcularRiesgoDe(Estudiante, string, double, int, int)"/>
+        /// y agrega la fecha del último contacto (H11).
         /// </summary>
         /// <param name="codigoComision">Comisión a evaluar.</param>
         /// <returns>Un <see cref="ResultadoRiesgo"/> por estudiante, en el orden de la nómina.</returns>
@@ -40,20 +44,61 @@ namespace Gestor_de_Estudiantes.Services
             var maxTrabajos =
                 _riesgos.ObtenerMaxTrabajosNoEntregadosPermitidos();
 
+            // H11: último contacto por estudiante, para el panel.
+            var ultimosContactos =
+                _contactos.UltimoContactoPorEstudiante(codigoComision);
+
             var resultados = new List<ResultadoRiesgo>();
 
             foreach (var estudiante in
                      _estudiantes.ListarEstudiantes(codigoComision))
             {
-                resultados.Add(CalcularRiesgoDe(
+                var resultado = CalcularRiesgoDe(
                     estudiante,
                     codigoComision,
                     umbral,
                     maxFaltas,
-                    maxTrabajos));
+                    maxTrabajos);
+
+                resultado.FechaUltimoContacto =
+                    ultimosContactos.TryGetValue(estudiante.Id, out var contacto)
+                        ? contacto.Fecha
+                        : null;
+
+                resultados.Add(resultado);
             }
 
             return resultados;
+        }
+
+        /// <summary>
+        /// Calcula el riesgo individual de un estudiante por su legajo
+        /// (H13), incluyendo su último contacto (H11).
+        /// </summary>
+        /// <exception cref="ArgumentException">Si el legajo está vacío.</exception>
+        /// <exception cref="InvalidOperationException">Si no existe el estudiante.</exception>
+        public ResultadoRiesgo CalcularRiesgoDe(string legajo)
+        {
+            legajo = (legajo ?? string.Empty).Trim();
+
+            if (legajo.Length == 0)
+                throw new ArgumentException("El legajo es obligatorio.");
+
+            var estudiante = _estudiantes.BuscarEstudiante(legajo)
+                ?? throw new InvalidOperationException(
+                    $"No existe el estudiante {legajo}.");
+
+            var resultado = CalcularRiesgoDe(
+                estudiante,
+                estudiante.CodigoComision,
+                _riesgos.ObtenerUmbral(),
+                _riesgos.ObtenerMaxFaltasPermitidas(),
+                _riesgos.ObtenerMaxTrabajosNoEntregadosPermitidos());
+
+            var contacto = _contactos.UltimoContacto(estudiante.Id);
+            resultado.FechaUltimoContacto = contacto?.Fecha;
+
+            return resultado;
         }
 
         /// <summary>

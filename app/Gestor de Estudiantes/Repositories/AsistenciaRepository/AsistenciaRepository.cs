@@ -92,6 +92,27 @@ namespace Gestor_de_Estudiantes.Repositories
             return asistencias;
         }
 
+        /// <summary>Devuelve el historial de asistencia del estudiante (H12): fecha de cada clase con registro y condición.</summary>
+        public List<(DateTime Fecha, Condicion Condicion)> ListarHistorialDeEstudiante(Guid estudianteId)
+        {
+            using var conexion = BaseDeDatos.Abrir();
+            using var comando = conexion.CreateCommand();
+            comando.CommandText = """
+                SELECT c.fecha, a.condicion
+                FROM asistencias a
+                INNER JOIN clases c ON c.id = a.clase_id
+                WHERE a.estudiante_id = @estudianteId
+                ORDER BY c.fecha;
+                """;
+            comando.Parameters.AddWithValue("@estudianteId", estudianteId.ToString("D"));
+
+            var historial = new List<(DateTime Fecha, Condicion Condicion)>();
+            using var lector = comando.ExecuteReader();
+            while (lector.Read())
+                historial.Add((lector.GetDateTime(0), Enum.Parse<Condicion>(lector.GetString(1))));
+            return historial;
+        }
+
         private static Asistencia Mapear(SqliteDataReader lector) => new Asistencia
         {
             Id = Guid.Parse(lector.GetString(0)),

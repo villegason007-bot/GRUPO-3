@@ -56,6 +56,15 @@ namespace Gestor_de_Estudiantes
 
             builder.Services.AddTransient<IMateriaService, MateriaService>();
 
+            // Contactos, ficha e historiales (H9-H13)
+            builder.Services.AddSingleton<
+                IContactoRepository,
+                ContactoRepository>();
+
+            builder.Services.AddTransient<IContactoService, ContactoService>();
+            builder.Services.AddTransient<IFichaService, FichaService>();
+            builder.Services.AddTransient<IHistorialService, HistorialService>();
+
             // Clases
             builder.Services.AddSingleton<
                 IClaseRepository,
