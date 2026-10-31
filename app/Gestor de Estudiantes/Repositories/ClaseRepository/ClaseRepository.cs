@@ -59,6 +59,23 @@ namespace Gestor_de_Estudiantes.Repositories
             return comando.ExecuteNonQuery() > 0;
         }
 
+        /// <summary>Indica si la comisión ya tiene una clase en esa fecha (QA002).</summary>
+        public bool ExisteClaseEnFecha(string codigoComision, DateTime fecha)
+        {
+            using var conexion = BaseDeDatos.Abrir();
+            using var comando = conexion.CreateCommand();
+            comando.CommandText = """
+                SELECT COUNT(*)
+                FROM clases c
+                INNER JOIN comisiones com ON com.id = c.comision_id
+                WHERE com.codigo COLLATE NOCASE = @codigo
+                  AND date(c.fecha) = date(@fecha);
+                """;
+            comando.Parameters.AddWithValue("@codigo", codigoComision);
+            comando.Parameters.AddWithValue("@fecha", fecha.Date);
+            return Convert.ToInt64(comando.ExecuteScalar()) > 0;
+        }
+
         /// <summary>
         /// Lee el estado de una clase sobre una conexión ya abierta; si la
         /// fila no existe asume Habil. Lo usan otros repositorios (por

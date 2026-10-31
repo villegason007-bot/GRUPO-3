@@ -24,5 +24,8 @@
 
         /// <summary>Fecha de incorporación a la comisión, como texto (opcional, nullable).</summary>
         public string? FechaIncorporacion { get; set; }
+
+        /// <summary>Código de la comisión en la que está inscripto (para la ficha, H9).</summary>
+        public string CodigoComision { get; set; } = string.Empty;
     }
 }

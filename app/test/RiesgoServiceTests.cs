@@ -9,7 +9,10 @@ namespace Test
     public sealed class RiesgoServiceTests : RepositorioTestBase
     {
         private readonly RiesgoService _servicio =
-            new(new RiesgoRepository(), new EstudianteRepository(), new CalculadoraDeRiesgo());
+            new(new RiesgoRepository(), new EstudianteRepository(), new CalculadoraDeRiesgo(), new ContactoRepository());
+
+        private readonly ParametrosRiesgoService _parametros =
+            new(new RiesgoRepository());
 
         [TestMethod]
         public void Given_EstudianteSinDatos_When_CalcularRiesgos_Then_SinInformacion()
@@ -88,7 +91,7 @@ namespace Test
             var antes = _servicio.CalcularRiesgos("1K1").Single();
             Assert.IsTrue(antes.EnRiesgo); // 50% de faltas >= umbral 50
 
-            _servicio.GuardarUmbral(90);
+            _parametros.GuardarUmbral(90);
 
             var despues = _servicio.CalcularRiesgos("1K1").Single();
             Assert.AreEqual(50, despues.Puntaje);
@@ -96,9 +99,77 @@ namespace Test
         }
 
         [TestMethod]
-        public void Given_UmbralInvalido_When_GuardarUmbral_Then_LanzaArgumentException()
+        public void Given_EstudianteSinContactos_When_CalcularRiesgos_Then_SinContactar()
         {
-            Assert.Throws<ArgumentException>(() => _servicio.GuardarUmbral(200));
+            CrearEstudiante();
+
+            var resultado = _servicio.CalcularRiesgos("1K1").Single();
+
+            Assert.IsTrue(resultado.SinContactar);
+            Assert.IsNull(resultado.FechaUltimoContacto);
+            Assert.AreEqual("Sin contactar", resultado.TextoUltimoContacto);
+        }
+
+        [TestMethod]
+        public void Given_EstudianteContactado_When_CalcularRiesgos_Then_TieneLaFechaDelUltimoContacto()
+        {
+            var estudianteId = CrearEstudiante();
+            new ContactoRepository().RegistrarContacto(new Contacto
+            {
+                EstudianteId = estudianteId,
+                Fecha = DateTime.Today.AddDays(-1),
+                Medio = MedioContacto.Llamada,
+                Resultado = ResultadoContacto.Contesto,
+            });
+
+            var resultado = _servicio.CalcularRiesgos("1K1").Single();
+
+            Assert.IsFalse(resultado.SinContactar);
+            Assert.AreEqual(DateTime.Today.AddDays(-1), resultado.FechaUltimoContacto);
+        }
+
+        [TestMethod]
+        public void Given_EstudianteSinDatos_When_CalcularRiesgoDe_Then_SinInformacion()
+        {
+            CrearEstudiante();
+
+            var resultado = _servicio.CalcularRiesgoDe("9001");
+
+            Assert.IsTrue(resultado.SinInformacion);
+            Assert.AreEqual("9001", resultado.Legajo);
+        }
+
+        [TestMethod]
+        public void Given_EstudianteConFaltas_When_CalcularRiesgoDe_Then_DevuelvePuntaje()
+        {
+            var estudianteId = CrearEstudiante();
+            var repositorioAsistencias = new AsistenciaRepository();
+            var claseId = CrearClase();
+            repositorioAsistencias.RegistrarAsistencia(new Asistencia
+            {
+                ClaseId = claseId,
+                EstudianteId = estudianteId,
+                Condicion = Condicion.Ausente,
+            });
+
+            var resultado = _servicio.CalcularRiesgoDe("9001");
+
+            Assert.AreEqual(100, resultado.Puntaje); // 1/1 = 100% de faltas
+            Assert.IsTrue(resultado.EnRiesgo);
+        }
+
+        [TestMethod]
+        public void Given_LegajoInexistente_When_CalcularRiesgoDe_Then_LanzaInvalidOperationException()
+        {
+            Assert.Throws<InvalidOperationException>(() =>
+                _servicio.CalcularRiesgoDe("0000"));
+        }
+
+        [TestMethod]
+        public void Given_LegajoVacio_When_CalcularRiesgoDe_Then_LanzaArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() =>
+                _servicio.CalcularRiesgoDe("  "));
         }
     }
 }

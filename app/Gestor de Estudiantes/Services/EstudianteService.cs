@@ -44,7 +44,7 @@ namespace Gestor_de_Estudiantes.Services
         /// <param name="nombre">Nombre del estudiante (obligatorio).</param>
         /// <param name="codigoComision">Comisión en la que se incorpora.</param>
         /// <returns>El estudiante creado.</returns>
-        /// <exception cref="ArgumentException">Si legajo o nombre están vacíos.</exception>
+        /// <exception cref="ArgumentException">Si legajo o nombre están vacíos, o el legajo tiene símbolos o espacios.</exception>
         /// <exception cref="InvalidOperationException">Si ya existe un estudiante con ese legajo.</exception>
         public Estudiante AgregarEstudiante(string legajo, string nombre, string codigoComision)
         {
@@ -53,6 +53,9 @@ namespace Gestor_de_Estudiantes.Services
 
             if (legajo.Length == 0 || nombre.Length == 0)
                 throw new ArgumentException("Legajo y nombre son obligatorios.");
+            // QA002: el legajo es alfanumérico ('abc!' o 'a b' no sirven).
+            if (!legajo.All(char.IsLetterOrDigit))
+                throw new ArgumentException("El legajo solo puede contener letras y números.");
             if (_estudiantes.BuscarEstudiante(legajo) is not null)
                 throw new InvalidOperationException($"Ya existe un estudiante con legajo {legajo}.");
 
