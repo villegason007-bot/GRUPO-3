@@ -19,16 +19,16 @@ namespace Gestor_de_Estudiantes.Repositories
             using var conexion = BaseDeDatos.Abrir();
             using var comando = conexion.CreateCommand();
             comando.CommandText = """
-                SELECT fecha, 'Clase', estado
+                SELECT fecha, 'CLASE', 'Clase', 'Estado: ' || estado
                 FROM clases c
                 INNER JOIN comisiones com ON com.id = c.comision_id
                 WHERE com.codigo = @codigo
                 UNION ALL
-                SELECT fecha_entrega, 'Trabajo', titulo
+                SELECT fecha_entrega, 'TRABAJO', titulo, 'Fecha de entrega'
                 FROM trabajos t
                 INNER JOIN comisiones com ON com.id = t.comision_id
                 WHERE com.codigo = @codigo
-                ORDER BY 1;
+                ORDER BY 1, 2;
                 """;
             comando.Parameters.AddWithValue("@codigo", codigoComision);
 
@@ -39,7 +39,8 @@ namespace Gestor_de_Estudiantes.Repositories
                 {
                     Fecha = lector.GetDateTime(0),
                     Tipo = lector.GetString(1),
-                    Detalle = lector.GetString(2),
+                    Titulo = lector.GetString(2),
+                    Detalle = lector.GetString(3),
                 });
             return elementos;
         }

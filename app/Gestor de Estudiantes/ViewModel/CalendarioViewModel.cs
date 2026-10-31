@@ -12,7 +12,7 @@ namespace Gestor_de_Estudiantes.ViewModel
         private readonly IComisionService _comisionService;
         private readonly IClaseService _claseService;
         private readonly ITrabajoService _trabajoService;
-        private readonly ConstructorDeEventosDeCalendario _constructorDeEventos;
+        private readonly ICalendarioService _calendarioService;
 
         private Comision? _comisionSeleccionada;
         private DateTime _fechaClase = DateTime.Today;
@@ -23,7 +23,7 @@ namespace Gestor_de_Estudiantes.ViewModel
 
         public ObservableCollection<Comision> Comisiones { get; } = new();
 
-        public ObservableCollection<EventoCalendario> Eventos { get; } = new();
+        public ObservableCollection<ElementoCalendario> Eventos { get; } = new();
 
         public Comision? ComisionSeleccionada
         {
@@ -79,12 +79,12 @@ namespace Gestor_de_Estudiantes.ViewModel
             IComisionService comisionService,
             IClaseService claseService,
             ITrabajoService trabajoService,
-            ConstructorDeEventosDeCalendario constructorDeEventos)
+            ICalendarioService calendarioService)
         {
             _comisionService = comisionService;
             _claseService = claseService;
             _trabajoService = trabajoService;
-            _constructorDeEventos = constructorDeEventos;
+            _calendarioService = calendarioService;
 
             RecargarCommand = new Command(CargarCalendario);
             RegistrarClaseCommand = new Command(RegistrarClase);
@@ -143,13 +143,11 @@ namespace Gestor_de_Estudiantes.ViewModel
             {
                 var codigo = ComisionSeleccionada.Codigo;
 
-                var eventos = _constructorDeEventos.Construir(
-                    _claseService.ListarClases(codigo),
-                    _trabajoService.ListarTrabajos(codigo));
-
-                foreach (var evento in eventos)
+                // Única fuente del calendario: el service une clases y
+                // trabajos por fecha (antes lo duplicaba el ViewModel).
+                foreach (var elemento in _calendarioService.VerCalendario(codigo))
                 {
-                    Eventos.Add(evento);
+                    Eventos.Add(elemento);
                 }
 
                 NotificarSinEventos();
@@ -245,16 +243,5 @@ namespace Gestor_de_Estudiantes.ViewModel
                 this,
                 new PropertyChangedEventArgs(nombre));
         }
-    }
-
-    public class EventoCalendario
-    {
-        public DateTime Fecha { get; set; }
-
-        public string Tipo { get; set; } = string.Empty;
-
-        public string Titulo { get; set; } = string.Empty;
-
-        public string Detalle { get; set; } = string.Empty;
     }
 }

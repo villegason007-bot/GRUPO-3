@@ -11,18 +11,21 @@ namespace Gestor_de_Estudiantes.Services
     public class RiesgoService : IRiesgoService
     {
         private readonly IRiesgoRepository _riesgos;
+        private readonly IParametrosRiesgoRepository _parametros;
         private readonly IEstudianteRepository _estudiantes;
         private readonly ICalculadoraDeRiesgo _calculadora;
         private readonly IContactoRepository _contactos;
 
-        /// <summary>Crea el servicio con los repositorios de riesgo, estudiantes, contactos y la calculadora.</summary>
+        /// <summary>Crea el servicio con los repositorios de conteos, parámetros, estudiantes, contactos y la calculadora.</summary>
         public RiesgoService(
             IRiesgoRepository riesgos,
+            IParametrosRiesgoRepository parametros,
             IEstudianteRepository estudiantes,
             ICalculadoraDeRiesgo calculadora,
             IContactoRepository contactos)
         {
             _riesgos = riesgos;
+            _parametros = parametros;
             _estudiantes = estudiantes;
             _calculadora = calculadora;
             _contactos = contactos;
@@ -39,10 +42,10 @@ namespace Gestor_de_Estudiantes.Services
         public List<ResultadoRiesgo> CalcularRiesgos(
             string codigoComision)
         {
-            var umbral = _riesgos.ObtenerUmbral();
-            var maxFaltas = _riesgos.ObtenerMaxFaltasPermitidas();
+            var umbral = _parametros.ObtenerUmbral();
+            var maxFaltas = _parametros.ObtenerMaxFaltasPermitidas();
             var maxTrabajos =
-                _riesgos.ObtenerMaxTrabajosNoEntregadosPermitidos();
+                _parametros.ObtenerMaxTrabajosNoEntregadosPermitidos();
 
             // H11: último contacto por estudiante, para el panel.
             var ultimosContactos =
@@ -91,9 +94,9 @@ namespace Gestor_de_Estudiantes.Services
             var resultado = CalcularRiesgoDe(
                 estudiante,
                 estudiante.CodigoComision,
-                _riesgos.ObtenerUmbral(),
-                _riesgos.ObtenerMaxFaltasPermitidas(),
-                _riesgos.ObtenerMaxTrabajosNoEntregadosPermitidos());
+                _parametros.ObtenerUmbral(),
+                _parametros.ObtenerMaxFaltasPermitidas(),
+                _parametros.ObtenerMaxTrabajosNoEntregadosPermitidos());
 
             var contacto = _contactos.UltimoContacto(estudiante.Id);
             resultado.FechaUltimoContacto = contacto?.Fecha;

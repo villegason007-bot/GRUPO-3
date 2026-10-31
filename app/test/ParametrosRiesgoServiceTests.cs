@@ -12,7 +12,7 @@ namespace Test
     public sealed class ParametrosRiesgoServiceTests : RepositorioTestBase
     {
         private readonly ParametrosRiesgoService _servicio =
-            new(new RiesgoRepository());
+            new(new ParametrosRiesgoRepository());
 
         [TestMethod]
         public void Given_BDRecienCreada_When_ObtenerParametros_Then_LosPorDefecto()

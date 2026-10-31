@@ -77,12 +77,13 @@ namespace Gestor_de_Estudiantes.Repositories
         }
 
         /// <summary>
-        /// Lee el estado de una clase sobre una conexión ya abierta; si la
-        /// fila no existe asume Habil. Lo usan otros repositorios (por
-        /// ejemplo asistencias) sin abrir otra conexión.
+        /// Devuelve el estado de una clase; si la fila no existe asume
+        /// Hábil. Lo usan otros repositorios (por ejemplo asistencias)
+        /// a través de <see cref="IClaseRepository"/>.
         /// </summary>
-        internal static EstadoClase EstadoDe(SqliteConnection conexion, Guid claseId)
+        public EstadoClase EstadoDe(Guid claseId)
         {
+            using var conexion = BaseDeDatos.Abrir();
             using var comando = conexion.CreateCommand();
             comando.CommandText = "SELECT estado FROM clases WHERE id = @id;";
             comando.Parameters.AddWithValue("@id", claseId.ToString("D"));

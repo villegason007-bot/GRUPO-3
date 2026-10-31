@@ -29,5 +29,14 @@ namespace Gestor_de_Estudiantes.Repositories
         /// <param name="codigoComision">Código de la comisión.</param>
         /// <param name="fecha">Fecha a verificar (se compara por día).</param>
         bool ExisteClaseEnFecha(string codigoComision, DateTime fecha);
+
+        /// <summary>
+        /// Devuelve el estado de una clase; si la fila no existe asume
+        /// <see cref="EstadoClase.Habil"/>. Lo usan otros repositorios
+        /// (por ejemplo asistencias) a través del contrato, sin depender
+        /// de la implementación concreta.
+        /// </summary>
+        /// <param name="claseId">Clase a consultar.</param>
+        EstadoClase EstadoDe(Guid claseId);
     }
 }

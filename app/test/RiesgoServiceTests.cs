@@ -9,10 +9,10 @@ namespace Test
     public sealed class RiesgoServiceTests : RepositorioTestBase
     {
         private readonly RiesgoService _servicio =
-            new(new RiesgoRepository(), new EstudianteRepository(), new CalculadoraDeRiesgo(), new ContactoRepository());
+            new(new RiesgoRepository(), new ParametrosRiesgoRepository(), new EstudianteRepository(), new CalculadoraDeRiesgo(), new ContactoRepository());
 
         private readonly ParametrosRiesgoService _parametros =
-            new(new RiesgoRepository());
+            new(new ParametrosRiesgoRepository());
 
         [TestMethod]
         public void Given_EstudianteSinDatos_When_CalcularRiesgos_Then_SinInformacion()

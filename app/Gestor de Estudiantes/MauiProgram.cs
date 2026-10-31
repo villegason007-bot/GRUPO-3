@@ -63,7 +63,8 @@ namespace Gestor_de_Estudiantes
 
             builder.Services.AddTransient<IContactoService, ContactoService>();
             builder.Services.AddTransient<IFichaService, FichaService>();
-            builder.Services.AddTransient<IHistorialService, HistorialService>();
+            builder.Services.AddTransient<IHistorialAsistenciaService, HistorialAsistenciaService>();
+            builder.Services.AddTransient<IHistorialEntregasService, HistorialEntregasService>();
 
             // Clases
             builder.Services.AddSingleton<
@@ -79,10 +80,9 @@ namespace Gestor_de_Estudiantes
 
             builder.Services.AddTransient<ITrabajoService, TrabajoService>();
 
-            // Calendario
+            // Calendario (una sola fuente: ICalendarioService, SRP-2)
             builder.Services.AddSingleton<ICalendarioRepository, CalendarioRepository>();
             builder.Services.AddSingleton<ICalendarioService, CalendarioService>();
-            builder.Services.AddSingleton<ConstructorDeEventosDeCalendario>();
             builder.Services.AddTransient<CalendarioViewModel>();
             builder.Services.AddTransient<CalendarioPage>();
 
@@ -105,6 +105,9 @@ namespace Gestor_de_Estudiantes
             builder.Services.AddSingleton<
                 IRiesgoRepository,
                 RiesgoRepository>();
+            builder.Services.AddSingleton<
+                IParametrosRiesgoRepository,
+                ParametrosRiesgoRepository>();
 
             builder.Services.AddSingleton<ICalculadoraDeRiesgo, CalculadoraDeRiesgo>();
             builder.Services.AddSingleton<IRiesgoService, RiesgoService>();

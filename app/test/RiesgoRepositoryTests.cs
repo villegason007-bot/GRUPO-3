@@ -9,27 +9,6 @@ namespace Test
         private readonly RiesgoRepository _repositorio = new();
 
         [TestMethod]
-        public void Given_BDRecienCreada_When_ObtenerUmbral_Then_Es50()
-        {
-            Assert.AreEqual(50, _repositorio.ObtenerUmbral());
-        }
-
-        [TestMethod]
-        public void Given_UmbralModificado_When_ObtenerUmbral_Then_DevuelveElNuevo()
-        {
-            _repositorio.GuardarUmbral(75);
-
-            Assert.AreEqual(75, _repositorio.ObtenerUmbral());
-        }
-
-        [TestMethod]
-        public void Given_UmbralInvalido_When_GuardarUmbral_Then_LanzaArgumentException()
-        {
-            Assert.Throws<ArgumentException>(() => _repositorio.GuardarUmbral(-1));
-            Assert.Throws<ArgumentException>(() => _repositorio.GuardarUmbral(101));
-        }
-
-        [TestMethod]
         public void Given_AsistenciaEnClaseHabil_When_ContarAsistencias_Then_CuentaFaltas()
         {
             var claseId = CrearClase();

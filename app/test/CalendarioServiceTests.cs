@@ -24,10 +24,11 @@ namespace Test
 
             Assert.AreEqual(2, calendario.Count);
             Assert.AreEqual(new DateTime(2026, 10, 5), calendario[0].Fecha);
-            Assert.AreEqual("Clase", calendario[0].Tipo);
+            Assert.AreEqual("CLASE", calendario[0].Tipo);
             Assert.AreEqual(new DateTime(2026, 10, 10), calendario[1].Fecha);
-            Assert.AreEqual("Trabajo", calendario[1].Tipo);
-            Assert.AreEqual("TP1", calendario[1].Detalle);
+            Assert.AreEqual("TRABAJO", calendario[1].Tipo);
+            Assert.AreEqual("TP1", calendario[1].Titulo);
+            Assert.AreEqual("Fecha de entrega", calendario[1].Detalle);
         }
 
         [TestMethod]
