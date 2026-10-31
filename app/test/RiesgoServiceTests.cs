@@ -171,5 +171,24 @@ namespace Test
             Assert.Throws<ArgumentException>(() =>
                 _servicio.CalcularRiesgoDe("  "));
         }
+
+        [TestMethod]
+        public void Given_EstudianteSoloConAsistenciaPendiente_When_CalcularRiesgos_Then_SinInformacion()
+        {
+            var estudianteId = CrearEstudiante();
+            var claseId = CrearClase();
+            new AsistenciaRepository().RegistrarAsistencia(new Asistencia
+            {
+                ClaseId = claseId,
+                EstudianteId = estudianteId,
+                Condicion = Condicion.Pendiente,
+            });
+
+            var resultado = _servicio.CalcularRiesgos("1K1").Single();
+
+            Assert.IsTrue(resultado.SinInformacion,
+                "Una asistencia sin marcar no es información para el riesgo.");
+            Assert.AreEqual(0, resultado.Faltas);
+        }
     }
 }

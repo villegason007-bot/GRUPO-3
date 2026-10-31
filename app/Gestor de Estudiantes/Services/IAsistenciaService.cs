@@ -14,7 +14,18 @@ namespace Gestor_de_Estudiantes.Services
 
         /// <summary>
         /// Guarda la condición de un estudiante en una clase: si ya existe
-        /// su registro lo corrige (H4); si no, lo crea (H3).
+        /// su registro lo corrige (H4); si no, lo crea (H3). Acepta el
+        /// estado completo, incluido <see cref="Condicion.Pendiente"/>
+        /// (guardado antes de marcar presente/ausente).
+        /// </summary>
+        /// <param name="claseId">Clase de la que se registra la asistencia.</param>
+        /// <param name="estudianteId">Estudiante al que pertenece la condición.</param>
+        /// <param name="condicion">Condición a guardar (Pendiente, Presente o Ausente).</param>
+        void GuardarAsistencia(Guid claseId, Guid estudianteId, Condicion condicion);
+
+        /// <summary>
+        /// Guarda la condición en forma booleana (compatibilidad): true si
+        /// asistió; false si faltó. Equivale a Presente / Ausente.
         /// </summary>
         /// <param name="claseId">Clase de la que se registra la asistencia.</param>
         /// <param name="estudianteId">Estudiante al que pertenece la condición.</param>

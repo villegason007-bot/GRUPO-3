@@ -173,10 +173,12 @@ namespace Gestor_de_Estudiantes.ViewModel
                     var asistencia = existentes.FirstOrDefault(a =>
                         a.EstudianteId == estudiante.Id);
 
+                    // Sin registro la fila nace Pendiente: el tutor marca
+                    // Presente/Ausente o la deja Sin marcar.
                     Asistencias.Add(new FilaAsistencia
                     {
                         Estudiante = estudiante,
-                        Presente = asistencia?.EstaPresente ?? false,
+                        Condicion = asistencia?.Condicion ?? Condicion.Pendiente,
                         TieneRegistro = asistencia != null
                     });
                 }
@@ -243,7 +245,7 @@ namespace Gestor_de_Estudiantes.ViewModel
                     _asistenciaService.GuardarAsistencia(
                         ClaseSeleccionada.Id,
                         fila.Estudiante.Id,
-                        fila.Presente);
+                        fila.Condicion);
                 }
 
                 Mensaje = "Las asistencias se guardaron correctamente.";
@@ -302,28 +304,67 @@ namespace Gestor_de_Estudiantes.ViewModel
 
     public class FilaAsistencia : INotifyPropertyChanged
     {
-        private bool _presente;
+        private Condicion _condicion = Condicion.Pendiente;
 
         public Estudiante Estudiante { get; set; } = new();
 
         public bool TieneRegistro { get; set; }
 
-        public bool Presente
+        /// <summary>
+        /// Condición elegida para la fila; arranca en Pendiente (sin
+        /// marcar) y la cambian los comandos de los tres botones.
+        /// </summary>
+        public Condicion Condicion
         {
-            get => _presente;
+            get => _condicion;
             set
             {
-                if (_presente == value)
+                if (_condicion == value)
                     return;
 
-                _presente = value;
-                PropertyChanged?.Invoke(
-                    this,
-                    new PropertyChangedEventArgs(nameof(Presente)));
+                _condicion = value;
+                Notificar(nameof(Condicion));
+                Notificar(nameof(EsPresente));
+                Notificar(nameof(EsAusente));
+                Notificar(nameof(EsPendiente));
+                Notificar(nameof(TextoCondicion));
             }
         }
 
+        /// <summary>true si la fila quedó marcada como presente.</summary>
+        public bool EsPresente => Condicion == Condicion.Presente;
+
+        /// <summary>true si la fila quedó marcada como ausente.</summary>
+        public bool EsAusente => Condicion == Condicion.Ausente;
+
+        /// <summary>true si la fila sigue sin marcar (Pendiente).</summary>
+        public bool EsPendiente => Condicion == Condicion.Pendiente;
+
+        /// <summary>Texto a mostrar de la condición («Sin marcar» para Pendiente).</summary>
+        public string TextoCondicion => Condicion switch
+        {
+            Condicion.Presente => "Presente",
+            Condicion.Ausente => "Ausente",
+            _ => "Sin marcar",
+        };
+
+        public ICommand MarcarPresenteCommand { get; }
+        public ICommand MarcarAusenteCommand { get; }
+        public ICommand MarcarPendienteCommand { get; }
+
+        public FilaAsistencia()
+        {
+            MarcarPresenteCommand = new Command(() => Condicion = Condicion.Presente);
+            MarcarAusenteCommand = new Command(() => Condicion = Condicion.Ausente);
+            MarcarPendienteCommand = new Command(() => Condicion = Condicion.Pendiente);
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        private void Notificar(string nombre)
+            => PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(nombre));
     }
 
     public class FilaEntrega : INotifyPropertyChanged

@@ -555,10 +555,11 @@ Guid? SeleccionarTrabajo()
 
 Condicion? LeerCondicion()
 {
-    Console.Write("Condición (P=presente / A=ausente): ");
+    Console.Write("Condición (P=presente / A=ausente / N=sin marcar): ");
     var texto = (Console.ReadLine() ?? string.Empty).Trim().ToUpperInvariant();
     if (texto == "P") return Condicion.Presente;
     if (texto == "A") return Condicion.Ausente;
+    if (texto == "N") return Condicion.Pendiente;
     Console.WriteLine("Condición inválida.");
     return null;
 }

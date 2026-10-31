@@ -39,7 +39,9 @@ namespace Gestor_de_Estudiantes.Repositories
                         END),
                         0
                     ),
-                    COUNT(a.id)
+                    COUNT(CASE
+                        WHEN a.condicion <> @condicionPendiente THEN 1
+                    END)
                 FROM asistencias a
                 INNER JOIN clases c ON c.id = a.clase_id
                 INNER JOIN comisiones com ON com.id = c.comision_id
@@ -55,6 +57,12 @@ namespace Gestor_de_Estudiantes.Repositories
             comando.Parameters.AddWithValue(
                 "@condicionAusente",
                 Condicion.Ausente.ToString());
+
+            // Un registro aún sin marcar no cuenta como información:
+            // el estudiante sigue en «Sin información» (H6, Escenario 2).
+            comando.Parameters.AddWithValue(
+                "@condicionPendiente",
+                Condicion.Pendiente.ToString());
 
             comando.Parameters.AddWithValue(
                 "@estudianteId",

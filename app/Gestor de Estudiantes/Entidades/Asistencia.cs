@@ -2,8 +2,9 @@ namespace Gestor_de_Estudiantes.Entidades;
 
 /// <summary>
 /// Registro de asistencia de un estudiante a una clase: qué condición
-/// (presente o ausente) quedó cargada para ese encuentro. Es la primera
-/// de las dos señales que alimentan el indicador de riesgo (H6).
+/// (pendiente, presente o ausente) quedó cargada para ese encuentro.
+/// Es la primera de las dos señales que alimentan el indicador de
+/// riesgo (H6).
 /// </summary>
 public class Asistencia
 {
@@ -28,17 +29,14 @@ public class Asistencia
     /// </summary>
     public Clase? Clase { get; set; }
 
-    /// <summary>Condición del encuentro según el modelo de dominio (Presente | Ausente).</summary>
+    /// <summary>Condición del encuentro según el modelo de dominio (Pendiente | Presente | Ausente).</summary>
     public Condicion Condicion { get; set; }
 
     /// <summary>
-    /// Vista booleana de <see cref="Condicion"/> para las pantallas:
-    /// leer devuelve true si es Presente; escribir traduce el bool a
-    /// Presente o Ausente.
+    /// Vista booleana de <see cref="Condicion"/> para lectura: true solo
+    /// si es Presente (Pendiente y Ausente devuelven false). Es de solo
+    /// lectura: escribir directamente <see cref="Condicion"/> para no
+    /// perder el tri-estado.
     /// </summary>
-    public bool EstaPresente
-    {
-        get => Condicion == Condicion.Presente;
-        set => Condicion = value ? Condicion.Presente : Condicion.Ausente;
-    }
+    public bool EstaPresente => Condicion == Condicion.Presente;
 }

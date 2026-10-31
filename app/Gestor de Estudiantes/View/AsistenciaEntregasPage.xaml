@@ -223,17 +223,77 @@
 
                                             <VerticalStackLayout
                                                 Grid.Column="1"
-                                                Spacing="2"
+                                                Spacing="6"
                                                 HorizontalOptions="Center"
                                                 VerticalOptions="Center">
 
-                                                <CheckBox
-                                                    IsChecked="{Binding Presente}"
-                                                    Color="#A5B4FC"
-                                                    HorizontalOptions="Center" />
+                                                <!-- Tri-estado: Presente / Ausente / Sin marcar -->
+                                                <HorizontalStackLayout Spacing="6">
+
+                                                    <Button
+                                                        Text="✓"
+                                                        Command="{Binding MarcarPresenteCommand}"
+                                                        FontSize="14"
+                                                        Padding="10,4"
+                                                        CornerRadius="8"
+                                                        BackgroundColor="#26FFFFFF"
+                                                        TextColor="#C7D2FE"
+                                                        BorderWidth="0">
+                                                        <Button.Triggers>
+                                                            <DataTrigger
+                                                                TargetType="Button"
+                                                                Binding="{Binding EsPresente}"
+                                                                Value="True">
+                                                                <Setter Property="BackgroundColor" Value="#A5B4FC" />
+                                                                <Setter Property="TextColor" Value="#1F2937" />
+                                                            </DataTrigger>
+                                                        </Button.Triggers>
+                                                    </Button>
+
+                                                    <Button
+                                                        Text="✗"
+                                                        Command="{Binding MarcarAusenteCommand}"
+                                                        FontSize="14"
+                                                        Padding="10,4"
+                                                        CornerRadius="8"
+                                                        BackgroundColor="#26FFFFFF"
+                                                        TextColor="#C7D2FE"
+                                                        BorderWidth="0">
+                                                        <Button.Triggers>
+                                                            <DataTrigger
+                                                                TargetType="Button"
+                                                                Binding="{Binding EsAusente}"
+                                                                Value="True">
+                                                                <Setter Property="BackgroundColor" Value="#A5B4FC" />
+                                                                <Setter Property="TextColor" Value="#1F2937" />
+                                                            </DataTrigger>
+                                                        </Button.Triggers>
+                                                    </Button>
+
+                                                    <Button
+                                                        Text="–"
+                                                        Command="{Binding MarcarPendienteCommand}"
+                                                        FontSize="14"
+                                                        Padding="10,4"
+                                                        CornerRadius="8"
+                                                        BackgroundColor="#26FFFFFF"
+                                                        TextColor="#C7D2FE"
+                                                        BorderWidth="0">
+                                                        <Button.Triggers>
+                                                            <DataTrigger
+                                                                TargetType="Button"
+                                                                Binding="{Binding EsPendiente}"
+                                                                Value="True">
+                                                                <Setter Property="BackgroundColor" Value="#A5B4FC" />
+                                                                <Setter Property="TextColor" Value="#1F2937" />
+                                                            </DataTrigger>
+                                                        </Button.Triggers>
+                                                    </Button>
+
+                                                </HorizontalStackLayout>
 
                                                 <Label
-                                                    Text="Presente"
+                                                    Text="{Binding TextoCondicion}"
                                                     TextColor="#C7D2FE"
                                                     FontSize="11"
                                                     HorizontalTextAlignment="Center" />

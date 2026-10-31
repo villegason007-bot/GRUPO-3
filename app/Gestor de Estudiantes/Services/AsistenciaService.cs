@@ -31,17 +31,13 @@ namespace Gestor_de_Estudiantes.Services
         /// </summary>
         /// <param name="claseId">Clase de la que se registra la asistencia.</param>
         /// <param name="estudianteId">Estudiante al que pertenece la condición.</param>
-        /// <param name="presente">true si asistió; false si faltó.</param>
+        /// <param name="condicion">Condición a guardar (Pendiente, Presente o Ausente).</param>
         /// <exception cref="InvalidOperationException">Si la clase no es hábil (feriado o suspensión).</exception>
         public void GuardarAsistencia(
             Guid claseId,
             Guid estudianteId,
-            bool presente)
+            Condicion condicion)
         {
-            var condicion = presente
-                ? Condicion.Presente
-                : Condicion.Ausente;
-
             var existentes = _asistencias.ListarPorClase(claseId);
 
             var asistencia = existentes.FirstOrDefault(a =>
@@ -63,6 +59,25 @@ namespace Gestor_de_Estudiantes.Services
                 EstudianteId = estudianteId,
                 Condicion = condicion
             });
+        }
+
+        /// <summary>
+        /// Guarda la condición en forma booleana (compatibilidad):
+        /// true → Presente; false → Ausente.
+        /// </summary>
+        /// <param name="claseId">Clase de la que se registra la asistencia.</param>
+        /// <param name="estudianteId">Estudiante al que pertenece la condición.</param>
+        /// <param name="presente">true si asistió; false si faltó.</param>
+        /// <exception cref="InvalidOperationException">Si la clase no es hábil (feriado o suspensión).</exception>
+        public void GuardarAsistencia(
+            Guid claseId,
+            Guid estudianteId,
+            bool presente)
+        {
+            GuardarAsistencia(
+                claseId,
+                estudianteId,
+                presente ? Condicion.Presente : Condicion.Ausente);
         }
     }
 }
