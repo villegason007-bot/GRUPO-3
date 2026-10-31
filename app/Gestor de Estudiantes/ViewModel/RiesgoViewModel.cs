@@ -152,6 +152,7 @@ namespace Gestor_de_Estudiantes.ViewModel
         public string TrabajosResumen { get; }
         public string FaltasResumen { get; }
         public string Motivo { get; }
+        public string UltimoContacto { get; }
         public string Estado { get; }
         public Color BadgeColor { get; }
         public Color BadgeTextColor { get; }
@@ -161,6 +162,7 @@ namespace Gestor_de_Estudiantes.ViewModel
             Nombre = resultado.Nombre;
             Estado = resultado.Estado;
             Motivo = resultado.MotivoRiesgo;
+            UltimoContacto = resultado.TextoUltimoContacto;
 
             if (resultado.SinInformacion)
             {
