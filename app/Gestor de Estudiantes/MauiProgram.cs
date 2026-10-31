@@ -63,6 +63,8 @@ namespace Gestor_de_Estudiantes
 
             builder.Services.AddTransient<IContactoService, ContactoService>();
             builder.Services.AddTransient<IFichaService, FichaService>();
+            builder.Services.AddTransient<FichaEstudianteViewModel>();
+            builder.Services.AddTransient<FichaEstudiantePage>();
             builder.Services.AddTransient<IHistorialAsistenciaService, HistorialAsistenciaService>();
             builder.Services.AddTransient<IHistorialEntregasService, HistorialEntregasService>();
 

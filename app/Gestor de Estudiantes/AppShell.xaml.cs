@@ -9,6 +9,7 @@ namespace Gestor_de_Estudiantes
             InitializeComponent();
 
             Routing.RegisterRoute(nameof(EstudiantesPage), typeof(EstudiantesPage));
+            Routing.RegisterRoute(nameof(FichaEstudiantePage), typeof(FichaEstudiantePage));
             Routing.RegisterRoute(nameof(ComisionesPage), typeof(ComisionesPage));
             Routing.RegisterRoute(nameof(CalendarioPage), typeof(CalendarioPage));
             Routing.RegisterRoute(nameof(AsistenciaEntregasPage), typeof(AsistenciaEntregasPage));

@@ -6,7 +6,9 @@
 
     <Grid RowDefinitions="*,Auto" Padding="15" RowSpacing="10">
 
-        <ListView Grid.Row="0" ItemsSource="{Binding ListadoEstudiantes}">
+        <ListView Grid.Row="0"
+                  ItemsSource="{Binding ListadoEstudiantes}"
+                  ItemTapped="OnEstudianteTapped">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextCell Text="{Binding Nombre}" Detail="{Binding Legajo}" />
