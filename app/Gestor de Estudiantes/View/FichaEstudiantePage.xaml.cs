@@ -68,5 +68,33 @@ namespace Gestor_de_Estudiantes.Views
 
             ModalContacto.IsVisible = false;
         }
+
+        // Historial de asistencia del estudiante (H12).
+        private async void OnHistorialAsistenciaClicked(object sender, EventArgs e)
+        {
+            if (_legajo.Length == 0)
+                return;
+
+            await Shell.Current.GoToAsync(
+                nameof(HistorialAsistenciaPage),
+                new Dictionary<string, object>
+                {
+                    ["legajo"] = _legajo,
+                });
+        }
+
+        // Historial de entregas con el riesgo individual (H13).
+        private async void OnHistorialEntregasClicked(object sender, EventArgs e)
+        {
+            if (_legajo.Length == 0)
+                return;
+
+            await Shell.Current.GoToAsync(
+                nameof(HistorialEntregasPage),
+                new Dictionary<string, object>
+                {
+                    ["legajo"] = _legajo,
+                });
+        }
     }
 }

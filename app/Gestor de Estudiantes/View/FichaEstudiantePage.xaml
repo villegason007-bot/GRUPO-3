@@ -7,7 +7,7 @@
     Title="Ficha del estudiante"
     BackgroundColor="#090D18">
 
-    <Grid Padding="24" RowDefinitions="Auto,Auto,Auto,Auto,*" RowSpacing="16">
+    <Grid Padding="24" RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" RowSpacing="16">
 
         <!-- Encabezado: nombre y legajo/comisión -->
         <VerticalStackLayout Spacing="5">
@@ -77,9 +77,27 @@
             Style="{StaticResource GlassButton}"
             Clicked="OnRegistrarContactoClicked" />
 
-        <!-- Historial de contactos (H10) -->
+        <!-- Accesos a los historiales (H12 / H13) -->
         <Grid
             Grid.Row="4"
+            ColumnDefinitions="*,*"
+            ColumnSpacing="10">
+
+            <Button
+                Text="Asistencia"
+                Style="{StaticResource SecondaryGlassButton}"
+                Clicked="OnHistorialAsistenciaClicked" />
+
+            <Button
+                Grid.Column="1"
+                Text="Entregas y riesgo"
+                Style="{StaticResource SecondaryGlassButton}"
+                Clicked="OnHistorialEntregasClicked" />
+        </Grid>
+
+        <!-- Historial de contactos (H10) -->
+        <Grid
+            Grid.Row="5"
             RowDefinitions="Auto,*"
             RowSpacing="10">
 
@@ -168,6 +186,8 @@
         <!-- Modal: registrar contacto (H10) -->
         <controls:GlassModal
             x:Name="ModalContacto"
+            Grid.Row="0"
+            Grid.RowSpan="6"
             IsVisible="False"
             ZIndex="10"
             Icono="☏"

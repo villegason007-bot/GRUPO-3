@@ -10,6 +10,8 @@ namespace Gestor_de_Estudiantes
 
             Routing.RegisterRoute(nameof(EstudiantesPage), typeof(EstudiantesPage));
             Routing.RegisterRoute(nameof(FichaEstudiantePage), typeof(FichaEstudiantePage));
+            Routing.RegisterRoute(nameof(HistorialAsistenciaPage), typeof(HistorialAsistenciaPage));
+            Routing.RegisterRoute(nameof(HistorialEntregasPage), typeof(HistorialEntregasPage));
             Routing.RegisterRoute(nameof(ComisionesPage), typeof(ComisionesPage));
             Routing.RegisterRoute(nameof(CalendarioPage), typeof(CalendarioPage));
             Routing.RegisterRoute(nameof(AsistenciaEntregasPage), typeof(AsistenciaEntregasPage));
