@@ -26,9 +26,9 @@ namespace Gestor_de_Estudiantes.ViewModel
 
         public void MostrarEstudiantes() => MostrarEstudiantes(ComisionActual);
 
-        public void AgregarEstudiante(string legajo, string nombre)
+        public void AgregarEstudiante(string legajo, string nombre, string? telefono = null)
         {
-            _service.AgregarEstudiante(legajo, nombre, ComisionActual);
+            _service.AgregarEstudiante(legajo, nombre, ComisionActual, telefono);
             MostrarEstudiantes(ComisionActual);
         }
     }

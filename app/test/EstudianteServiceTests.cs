@@ -47,5 +47,46 @@ namespace Test
             Assert.Throws<InvalidOperationException>(() =>
                 _servicio.AgregarEstudiante("9001", "Otra", "1K1"));
         }
+
+        [TestMethod]
+        public void Given_TelefonoValido_When_AgregarEstudiante_Then_SePersiste()
+        {
+            var estudiante = _servicio.AgregarEstudiante(
+                "9001", "Ana", "1K1", "+54 (11) 5555-5555");
+
+            Assert.AreEqual("+54 (11) 5555-5555", estudiante.Telefono);
+
+            var guardado = _servicio.BuscarEstudiante("9001");
+            Assert.AreEqual("+54 (11) 5555-5555", guardado!.Telefono);
+            Assert.AreEqual(DateTime.Today.ToString("yyyy-MM-dd"), guardado.FechaIncorporacion);
+        }
+
+        [TestMethod]
+        public void Given_TelefonoVacio_When_AgregarEstudiante_Then_QuedaSinTelefono()
+        {
+            var estudiante = _servicio.AgregarEstudiante("9001", "Ana", "1K1", "   ");
+
+            Assert.IsNull(estudiante.Telefono);
+            Assert.IsNull(_servicio.BuscarEstudiante("9001")!.Telefono);
+        }
+
+        [TestMethod]
+        public void Given_TelefonoSinParametro_When_AgregarEstudiante_Then_QuedaSinTelefono()
+        {
+            var estudiante = _servicio.AgregarEstudiante("9001", "Ana", "1K1");
+
+            Assert.IsNull(estudiante.Telefono);
+        }
+
+        [TestMethod]
+        public void Given_TelefonoConSimboloInvalido_When_AgregarEstudiante_Then_LanzaArgumentException()
+        {
+            var excepcion = Assert.Throws<ArgumentException>(() =>
+                _servicio.AgregarEstudiante("9001", "Ana", "1K1", "11$5555"));
+
+            StringAssert.Contains(excepcion.Message, "teléfono");
+            // No se creó el estudiante.
+            Assert.AreEqual(0, _servicio.ListarEstudiantes("1K1").Count);
+        }
     }
 }

@@ -43,23 +43,40 @@ namespace Gestor_de_Estudiantes.Services
         /// <param name="legajo">Legajo del estudiante (obligatorio, único).</param>
         /// <param name="nombre">Nombre del estudiante (obligatorio).</param>
         /// <param name="codigoComision">Comisión en la que se incorpora.</param>
+        /// <param name="telefono">Teléfono de contacto (opcional; vacío si no se informa).</param>
         /// <returns>El estudiante creado.</returns>
-        /// <exception cref="ArgumentException">Si legajo o nombre están vacíos, o el legajo tiene símbolos o espacios.</exception>
+        /// <exception cref="ArgumentException">Si legajo o nombre están vacíos, el legajo tiene símbolos o espacios, o el teléfono tiene símbolos no permitidos.</exception>
         /// <exception cref="InvalidOperationException">Si ya existe un estudiante con ese legajo.</exception>
-        public Estudiante AgregarEstudiante(string legajo, string nombre, string codigoComision)
+        public Estudiante AgregarEstudiante(
+            string legajo,
+            string nombre,
+            string codigoComision,
+            string? telefono = null)
         {
             legajo = (legajo ?? string.Empty).Trim();
             nombre = (nombre ?? string.Empty).Trim();
+            telefono = (telefono ?? string.Empty).Trim();
 
             if (legajo.Length == 0 || nombre.Length == 0)
                 throw new ArgumentException("Legajo y nombre son obligatorios.");
             // QA002: el legajo es alfanumérico ('abc!' o 'a b' no sirven).
             if (!legajo.All(char.IsLetterOrDigit))
                 throw new ArgumentException("El legajo solo puede contener letras y números.");
+            // El teléfono admite dígitos, espacios y + - ( ) (vacío: sin teléfono).
+            if (telefono.Length > 0 &&
+                !telefono.All(c => char.IsDigit(c) || c is ' ' or '+' or '-' or '(' or ')'))
+                throw new ArgumentException(
+                    "El teléfono solo puede contener números, espacios y los símbolos + - ( ).");
             if (_estudiantes.BuscarEstudiante(legajo) is not null)
                 throw new InvalidOperationException($"Ya existe un estudiante con legajo {legajo}.");
 
-            var estudiante = new Estudiante { Legajo = legajo, Nombre = nombre };
+            var estudiante = new Estudiante
+            {
+                Legajo = legajo,
+                Nombre = nombre,
+                Telefono = telefono.Length == 0 ? null : telefono,
+                FechaIncorporacion = DateTime.Today.ToString("yyyy-MM-dd"),
+            };
             _estudiantes.AgregarEstudiante(estudiante, codigoComision);
             return estudiante;
         }

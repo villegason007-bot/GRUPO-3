@@ -49,23 +49,28 @@ namespace Gestor_de_Estudiantes.Repositories
         }
 
         /// <summary>
-        /// Inserta un estudiante en la comisión; <c>activo</c> toma su
-        /// valor por defecto (1). Teléfono y fecha de incorporación no se
-        /// persisten en el alta actual.
+        /// Inserta un estudiante en la comisión con su teléfono y su
+        /// fecha de incorporación; <c>activo</c> toma su valor por
+        /// defecto (1).
         /// </summary>
         public void AgregarEstudiante(Estudiante estudiante, string codigoComision)
         {
             using var conexion = BaseDeDatos.Abrir();
             using var comando = conexion.CreateCommand();
             comando.CommandText = """
-                INSERT INTO estudiantes (id, legajo, nombre, apellido, comision_id)
-                VALUES (@id, @legajo, @nombre, @apellido,
+                INSERT INTO estudiantes
+                    (id, legajo, nombre, apellido, telefono, fecha_incorporacion, comision_id)
+                VALUES (@id, @legajo, @nombre, @apellido, @telefono, @fechaIncorporacion,
                         (SELECT id FROM comisiones WHERE codigo = @codigo));
                 """;
             comando.Parameters.AddWithValue("@id", estudiante.Id.ToString("D"));
             comando.Parameters.AddWithValue("@legajo", estudiante.Legajo);
             comando.Parameters.AddWithValue("@nombre", estudiante.Nombre);
             comando.Parameters.AddWithValue("@apellido", estudiante.Apellido);
+            comando.Parameters.AddWithValue("@telefono",
+                (object?)estudiante.Telefono ?? DBNull.Value);
+            comando.Parameters.AddWithValue("@fechaIncorporacion",
+                (object?)estudiante.FechaIncorporacion ?? DBNull.Value);
             comando.Parameters.AddWithValue("@codigo", codigoComision);
             comando.ExecuteNonQuery();
         }

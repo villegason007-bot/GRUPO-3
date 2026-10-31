@@ -55,6 +55,35 @@ namespace Test
         }
 
         [TestMethod]
+        public void Given_EstudianteConTelefono_When_AgregarEstudiante_Then_PersisteTelefonoYFecha()
+        {
+            _repositorio.AgregarEstudiante(new Estudiante
+            {
+                Legajo = "9001",
+                Nombre = "Ana",
+                Telefono = "11 5555-5555",
+                FechaIncorporacion = "2026-10-31",
+            }, "1K1");
+
+            var guardado = _repositorio.BuscarEstudiante("9001");
+
+            Assert.AreEqual("11 5555-5555", guardado!.Telefono);
+            Assert.AreEqual("2026-10-31", guardado.FechaIncorporacion);
+        }
+
+        [TestMethod]
+        public void Given_EstudianteSinTelefono_When_AgregarEstudiante_Then_PersisteNull()
+        {
+            _repositorio.AgregarEstudiante(
+                new Estudiante { Legajo = "9001", Nombre = "Ana" }, "1K1");
+
+            var guardado = _repositorio.BuscarEstudiante("9001");
+
+            Assert.IsNull(guardado!.Telefono);
+            Assert.IsNull(guardado.FechaIncorporacion);
+        }
+
+        [TestMethod]
         public void Given_EstudianteDadoDeBaja_When_EliminarOtraVez_Then_DevuelveFalse()
         {
             var legajo = "9001";
