@@ -26,5 +26,13 @@ namespace Gestor_de_Estudiantes.Repositories
         /// <summary>Devuelve los registros de entrega de un estudiante, ordenados por trabajo.</summary>
         /// <param name="estudianteId">Estudiante a consultar.</param>
         List<Entrega> ListarPorEstudiante(Guid estudianteId);
+
+        /// <summary>
+        /// Devuelve el historial de entregas del estudiante (H13): todos
+        /// los trabajos de su comisión con el estado de entrega
+        /// correspondiente, ordenados por fecha de entrega.
+        /// </summary>
+        /// <param name="estudianteId">Estudiante a consultar.</param>
+        List<(string Titulo, DateTime FechaDeEntrega, bool Entregado, DateTime? Fecha)> ListarHistorialDeEstudiante(Guid estudianteId);
     }
 }

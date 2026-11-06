@@ -1,22 +1,126 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Gestor_de_Estudiantes.Views.EstudiantesPage"
-             Loaded="ContentPage_Loaded">
+<ContentPage
+    x:Class="Gestor_de_Estudiantes.Views.EstudiantesPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:Gestor_de_Estudiantes.Controls"
+    Title="Estudiantes"
+    BackgroundColor="#090D18">
 
-    <Grid RowDefinitions="*,Auto" Padding="15" RowSpacing="10">
+    <Grid>
+        <controls:FondoAmbiental />
 
-        <ListView Grid.Row="0" ItemsSource="{Binding ListadoEstudiantes}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextCell Text="{Binding Nombre}" Detail="{Binding Legajo}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <Grid Padding="26,26,26,16" RowDefinitions="Auto,*" RowSpacing="18">
 
-        <Button Grid.Row="1"
-                Text="Agregar estudiante"
-                Clicked="OnAgregarClicked" />
+            <VerticalStackLayout Spacing="14">
+                <VerticalStackLayout Spacing="7">
+                    <Label Text="NÓMINA" FontSize="10" FontAttributes="Bold"
+                           CharacterSpacing="1.7" TextColor="#A5B4FC" />
+                    <Label Text="Estudiantes" FontSize="32" FontAttributes="Bold" TextColor="White" />
+                    <Label Text="Filtrá por comisión y tocá un estudiante para ver su ficha."
+                           FontSize="14" TextColor="{StaticResource TextoSecundario}"
+                           LineBreakMode="WordWrap" />
+                </VerticalStackLayout>
+
+                <Label Text="COMISIÓN" Style="{StaticResource FormLabel}" />
+                <Border Style="{StaticResource InnerGlassCard}">
+                    <Picker x:Name="ComisionFiltroPicker"
+                            Title="Seleccionar comisión"
+                            TitleColor="#A5B4FC"
+                            TextColor="White"
+                            BackgroundColor="Transparent"
+                            ItemDisplayBinding="{Binding Codigo}"
+                            SelectedIndexChanged="ComisionFiltro_Changed" />
+                </Border>
+
+                <Button Text="+ Agregar estudiante a esta comisión"
+                        Style="{StaticResource GlassButton}"
+                        Clicked="AbrirModalEstudiante_Clicked" />
+
+                <Label x:Name="TituloNominaLabel" Text="Estudiantes"
+                       FontSize="17" FontAttributes="Bold" TextColor="White" />
+            </VerticalStackLayout>
+
+            <Grid Grid.Row="1">
+                <controls:EstadoVacio
+                    x:Name="SinEstudiantesLabel"
+                    Text="Seleccioná una comisión para consultar la nómina."
+                    VerticalOptions="Start"
+                    Margin="0,12" />
+
+                <CollectionView
+                    x:Name="EstudiantesList"
+                    SelectionMode="Single"
+                    SelectionChanged="EstudiantesList_SelectionChanged">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="9" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#16FFFFFF" Stroke="#30FFFFFF" StrokeThickness="1"
+                                    Padding="16,13" StrokeShape="RoundRectangle 16">
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                    <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                                        <HorizontalStackLayout Spacing="5">
+                                            <Label Text="{Binding Apellido}" FontSize="16"
+                                                   FontAttributes="Bold" TextColor="White" />
+                                            <Label Text="{Binding Nombre}" FontSize="16"
+                                                   TextColor="White" />
+                                        </HorizontalStackLayout>
+                                        <Label FontSize="12"
+                                               TextColor="{StaticResource TextoSecundario}"
+                                               Text="{Binding Legajo, StringFormat='Legajo {0}'}" />
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="1" Text="›" FontSize="24"
+                                           TextColor="#A5B4FC" VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </Grid>
+
+        <controls:AvisoToast x:Name="Aviso" ZIndex="20" />
+
+        <!-- Modal: nuevo estudiante -->
+        <controls:GlassModal
+            x:Name="ModalEstudiante"
+            IsVisible="False"
+            ZIndex="10"
+            Icono="◎"
+            IconoFondo="#302D75DB"
+            IconoBorde="#5060A5FA"
+            IconoColor="#BFDBFE"
+            IconoTamano="25"
+            Titulo="Nuevo estudiante"
+            Subtitulo="Ingresá los datos y asignalo a una comisión."
+            TextoConfirmar="Guardar estudiante"
+            CancelarClicked="CancelarModal_Clicked"
+            ConfirmarClicked="GuardarEstudiante_Clicked">
+            <controls:GlassModal.Formulario>
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="LEGAJO" Style="{StaticResource FormLabel}" />
+                    <Entry x:Name="LegajoEntry" Style="{StaticResource GlassEntry}"
+                           Placeholder="Número de legajo" ReturnType="Next" />
+                    <Label Text="NOMBRE" Style="{StaticResource FormLabel}" />
+                    <Entry x:Name="NombreEntry" Style="{StaticResource GlassEntry}"
+                           Placeholder="Nombre del estudiante" ReturnType="Next" />
+                    <Label Text="TELÉFONO" Style="{StaticResource FormLabel}" />
+                    <Entry x:Name="TelefonoEntry" Style="{StaticResource GlassEntry}"
+                           Placeholder="Teléfono (opcional)"
+                           Keyboard="Telephone" ReturnType="Next" />
+                    <Label Text="COMISIÓN" Style="{StaticResource FormLabel}" />
+                    <Border Style="{StaticResource InnerGlassCard}">
+                        <Picker x:Name="ComisionEstudiantePicker"
+                                Title="Seleccionar comisión"
+                                TitleColor="#A5B4FC"
+                                TextColor="White"
+                                BackgroundColor="Transparent"
+                                ItemDisplayBinding="{Binding Codigo}" />
+                    </Border>
+                </VerticalStackLayout>
+            </controls:GlassModal.Formulario>
+        </controls:GlassModal>
     </Grid>
-
 </ContentPage>

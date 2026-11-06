@@ -16,7 +16,7 @@ namespace Gestor_de_Estudiantes.Views
         {
             try
             {
-                _vm.AgregarEstudiante(LegajoEntry.Text, NombreEntry.Text);
+                _vm.AgregarEstudiante(LegajoEntry.Text, NombreEntry.Text, TelefonoEntry.Text);
                 await Navigation.PopModalAsync();
             }
             catch (Exception ex) when (ex is ArgumentException || ex is InvalidOperationException)

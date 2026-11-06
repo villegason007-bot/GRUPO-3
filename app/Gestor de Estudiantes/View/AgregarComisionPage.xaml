@@ -5,84 +5,6 @@
     x:Class="Gestor_de_Estudiantes.Views.AgregarComisionPage"
     BackgroundColor="#090D18">
 
-    <ContentPage.Resources>
-        <ResourceDictionary>
-
-            <!-- Superficies Liquid Glass -->
-            <Style x:Key="GlassCard" TargetType="Border">
-                <Setter Property="Background" Value="#16FFFFFF" />
-                <Setter Property="Stroke" Value="#30FFFFFF" />
-                <Setter Property="StrokeThickness" Value="1" />
-                <Setter Property="Padding" Value="22" />
-                <Setter Property="StrokeShape">
-                    <Setter.Value>
-                        <RoundRectangle CornerRadius="22" />
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <Style x:Key="InnerGlassCard" TargetType="Border">
-                <Setter Property="Background" Value="#12FFFFFF" />
-                <Setter Property="Stroke" Value="#25FFFFFF" />
-                <Setter Property="StrokeThickness" Value="1" />
-                <Setter Property="Padding" Value="15" />
-                <Setter Property="StrokeShape">
-                    <Setter.Value>
-                        <RoundRectangle CornerRadius="16" />
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <Style x:Key="GlassButton" TargetType="Button">
-                <Setter Property="BackgroundColor" Value="#7667F5" />
-                <Setter Property="TextColor" Value="White" />
-                <Setter Property="CornerRadius" Value="12" />
-                <Setter Property="Padding" Value="17,12" />
-                <Setter Property="FontSize" Value="13" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="MinimumHeightRequest" Value="46" />
-            </Style>
-
-            <Style x:Key="SecondaryGlassButton" TargetType="Button">
-                <Setter Property="BackgroundColor" Value="#18FFFFFF" />
-                <Setter Property="TextColor" Value="#E2E8F0" />
-                <Setter Property="BorderColor" Value="#35FFFFFF" />
-                <Setter Property="BorderWidth" Value="1" />
-                <Setter Property="CornerRadius" Value="11" />
-                <Setter Property="Padding" Value="13,9" />
-                <Setter Property="FontSize" Value="12" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="MinimumHeightRequest" Value="40" />
-            </Style>
-
-            <Style x:Key="GlassEntry" TargetType="Entry">
-                <Setter Property="TextColor" Value="White" />
-                <Setter Property="PlaceholderColor" Value="#8290AA" />
-                <Setter Property="BackgroundColor" Value="#182235" />
-                <Setter Property="HeightRequest" Value="50" />
-                <Setter Property="Margin" Value="0,3,0,0" />
-            </Style>
-
-            <Style x:Key="SectionTitle" TargetType="Label">
-                <Setter Property="FontSize" Value="20" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="TextColor" Value="#F8FAFC" />
-            </Style>
-
-            <Style x:Key="SecondaryText" TargetType="Label">
-                <Setter Property="FontSize" Value="13" />
-                <Setter Property="TextColor" Value="#AEBBD0" />
-                <Setter Property="LineBreakMode" Value="WordWrap" />
-            </Style>
-
-            <Style x:Key="FormLabel" TargetType="Label">
-                <Setter Property="FontSize" Value="12" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="TextColor" Value="#C8D2E5" />
-            </Style>
-
-        </ResourceDictionary>
-    </ContentPage.Resources>
 
     <Grid>
 
@@ -163,7 +85,7 @@
                         <!-- Títulos -->
                         <VerticalStackLayout Spacing="5">
                             <Label Text="Nueva comisión" FontSize="23" FontAttributes="Bold" TextColor="White" />
-                            <Label Text="Completá los datos para registrar una cursada." FontSize="13" TextColor="#AEBBD0" />
+                            <Label Text="Completá los datos para registrar una cursada." FontSize="13" TextColor="{StaticResource TextoSecundario}" />
                         </VerticalStackLayout>
 
                         <!-- Campo Código -->

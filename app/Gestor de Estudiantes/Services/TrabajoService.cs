@@ -7,7 +7,7 @@ namespace Gestor_de_Estudiantes.Services
     /// Fachada de trabajos prácticos (H5): lista los trabajos de una
     /// comisión y da de alta trabajos nuevos con su fecha de entrega.
     /// </summary>
-    public class TrabajoService
+    public class TrabajoService : ITrabajoService
     {
         private readonly ITrabajoRepository _trabajos;
         private readonly IComisionRepository _comisiones;
@@ -70,6 +70,31 @@ namespace Gestor_de_Estudiantes.Services
                 trabajo,
                 codigoComision.Trim());
 
+            return trabajo;
+        }
+
+        public Trabajo AgregarTrabajo(
+            string codigoComision,
+            Guid materiaId,
+            string titulo,
+            DateTime fechaDeEntrega)
+        {
+            ValidarComision(codigoComision);
+            titulo = (titulo ?? string.Empty).Trim();
+            if (titulo.Length == 0)
+                throw new ArgumentException("El título del trabajo es obligatorio.");
+            if (fechaDeEntrega == default)
+                throw new ArgumentException("La fecha de entrega es obligatoria.");
+
+            var trabajo = new Trabajo
+            {
+                Titulo = titulo,
+                FechaDeEntrega = fechaDeEntrega.Date,
+                MateriaId = materiaId
+            };
+
+            _trabajos.AgregarTrabajo(trabajo, codigoComision.Trim(), materiaId);
+            trabajo.MateriaId = materiaId;
             return trabajo;
         }
 

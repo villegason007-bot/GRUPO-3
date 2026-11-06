@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Gestor_de_Estudiantes.Views.HistorialAsistenciaPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:Gestor_de_Estudiantes.Controls"
+    Title="Historial de asistencia"
+    BackgroundColor="#090D18">
+
+    <Grid Padding="24" RowDefinitions="Auto,Auto,Auto,*" RowSpacing="16">
+
+        <!-- Encabezado: nombre y legajo/comisión -->
+        <VerticalStackLayout Spacing="5">
+            <Label
+                Text="{Binding NombreCompleto}"
+                FontSize="28"
+                FontAttributes="Bold"
+                TextColor="White" />
+
+            <Label
+                Text="{Binding Subtitulo}"
+                FontSize="13"
+                TextColor="#94A3B8" />
+        </VerticalStackLayout>
+
+        <!-- Mensaje de estado o de error -->
+        <Label
+            Grid.Row="1"
+            Text="{Binding Mensaje}"
+            TextColor="#94A3B8"
+            FontSize="13"
+            IsVisible="{Binding MostrarMensaje}" />
+
+        <!-- Título de la sección -->
+        <Label
+            Grid.Row="2"
+            Text="Asistencia por clase"
+            Style="{StaticResource SectionTitle}" />
+
+        <!-- Lista del historial (H12) -->
+        <CollectionView
+            Grid.Row="3"
+            ItemsSource="{Binding Filas}">
+
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout
+                    Orientation="Vertical"
+                    ItemSpacing="10" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.EmptyView>
+                <controls:EstadoVacio
+                    Text="Todavía no hay asistencias registradas."
+                    Margin="16"
+                    HorizontalOptions="Center" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border
+                        Background="#14FF"
+                        Padding="15"
+                        Stroke="#263244"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14">
+
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+
+                            <VerticalStackLayout
+                                Spacing="3"
+                                VerticalOptions="Center">
+                                <Label
+                                    Text="{Binding FechaTexto}"
+                                    FontSize="15"
+                                    FontAttributes="Bold"
+                                    TextColor="#F8FAFC" />
+                                <Label
+                                    Text="Clase"
+                                    FontSize="12"
+                                    TextColor="#64748B" />
+                            </VerticalStackLayout>
+
+                            <!-- Badge de condición (tri-estado) -->
+                            <Border
+                                Grid.Column="1"
+                                Padding="10,6"
+                                HorizontalOptions="End"
+                                VerticalOptions="Center"
+                                BackgroundColor="{Binding BadgeColor}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 8">
+
+                                <Label
+                                    Text="{Binding CondicionTexto}"
+                                    TextColor="{Binding BadgeTextColor}"
+                                    FontSize="12"
+                                    FontAttributes="Bold"
+                                    HorizontalTextAlignment="Center" />
+                            </Border>
+
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>

@@ -10,8 +10,8 @@ namespace Gestor_de_Estudiantes.ViewModel
 {
     public class RiesgoViewModel : INotifyPropertyChanged
     {
-        private readonly ComisionService _comisionService;
-        private readonly RiesgoService _riesgoService;
+        private readonly IComisionService _comisionService;
+        private readonly IRiesgoService _riesgoService;
 
         private Comision? _comisionSeleccionada;
         private string _mensaje = string.Empty;
@@ -62,8 +62,8 @@ namespace Gestor_de_Estudiantes.ViewModel
         }
 
         public RiesgoViewModel(
-            ComisionService comisionService,
-            RiesgoService riesgoService)
+            IComisionService comisionService,
+            IRiesgoService riesgoService)
         {
             _comisionService = comisionService;
             _riesgoService = riesgoService;
@@ -148,19 +148,23 @@ namespace Gestor_de_Estudiantes.ViewModel
 
     public class RiesgoFilaViewModel
     {
+        public string Legajo { get; }
         public string Nombre { get; }
         public string TrabajosResumen { get; }
         public string FaltasResumen { get; }
         public string Motivo { get; }
+        public string UltimoContacto { get; }
         public string Estado { get; }
         public Color BadgeColor { get; }
         public Color BadgeTextColor { get; }
 
         public RiesgoFilaViewModel(ResultadoRiesgo resultado)
         {
+            Legajo = resultado.Legajo;
             Nombre = resultado.Nombre;
             Estado = resultado.Estado;
             Motivo = resultado.MotivoRiesgo;
+            UltimoContacto = resultado.TextoUltimoContacto;
 
             if (resultado.SinInformacion)
             {

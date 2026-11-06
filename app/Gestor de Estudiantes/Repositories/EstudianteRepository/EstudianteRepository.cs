@@ -16,7 +16,7 @@ namespace Gestor_de_Estudiantes.Repositories
             using var conexion = BaseDeDatos.Abrir();
             using var comando = conexion.CreateCommand();
             comando.CommandText = """
-                SELECT e.id, e.legajo, e.nombre, e.apellido, e.telefono, e.fecha_incorporacion
+                SELECT e.id, e.legajo, e.nombre, e.apellido, e.telefono, e.fecha_incorporacion, c.codigo
                 FROM estudiantes e
                 INNER JOIN comisiones c ON c.id = e.comision_id
                 WHERE c.codigo = @codigo AND e.activo = 1
@@ -37,8 +37,9 @@ namespace Gestor_de_Estudiantes.Repositories
             using var conexion = BaseDeDatos.Abrir();
             using var comando = conexion.CreateCommand();
             comando.CommandText = """
-                SELECT e.id, e.legajo, e.nombre, e.apellido, e.telefono, e.fecha_incorporacion
+                SELECT e.id, e.legajo, e.nombre, e.apellido, e.telefono, e.fecha_incorporacion, c.codigo
                 FROM estudiantes e
+                INNER JOIN comisiones c ON c.id = e.comision_id
                 WHERE e.legajo = @legajo AND e.activo = 1;
                 """;
             comando.Parameters.AddWithValue("@legajo", legajo);
@@ -48,23 +49,28 @@ namespace Gestor_de_Estudiantes.Repositories
         }
 
         /// <summary>
-        /// Inserta un estudiante en la comisión; <c>activo</c> toma su
-        /// valor por defecto (1). Teléfono y fecha de incorporación no se
-        /// persisten en el alta actual.
+        /// Inserta un estudiante en la comisión con su teléfono y su
+        /// fecha de incorporación; <c>activo</c> toma su valor por
+        /// defecto (1).
         /// </summary>
         public void AgregarEstudiante(Estudiante estudiante, string codigoComision)
         {
             using var conexion = BaseDeDatos.Abrir();
             using var comando = conexion.CreateCommand();
             comando.CommandText = """
-                INSERT INTO estudiantes (id, legajo, nombre, apellido, comision_id)
-                VALUES (@id, @legajo, @nombre, @apellido,
+                INSERT INTO estudiantes
+                    (id, legajo, nombre, apellido, telefono, fecha_incorporacion, comision_id)
+                VALUES (@id, @legajo, @nombre, @apellido, @telefono, @fechaIncorporacion,
                         (SELECT id FROM comisiones WHERE codigo = @codigo));
                 """;
             comando.Parameters.AddWithValue("@id", estudiante.Id.ToString("D"));
             comando.Parameters.AddWithValue("@legajo", estudiante.Legajo);
             comando.Parameters.AddWithValue("@nombre", estudiante.Nombre);
             comando.Parameters.AddWithValue("@apellido", estudiante.Apellido);
+            comando.Parameters.AddWithValue("@telefono",
+                (object?)estudiante.Telefono ?? DBNull.Value);
+            comando.Parameters.AddWithValue("@fechaIncorporacion",
+                (object?)estudiante.FechaIncorporacion ?? DBNull.Value);
             comando.Parameters.AddWithValue("@codigo", codigoComision);
             comando.ExecuteNonQuery();
         }
@@ -88,6 +94,7 @@ namespace Gestor_de_Estudiantes.Repositories
             Apellido = lector.IsDBNull(3) ? string.Empty : lector.GetString(3),
             Telefono = lector.IsDBNull(4) ? null : lector.GetString(4),
             FechaIncorporacion = lector.IsDBNull(5) ? null : lector.GetString(5),
+            CodigoComision = lector.GetString(6),
         };
     }
 }

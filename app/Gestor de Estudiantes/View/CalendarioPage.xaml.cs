@@ -1,5 +1,6 @@
 
 using Gestor_de_Estudiantes.ViewModel;
+using Gestor_de_Estudiantes.Resources;
 
 namespace Gestor_de_Estudiantes.Views;
 
@@ -34,32 +35,32 @@ public partial class CalendarioPage : ContentPage
 
         TabCalendarioButton.BackgroundColor =
             panel == "calendario"
-                ? Color.FromArgb("#7667F5")
+                ? Paleta.Acento
                 : Colors.Transparent;
 
         TabClaseButton.BackgroundColor =
             panel == "clase"
-                ? Color.FromArgb("#7667F5")
+                ? Paleta.Acento
                 : Colors.Transparent;
 
         TabTrabajoButton.BackgroundColor =
             panel == "trabajo"
-                ? Color.FromArgb("#7667F5")
+                ? Paleta.Acento
                 : Colors.Transparent;
 
         TabCalendarioButton.TextColor =
             panel == "calendario"
                 ? Colors.White
-                : Color.FromArgb("#AEBBD0");
+                : Paleta.TextoSecundario;
 
         TabClaseButton.TextColor =
             panel == "clase"
                 ? Colors.White
-                : Color.FromArgb("#AEBBD0");
+                : Paleta.TextoSecundario;
 
         TabTrabajoButton.TextColor =
             panel == "trabajo"
                 ? Colors.White
-                : Color.FromArgb("#AEBBD0");
+                : Paleta.TextoSecundario;
     }
 }

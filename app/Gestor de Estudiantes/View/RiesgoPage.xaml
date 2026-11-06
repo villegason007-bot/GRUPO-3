@@ -3,6 +3,7 @@
     x:Class="Gestor_de_Estudiantes.Views.RiesgoPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:Gestor_de_Estudiantes.Controls"
     Title="Indicador de riesgo"
     BackgroundColor="#090D18">
 
@@ -75,7 +76,7 @@
 
                     <Grid
                         Padding="14,16"
-                        ColumnDefinitions="190,150,100,300,135"
+                        ColumnDefinitions="190,150,100,300,130,135"
                         ColumnSpacing="12"
                         BackgroundColor="#1E293B">
 
@@ -109,6 +110,14 @@
 
                         <Label
                             Grid.Column="4"
+                            Text="Último contacto"
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            TextColor="#CBD5E1"
+                            VerticalOptions="Center" />
+
+                        <Label
+                            Grid.Column="5"
                             Text="Riesgo"
                             FontAttributes="Bold"
                             TextColor="#CBD5E1"
@@ -120,18 +129,15 @@
                 <CollectionView
                     Grid.Row="1"
                     ItemsSource="{Binding Estudiantes}"
-                    SelectionMode="None"
-                    EmptyView="No hay estudiantes para mostrar en esta comisión.">
+                    SelectionMode="Single"
+                    SelectionChanged="Estudiantes_SelectionChanged">
 
-                    <CollectionView.EmptyViewTemplate>
-                        <DataTemplate>
-                            <Label
-                                Text="No hay estudiantes para mostrar en esta comisión."
-                                TextColor="#94A3B8"
-                                HorizontalTextAlignment="Center"
-                                Margin="20" />
-                        </DataTemplate>
-                    </CollectionView.EmptyViewTemplate>
+                    <CollectionView.EmptyView>
+                        <controls:EstadoVacio
+                            Text="No hay estudiantes para mostrar en esta comisión."
+                            ColorTexto="#94A3B8"
+                            Margin="20" />
+                    </CollectionView.EmptyView>
 
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
@@ -141,7 +147,7 @@
 
                                 <Grid
                                     Padding="14,12"
-                                    ColumnDefinitions="190,150,100,300,135"
+                                    ColumnDefinitions="190,150,100,300,130,135"
                                     ColumnSpacing="12">
 
                                     <Label
@@ -171,8 +177,16 @@
                                         VerticalOptions="Center"
                                         LineBreakMode="WordWrap" />
 
-                                    <Border
+                                    <!-- H11: fecha del último contacto o «Sin contactar» -->
+                                    <Label
                                         Grid.Column="4"
+                                        Text="{Binding UltimoContacto}"
+                                        TextColor="#CBD5E1"
+                                        FontSize="12"
+                                        VerticalOptions="Center" />
+
+                                    <Border
+                                        Grid.Column="5"
                                         Padding="8,5"
                                         HorizontalOptions="Start"
                                         VerticalOptions="Center"

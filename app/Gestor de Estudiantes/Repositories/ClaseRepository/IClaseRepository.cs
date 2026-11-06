@@ -16,10 +16,31 @@ namespace Gestor_de_Estudiantes.Repositories
         /// <param name="codigoComision">Comisión a la que pertenece.</param>
         void AgregarClase(Clase clase, string codigoComision);
 
+        void AgregarClase(Clase clase, string codigoComision, Guid materiaId);
+
+        void ActualizarMateria(Guid claseId, Guid materiaId);
+
         /// <summary>Actualiza el estado (hábil/no hábil) de una clase.</summary>
         /// <param name="claseId">Clase a actualizar.</param>
         /// <param name="estado">Nuevo estado.</param>
         /// <returns>true si la clase existía y se actualizó.</returns>
         bool MarcarEstado(Guid claseId, EstadoClase estado);
+
+        /// <summary>
+        /// Indica si la comisión ya tiene una clase en esa fecha (QA002:
+        /// evita registrar dos veces el mismo día).
+        /// </summary>
+        /// <param name="codigoComision">Código de la comisión.</param>
+        /// <param name="fecha">Fecha a verificar (se compara por día).</param>
+        bool ExisteClaseEnFecha(string codigoComision, DateTime fecha);
+
+        /// <summary>
+        /// Devuelve el estado de una clase; si la fila no existe asume
+        /// <see cref="EstadoClase.Habil"/>. Lo usan otros repositorios
+        /// (por ejemplo asistencias) a través del contrato, sin depender
+        /// de la implementación concreta.
+        /// </summary>
+        /// <param name="claseId">Clase a consultar.</param>
+        EstadoClase EstadoDe(Guid claseId);
     }
 }

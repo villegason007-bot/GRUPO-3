@@ -1,4 +1,3 @@
-
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -10,22 +9,26 @@ namespace Gestor_de_Estudiantes.ViewModel
 {
     public class AsistenciaEntregasViewModel : INotifyPropertyChanged
     {
-        private readonly ComisionService _comisionService;
-        private readonly ClaseService _claseService;
-        private readonly TrabajoService _trabajoService;
-        private readonly EstudianteService _estudianteService;
-        private readonly AsistenciaService _asistenciaService;
-        private readonly EntregaService _entregaService;
+        private readonly IComisionService _comisionService;
+        private readonly IClaseService _claseService;
+        private readonly ITrabajoService _trabajoService;
+        private readonly IEstudianteService _estudianteService;
+        private readonly IAsistenciaService _asistenciaService;
+        private readonly IEntregaService _entregaService;
+        private readonly IMateriaService _materiaService;
 
         private Comision? _comisionSeleccionada;
         private Clase? _claseSeleccionada;
         private Trabajo? _trabajoSeleccionado;
+        private Materia? _materiaSeleccionada;
         private string _mensaje = string.Empty;
         private bool _estaCargando;
+        private bool _cargandoDatosComision;
 
         public ObservableCollection<Comision> Comisiones { get; } = new();
         public ObservableCollection<Clase> Clases { get; } = new();
         public ObservableCollection<Trabajo> Trabajos { get; } = new();
+        public ObservableCollection<Materia> Materias { get; } = new();
         public ObservableCollection<FilaAsistencia> Asistencias { get; } = new();
         public ObservableCollection<FilaEntrega> Entregas { get; } = new();
 
@@ -36,6 +39,17 @@ namespace Gestor_de_Estudiantes.ViewModel
             {
                 if (SetProperty(ref _comisionSeleccionada, value))
                     CargarDatosComision();
+            }
+        }
+
+        public Materia? MateriaSeleccionada
+        {
+            get => _materiaSeleccionada;
+            set
+            {
+                if (SetProperty(ref _materiaSeleccionada, value) &&
+                    !_cargandoDatosComision)
+                    CargarDatosMateria();
             }
         }
 
@@ -78,12 +92,13 @@ namespace Gestor_de_Estudiantes.ViewModel
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public AsistenciaEntregasViewModel(
-            ComisionService comisionService,
-            ClaseService claseService,
-            TrabajoService trabajoService,
-            EstudianteService estudianteService,
-            AsistenciaService asistenciaService,
-            EntregaService entregaService)
+            IComisionService comisionService,
+            IClaseService claseService,
+            ITrabajoService trabajoService,
+            IEstudianteService estudianteService,
+            IAsistenciaService asistenciaService,
+            IEntregaService entregaService,
+            IMateriaService materiaService)
         {
             _comisionService = comisionService;
             _claseService = claseService;
@@ -91,6 +106,7 @@ namespace Gestor_de_Estudiantes.ViewModel
             _estudianteService = estudianteService;
             _asistenciaService = asistenciaService;
             _entregaService = entregaService;
+            _materiaService = materiaService;
 
             GuardarAsistenciasCommand = new Command(GuardarAsistencias);
             GuardarEntregasCommand = new Command(GuardarEntregas);
@@ -121,6 +137,56 @@ namespace Gestor_de_Estudiantes.ViewModel
 
         private void CargarDatosComision()
         {
+            if (_cargandoDatosComision)
+                return;
+
+            _cargandoDatosComision = true;
+
+            try
+            {
+                Clases.Clear();
+                Trabajos.Clear();
+                Asistencias.Clear();
+                Entregas.Clear();
+
+                if (ComisionSeleccionada == null)
+                    return;
+
+                var codigo = ComisionSeleccionada.Codigo;
+                var materiaIdSeleccionada = _materiaSeleccionada?.Id;
+
+                Materias.Clear();
+                foreach (var materia in _materiaService.ListarMateriasDeComision(codigo))
+                    Materias.Add(materia);
+
+                // No usar el setter aquí: el setter vuelve a llamar a
+                // CargarDatosComision() y provoca una recursión infinita.
+                var materiaSeleccionada = Materias.FirstOrDefault(m =>
+                    m.Id == materiaIdSeleccionada)
+                    ?? Materias.FirstOrDefault();
+
+                if (!ReferenceEquals(_materiaSeleccionada, materiaSeleccionada))
+                {
+                    _materiaSeleccionada = materiaSeleccionada;
+                    PropertyChanged?.Invoke(
+                        this,
+                        new PropertyChangedEventArgs(nameof(MateriaSeleccionada)));
+                }
+
+                CargarDatosMateria();
+            }
+            catch (Exception ex)
+            {
+                Mensaje = $"Error al cargar los datos: {ex.Message}";
+            }
+            finally
+            {
+                _cargandoDatosComision = false;
+            }
+        }
+
+        private void CargarDatosMateria()
+        {
             Clases.Clear();
             Trabajos.Clear();
             Asistencias.Clear();
@@ -133,19 +199,26 @@ namespace Gestor_de_Estudiantes.ViewModel
             {
                 var codigo = ComisionSeleccionada.Codigo;
 
-                foreach (var clase in _claseService.ListarClases(codigo))
+                var clases = _claseService.ListarClases(codigo)
+                    .Where(c => MateriaSeleccionada == null ||
+                                c.MateriaId == MateriaSeleccionada.Id);
+
+                foreach (var clase in clases)
                     Clases.Add(clase);
 
-                foreach (var trabajo in _trabajoService.ListarTrabajos(codigo))
+                var trabajos = _trabajoService.ListarTrabajos(codigo)
+                    .Where(t => MateriaSeleccionada == null ||
+                                t.MateriaId == MateriaSeleccionada.Id);
+
+                foreach (var trabajo in trabajos)
                     Trabajos.Add(trabajo);
 
                 ClaseSeleccionada = Clases.FirstOrDefault();
                 TrabajoSeleccionado = Trabajos.FirstOrDefault();
 
-                if (Clases.Count == 0 && Trabajos.Count == 0)
-                    Mensaje = "Esta comisión todavía no tiene clases ni trabajos.";
-                else
-                    Mensaje = string.Empty;
+                Mensaje = Clases.Count == 0 && Trabajos.Count == 0
+                    ? "Esta comisión todavía no tiene clases ni trabajos."
+                    : string.Empty;
             }
             catch (Exception ex)
             {
@@ -173,10 +246,12 @@ namespace Gestor_de_Estudiantes.ViewModel
                     var asistencia = existentes.FirstOrDefault(a =>
                         a.EstudianteId == estudiante.Id);
 
+                    // Sin registro la fila nace Pendiente: el tutor marca
+                    // Presente/Ausente o la deja Sin marcar.
                     Asistencias.Add(new FilaAsistencia
                     {
                         Estudiante = estudiante,
-                        Presente = asistencia?.EstaPresente ?? false,
+                        Condicion = asistencia?.Condicion ?? Condicion.Pendiente,
                         TieneRegistro = asistencia != null
                     });
                 }
@@ -243,7 +318,7 @@ namespace Gestor_de_Estudiantes.ViewModel
                     _asistenciaService.GuardarAsistencia(
                         ClaseSeleccionada.Id,
                         fila.Estudiante.Id,
-                        fila.Presente);
+                        fila.Condicion);
                 }
 
                 Mensaje = "Las asistencias se guardaron correctamente.";
@@ -302,28 +377,67 @@ namespace Gestor_de_Estudiantes.ViewModel
 
     public class FilaAsistencia : INotifyPropertyChanged
     {
-        private bool _presente;
+        private Condicion _condicion = Condicion.Pendiente;
 
         public Estudiante Estudiante { get; set; } = new();
 
         public bool TieneRegistro { get; set; }
 
-        public bool Presente
+        /// <summary>
+        /// Condición elegida para la fila; arranca en Pendiente (sin
+        /// marcar) y la cambian los comandos de los tres botones.
+        /// </summary>
+        public Condicion Condicion
         {
-            get => _presente;
+            get => _condicion;
             set
             {
-                if (_presente == value)
+                if (_condicion == value)
                     return;
 
-                _presente = value;
-                PropertyChanged?.Invoke(
-                    this,
-                    new PropertyChangedEventArgs(nameof(Presente)));
+                _condicion = value;
+                Notificar(nameof(Condicion));
+                Notificar(nameof(EsPresente));
+                Notificar(nameof(EsAusente));
+                Notificar(nameof(EsPendiente));
+                Notificar(nameof(TextoCondicion));
             }
         }
 
+        /// <summary>true si la fila quedó marcada como presente.</summary>
+        public bool EsPresente => Condicion == Condicion.Presente;
+
+        /// <summary>true si la fila quedó marcada como ausente.</summary>
+        public bool EsAusente => Condicion == Condicion.Ausente;
+
+        /// <summary>true si la fila sigue sin marcar (Pendiente).</summary>
+        public bool EsPendiente => Condicion == Condicion.Pendiente;
+
+        /// <summary>Texto a mostrar de la condición («Sin marcar» para Pendiente).</summary>
+        public string TextoCondicion => Condicion switch
+        {
+            Condicion.Presente => "Presente",
+            Condicion.Ausente => "Ausente",
+            _ => "Sin marcar",
+        };
+
+        public ICommand MarcarPresenteCommand { get; }
+        public ICommand MarcarAusenteCommand { get; }
+        public ICommand MarcarPendienteCommand { get; }
+
+        public FilaAsistencia()
+        {
+            MarcarPresenteCommand = new Command(() => Condicion = Condicion.Presente);
+            MarcarAusenteCommand = new Command(() => Condicion = Condicion.Ausente);
+            MarcarPendienteCommand = new Command(() => Condicion = Condicion.Pendiente);
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        private void Notificar(string nombre)
+            => PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(nombre));
     }
 
     public class FilaEntrega : INotifyPropertyChanged

@@ -1,4 +1,5 @@
 ﻿
+using Gestor_de_Estudiantes.Config;
 using Gestor_de_Estudiantes.Repositories;
 using Gestor_de_Estudiantes.Services;
 using Gestor_de_Estudiantes.ViewModel;
@@ -35,7 +36,7 @@ namespace Gestor_de_Estudiantes
                 IEstudianteRepository,
                 EstudianteRepository>();
 
-            builder.Services.AddSingleton<EstudianteService>();
+            builder.Services.AddSingleton<IEstudianteService, EstudianteService>();
             builder.Services.AddTransient<EstudiantesViewModel>();
             builder.Services.AddTransient<EstudiantesPage>();
 
@@ -44,25 +45,62 @@ namespace Gestor_de_Estudiantes
                 IComisionRepository,
                 ComisionRepository>();
 
-            builder.Services.AddSingleton<ComisionService>();
-            builder.Services.AddTransient<ComisionesViewModel>();
+            builder.Services.AddSingleton<IComisionService, ComisionService>();
+            // AHORA
+            builder.Services.AddSingleton<ComisionesViewModel>();
+            builder.Services.AddTransient<MateriasViewModel>();
+
             builder.Services.AddTransient<ComisionesPage>();
+            builder.Services.AddTransient<ComisionDetallePage>();   // nueva
+            builder.Services.AddTransient<EstudiantesPage>();       // ahora usa ComisionesViewModel
+            builder.Services.AddTransient<MateriasPage>();
+            builder.Services.AddTransient<ComisionesPage>();
+
+
+            builder.Services.AddSingleton<IInscripcionMateriaRepository, InscripcionMateriaRepository>();
+            builder.Services.AddSingleton<IInscripcionMateriaService, InscripcionMateriaService>();
+
+            // Materias (N:M con comisiones, QA001)
+            builder.Services.AddSingleton<
+                IMateriaRepository,
+                MateriaRepository>();
+
+            builder.Services.AddTransient<IMateriaService, MateriaService>();
+            builder.Services.AddTransient<ComisionMateriasViewModel>();
+
+            // Contactos, ficha e historiales (H9-H13)
+            builder.Services.AddSingleton<
+                IContactoRepository,
+                ContactoRepository>();
+
+            builder.Services.AddTransient<IContactoService, ContactoService>();
+            builder.Services.AddTransient<IFichaService, FichaService>();
+            builder.Services.AddTransient<FichaEstudianteViewModel>();
+            builder.Services.AddTransient<FichaEstudiantePage>();
+            builder.Services.AddTransient<HistorialAsistenciaViewModel>();
+            builder.Services.AddTransient<HistorialAsistenciaPage>();
+            builder.Services.AddTransient<HistorialEntregasViewModel>();
+            builder.Services.AddTransient<HistorialEntregasPage>();
+            builder.Services.AddTransient<IHistorialAsistenciaService, HistorialAsistenciaService>();
+            builder.Services.AddTransient<IHistorialEntregasService, HistorialEntregasService>();
 
             // Clases
             builder.Services.AddSingleton<
                 IClaseRepository,
                 ClaseRepository>();
 
-            builder.Services.AddTransient<ClaseService>();
+            builder.Services.AddTransient<IClaseService, ClaseService>();
 
             // Trabajos
             builder.Services.AddSingleton<
                 ITrabajoRepository,
                 TrabajoRepository>();
 
-            builder.Services.AddTransient<TrabajoService>();
+            builder.Services.AddTransient<ITrabajoService, TrabajoService>();
 
-            // Calendario
+            // Calendario (una sola fuente: ICalendarioService, SRP-2)
+            builder.Services.AddSingleton<ICalendarioRepository, CalendarioRepository>();
+            builder.Services.AddSingleton<ICalendarioService, CalendarioService>();
             builder.Services.AddTransient<CalendarioViewModel>();
             builder.Services.AddTransient<CalendarioPage>();
 
@@ -75,8 +113,8 @@ namespace Gestor_de_Estudiantes
                 IEntregaRepository,
                 EntregaRepository>();
 
-            builder.Services.AddTransient<AsistenciaService>();
-            builder.Services.AddTransient<EntregaService>();
+            builder.Services.AddTransient<IAsistenciaService, AsistenciaService>();
+            builder.Services.AddTransient<IEntregaService, EntregaService>();
 
             builder.Services.AddTransient<AsistenciaEntregasViewModel>();
             builder.Services.AddTransient<AsistenciaEntregasPage>();
@@ -85,14 +123,25 @@ namespace Gestor_de_Estudiantes
             builder.Services.AddSingleton<
                 IRiesgoRepository,
                 RiesgoRepository>();
+            builder.Services.AddSingleton<
+                IParametrosRiesgoRepository,
+                ParametrosRiesgoRepository>();
 
-            builder.Services.AddSingleton<RiesgoService>();
+            builder.Services.AddSingleton<ICalculadoraDeRiesgo, CalculadoraDeRiesgo>();
+            builder.Services.AddSingleton<IRiesgoService, RiesgoService>();
+            builder.Services.AddSingleton<IParametrosRiesgoService, ParametrosRiesgoService>();
 
             builder.Services.AddTransient<RiesgoViewModel>();
             builder.Services.AddTransient<RiesgoPage>();
 
             builder.Services.AddTransient<ConfiguracionRiesgoViewModel>();
             builder.Services.AddTransient<ConfiguracionRiesgoPage>();
+
+            // Crear la base (esquema + semilla) al iniciar la app: en una
+            // máquina recién clonada no hay base y sin esto la primera
+            // pantalla falla con «SQLite Error 14» (la consola no corre en
+            // el celular).
+            BaseDeDatos.Inicializar();
 
             return builder.Build();
         }

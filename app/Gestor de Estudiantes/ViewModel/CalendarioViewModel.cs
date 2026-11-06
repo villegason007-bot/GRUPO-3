@@ -9,9 +9,13 @@ namespace Gestor_de_Estudiantes.ViewModel
 {
     public class CalendarioViewModel : INotifyPropertyChanged
     {
-        private readonly ComisionService _comisionService;
-        private readonly ClaseService _claseService;
-        private readonly TrabajoService _trabajoService;
+        private readonly IComisionService _comisionService;
+        private readonly IClaseService _claseService;
+        private readonly ITrabajoService _trabajoService;
+        private readonly ICalendarioService _calendarioService;
+        private readonly IMateriaService _materiaService;
+        private readonly IEstudianteService _estudianteService;
+        private readonly IAsistenciaService _asistenciaService;
 
         private Comision? _comisionSeleccionada;
         private DateTime _fechaClase = DateTime.Today;
@@ -22,7 +26,13 @@ namespace Gestor_de_Estudiantes.ViewModel
 
         public ObservableCollection<Comision> Comisiones { get; } = new();
 
-        public ObservableCollection<EventoCalendario> Eventos { get; } = new();
+        public ObservableCollection<Materia> Materias { get; } = new();
+
+        public ObservableCollection<ElementoCalendario> Eventos { get; } = new();
+
+        public ObservableCollection<ClaseCalendarioItem> Clases { get; } = new();
+
+        public ObservableCollection<AsistenciaCalendarioItem> Asistencias { get; } = new();
 
         public Comision? ComisionSeleccionada
         {
@@ -34,6 +44,14 @@ namespace Gestor_de_Estudiantes.ViewModel
                     CargarCalendario();
                 }
             }
+        }
+
+        private Materia? _materiaSeleccionada;
+
+        public Materia? MateriaSeleccionada
+        {
+            get => _materiaSeleccionada;
+            set => SetProperty(ref _materiaSeleccionada, value);
         }
 
         public DateTime FechaClase
@@ -75,13 +93,21 @@ namespace Gestor_de_Estudiantes.ViewModel
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public CalendarioViewModel(
-            ComisionService comisionService,
-            ClaseService claseService,
-            TrabajoService trabajoService)
+            IComisionService comisionService,
+            IClaseService claseService,
+            ITrabajoService trabajoService,
+            ICalendarioService calendarioService,
+            IMateriaService materiaService,
+            IEstudianteService estudianteService,
+            IAsistenciaService asistenciaService)
         {
             _comisionService = comisionService;
             _claseService = claseService;
             _trabajoService = trabajoService;
+            _calendarioService = calendarioService;
+            _materiaService = materiaService;
+            _estudianteService = estudianteService;
+            _asistenciaService = asistenciaService;
 
             RecargarCommand = new Command(CargarCalendario);
             RegistrarClaseCommand = new Command(RegistrarClase);
@@ -139,38 +165,23 @@ namespace Gestor_de_Estudiantes.ViewModel
             try
             {
                 var codigo = ComisionSeleccionada.Codigo;
+                CargarMaterias(codigo);
 
-                var clases = _claseService.ListarClases(codigo);
-                var trabajos = _trabajoService.ListarTrabajos(codigo);
-
-                foreach (var clase in clases)
+                // Única fuente del calendario: el service une clases y
+                // trabajos por fecha (antes lo duplicaba el ViewModel).
+                foreach (var elemento in _calendarioService.VerCalendario(codigo))
                 {
-                    Eventos.Add(new EventoCalendario
-                    {
-                        Fecha = clase.Fecha,
-                        Tipo = "CLASE",
-                        Titulo = "Clase",
-                        Detalle = $"Estado: {clase.Estado}"
-                    });
+                    Eventos.Add(elemento);
                 }
 
-                foreach (var trabajo in trabajos)
-                {
-                    Eventos.Add(new EventoCalendario
-                    {
-                        Fecha = trabajo.FechaDeEntrega,
-                        Tipo = "TRABAJO",
-                        Titulo = trabajo.Titulo,
-                        Detalle = "Fecha de entrega"
-                    });
-                }
+                CargarClasesYAsistencias(codigo);
 
-                OrdenarEventos();
                 NotificarSinEventos();
                 Mensaje = Eventos.Count == 0
                     ? "Todavía no hay eventos para esta comisión."
                     : string.Empty;
             }
+
             catch (Exception ex)
             {
                 Mensaje = $"Error al cargar el calendario: {ex.Message}";
@@ -181,6 +192,88 @@ namespace Gestor_de_Estudiantes.ViewModel
             }
         }
 
+        private void CargarMaterias(string codigoComision)
+        {
+            var seleccionAnterior = MateriaSeleccionada?.Id;
+            Materias.Clear();
+
+            foreach (var materia in _materiaService.ListarMateriasDeComision(codigoComision))
+                Materias.Add(materia);
+
+            MateriaSeleccionada = (seleccionAnterior.HasValue
+                ? Materias.FirstOrDefault(m => m.Id == seleccionAnterior.Value)
+                : null) ?? Materias.FirstOrDefault();
+        }
+
+        private void CargarClasesYAsistencias(string codigoComision)
+        {
+            Clases.Clear();
+            Asistencias.Clear();
+
+            var clases = _claseService.ListarClases(codigoComision);
+            var estudiantes = _estudianteService.ListarEstudiantes(codigoComision);
+            foreach (var clase in clases)
+            {
+                var registros = _asistenciaService.ListarPorClase(clase.Id);
+                var registrosPorEstudiante = registros
+                    .GroupBy(a => a.EstudianteId)
+                    .ToDictionary(g => g.Key, g => g.First().Condicion);
+
+                var resumen = new ClaseCalendarioItem
+                {
+                    ClaseId = clase.Id,
+                    Fecha = clase.Fecha,
+                    Materias = string.IsNullOrWhiteSpace(clase.NombreMateria)
+                        ? "Sin materia"
+                        : clase.NombreMateria,
+                    Estado = clase.Estado.ToString(),
+                    Presentes = registros.Count(a => a.Condicion == Condicion.Presente),
+                    Ausentes = registros.Count(a => a.Condicion == Condicion.Ausente),
+                    Pendientes = Math.Max(0, estudiantes.Count - registros.Count)
+                };
+
+                Clases.Add(resumen);
+
+                foreach (var estudiante in estudiantes)
+                {
+                    var condicion = registrosPorEstudiante.TryGetValue(
+                        estudiante.Id,
+                        out var registrada)
+                        ? registrada
+                        : Condicion.Pendiente;
+
+                    Asistencias.Add(new AsistenciaCalendarioItem
+                    {
+                        ClaseId = clase.Id,
+                        FechaClase = clase.Fecha,
+                        Legajo = estudiante.Legajo,
+                        Estudiante = $"{estudiante.Apellido}, {estudiante.Nombre}",
+                        Condicion = condicion.ToString()
+                    });
+                }
+            }
+        }
+
+        public sealed class ClaseCalendarioItem
+        {
+            public Guid ClaseId { get; set; }
+            public DateTime Fecha { get; set; }
+            public string Materias { get; set; } = string.Empty;
+            public string Estado { get; set; } = string.Empty;
+            public int Presentes { get; set; }
+            public int Ausentes { get; set; }
+            public int Pendientes { get; set; }
+        }
+
+        public sealed class AsistenciaCalendarioItem
+        {
+            public Guid ClaseId { get; set; }
+            public DateTime FechaClase { get; set; }
+            public string Legajo { get; set; } = string.Empty;
+            public string Estudiante { get; set; } = string.Empty;
+            public string Condicion { get; set; } = string.Empty;
+        }
+
         private void RegistrarClase()
         {
             if (ComisionSeleccionada == null)
@@ -189,10 +282,17 @@ namespace Gestor_de_Estudiantes.ViewModel
                 return;
             }
 
+            if (MateriaSeleccionada == null)
+            {
+                Mensaje = "Seleccioná una materia.";
+                return;
+            }
+
             try
             {
                 _claseService.AgregarClase(
                     ComisionSeleccionada.Codigo,
+                    MateriaSeleccionada.Id,
                     FechaClase);
 
                 CargarCalendario();
@@ -213,10 +313,17 @@ namespace Gestor_de_Estudiantes.ViewModel
                 return;
             }
 
+            if (MateriaSeleccionada == null)
+            {
+                Mensaje = "Seleccioná una materia.";
+                return;
+            }
+
             try
             {
                 _trabajoService.AgregarTrabajo(
                     ComisionSeleccionada.Codigo,
+                    MateriaSeleccionada.Id,
                     TituloTrabajo,
                     FechaEntrega);
 
@@ -229,21 +336,6 @@ namespace Gestor_de_Estudiantes.ViewModel
             catch (Exception ex)
             {
                 Mensaje = $"No se pudo registrar el trabajo: {ex.Message}";
-            }
-        }
-
-        private void OrdenarEventos()
-        {
-            var ordenados = Eventos
-                .OrderBy(e => e.Fecha)
-                .ThenBy(e => e.Tipo)
-                .ToList();
-
-            Eventos.Clear();
-
-            foreach (var evento in ordenados)
-            {
-                Eventos.Add(evento);
             }
         }
 
@@ -274,16 +366,5 @@ namespace Gestor_de_Estudiantes.ViewModel
                 this,
                 new PropertyChangedEventArgs(nombre));
         }
-    }
-
-    public class EventoCalendario
-    {
-        public DateTime Fecha { get; set; }
-
-        public string Tipo { get; set; } = string.Empty;
-
-        public string Titulo { get; set; } = string.Empty;
-
-        public string Detalle { get; set; } = string.Empty;
     }
 }

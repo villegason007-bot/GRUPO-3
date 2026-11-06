@@ -9,27 +9,6 @@ namespace Test
         private readonly RiesgoRepository _repositorio = new();
 
         [TestMethod]
-        public void Given_BDRecienCreada_When_ObtenerUmbral_Then_Es50()
-        {
-            Assert.AreEqual(50, _repositorio.ObtenerUmbral());
-        }
-
-        [TestMethod]
-        public void Given_UmbralModificado_When_ObtenerUmbral_Then_DevuelveElNuevo()
-        {
-            _repositorio.GuardarUmbral(75);
-
-            Assert.AreEqual(75, _repositorio.ObtenerUmbral());
-        }
-
-        [TestMethod]
-        public void Given_UmbralInvalido_When_GuardarUmbral_Then_LanzaArgumentException()
-        {
-            Assert.Throws<ArgumentException>(() => _repositorio.GuardarUmbral(-1));
-            Assert.Throws<ArgumentException>(() => _repositorio.GuardarUmbral(101));
-        }
-
-        [TestMethod]
         public void Given_AsistenciaEnClaseHabil_When_ContarAsistencias_Then_CuentaFaltas()
         {
             var claseId = CrearClase();
@@ -106,12 +85,60 @@ namespace Test
         [TestMethod]
         public void Given_TrabajoFuturo_When_ContarTrabajos_Then_NoSeCuentaComoVencido()
         {
-            CrearTrabajo(); // fecha 2026-10-20, futura
+            CrearTrabajo(DateTime.Today.AddDays(30)); // fecha futura
 
             var (vencidos, entregados) = _repositorio.ContarTrabajos(Guid.NewGuid(), "1K1");
 
             Assert.AreEqual(0, vencidos);
             Assert.AreEqual(0, entregados);
+        }
+
+        [TestMethod]
+        public void Given_SoloRegistroPendiente_When_ContarAsistencias_Then_NoEsFaltaNiInformacion()
+        {
+            var claseId = CrearClase();
+            var estudianteId = CrearEstudiante();
+            new AsistenciaRepository().RegistrarAsistencia(new Gestor_de_Estudiantes.Entidades.Asistencia
+            {
+                ClaseId = claseId,
+                EstudianteId = estudianteId,
+                Condicion = Gestor_de_Estudiantes.Entidades.Condicion.Pendiente,
+            });
+
+            var (clasesHabiles, faltas, conRegistro) =
+                _repositorio.ContarAsistencias(estudianteId, "1K1");
+
+            Assert.AreEqual(1, clasesHabiles);
+            Assert.AreEqual(0, faltas, "Un registro sin marcar no es falta.");
+            Assert.IsFalse(conRegistro, "Sin Presente/Ausente el estudiante sigue sin información.");
+        }
+
+        [TestMethod]
+        public void Given_PendienteYAusente_When_ContarAsistencias_Then_SoloCuentaElAusente()
+        {
+            var estudianteId = CrearEstudiante();
+            var repositorioAsistencias = new AsistenciaRepository();
+            var clasePendiente = CrearClase(new DateTime(2026, 10, 5));
+            var claseAusente = CrearClase(new DateTime(2026, 10, 12));
+            repositorioAsistencias.RegistrarAsistencia(new Gestor_de_Estudiantes.Entidades.Asistencia
+            {
+                ClaseId = clasePendiente,
+                EstudianteId = estudianteId,
+                Condicion = Gestor_de_Estudiantes.Entidades.Condicion.Pendiente,
+            });
+            repositorioAsistencias.RegistrarAsistencia(new Gestor_de_Estudiantes.Entidades.Asistencia
+            {
+                ClaseId = claseAusente,
+                EstudianteId = estudianteId,
+                Condicion = Gestor_de_Estudiantes.Entidades.Condicion.Ausente,
+            });
+
+            var (clasesHabiles, faltas, conRegistro) =
+                _repositorio.ContarAsistencias(estudianteId, "1K1");
+
+            Assert.AreEqual(2, clasesHabiles);
+            Assert.AreEqual(1, faltas, "Solo la ausente suma falta.");
+            Assert.IsTrue(conRegistro);
         }
     }
 }

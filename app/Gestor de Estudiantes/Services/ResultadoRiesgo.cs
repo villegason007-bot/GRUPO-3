@@ -44,6 +44,16 @@ namespace Gestor_de_Estudiantes.Services
         /// <summary>Umbral porcentual (0-100) a partir del cual el puntaje se considera en riesgo.</summary>
         public double Umbral { get; set; }
 
+        /// <summary>Fecha del último contacto registrado con el estudiante; null si nunca se lo contactó (H11).</summary>
+        public DateTime? FechaUltimoContacto { get; set; }
+
+        /// <summary>true si el estudiante nunca fue contactado (H11, Escenario 2).</summary>
+        public bool SinContactar => FechaUltimoContacto is null;
+
+        /// <summary>Texto del último contacto para la UI: «dd/MM/aaaa» o «Sin contactar».</summary>
+        public string TextoUltimoContacto
+            => FechaUltimoContacto?.ToString("dd/MM/yyyy") ?? "Sin contactar";
+
         /// <summary>true si no había ningún componente con datos (Escenario 2 de H6).</summary>
         public bool SinInformacion => Puntaje is null;
 

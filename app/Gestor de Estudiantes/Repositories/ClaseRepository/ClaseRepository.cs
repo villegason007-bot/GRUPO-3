@@ -15,9 +15,10 @@ namespace Gestor_de_Estudiantes.Repositories
             using var conexion = BaseDeDatos.Abrir();
             using var comando = conexion.CreateCommand();
             comando.CommandText = """
-                SELECT c.id, c.fecha, c.estado
+                SELECT c.id, c.fecha, c.estado, c.materia_id, COALESCE(m.nombre, '')
                 FROM clases c
                 INNER JOIN comisiones com ON com.id = c.comision_id
+                LEFT JOIN materias m ON m.id = c.materia_id
                 WHERE com.codigo = @codigo
                 ORDER BY c.fecha;
                 """;
@@ -47,6 +48,34 @@ namespace Gestor_de_Estudiantes.Repositories
             comando.ExecuteNonQuery();
         }
 
+        public void AgregarClase(Clase clase, string codigoComision, Guid materiaId)
+        {
+            using var conexion = BaseDeDatos.Abrir();
+            using var comando = conexion.CreateCommand();
+            comando.CommandText = """
+                INSERT INTO clases (id, fecha, estado, comision_id, materia_id)
+                VALUES (@id, @fecha, @estado,
+                        (SELECT id FROM comisiones WHERE codigo = @codigo),
+                        @materiaId);
+                """;
+            comando.Parameters.AddWithValue("@id", clase.Id.ToString("D"));
+            comando.Parameters.AddWithValue("@fecha", clase.Fecha);
+            comando.Parameters.AddWithValue("@estado", clase.Estado.ToString());
+            comando.Parameters.AddWithValue("@codigo", codigoComision);
+            comando.Parameters.AddWithValue("@materiaId", materiaId.ToString("D"));
+            comando.ExecuteNonQuery();
+        }
+
+        public void ActualizarMateria(Guid claseId, Guid materiaId)
+        {
+            using var conexion = BaseDeDatos.Abrir();
+            using var comando = conexion.CreateCommand();
+            comando.CommandText = "UPDATE clases SET materia_id = @materiaId WHERE id = @id;";
+            comando.Parameters.AddWithValue("@materiaId", materiaId.ToString("D"));
+            comando.Parameters.AddWithValue("@id", claseId.ToString("D"));
+            comando.ExecuteNonQuery();
+        }
+
         /// <summary>Actualiza el estado (hábil/no hábil) de una clase.</summary>
         /// <returns>true si la clase existía y se actualizó.</returns>
         public bool MarcarEstado(Guid claseId, EstadoClase estado)
@@ -59,13 +88,31 @@ namespace Gestor_de_Estudiantes.Repositories
             return comando.ExecuteNonQuery() > 0;
         }
 
-        /// <summary>
-        /// Lee el estado de una clase sobre una conexión ya abierta; si la
-        /// fila no existe asume Habil. Lo usan otros repositorios (por
-        /// ejemplo asistencias) sin abrir otra conexión.
-        /// </summary>
-        internal static EstadoClase EstadoDe(SqliteConnection conexion, Guid claseId)
+        /// <summary>Indica si la comisión ya tiene una clase en esa fecha (QA002).</summary>
+        public bool ExisteClaseEnFecha(string codigoComision, DateTime fecha)
         {
+            using var conexion = BaseDeDatos.Abrir();
+            using var comando = conexion.CreateCommand();
+            comando.CommandText = """
+                SELECT COUNT(*)
+                FROM clases c
+                INNER JOIN comisiones com ON com.id = c.comision_id
+                WHERE com.codigo COLLATE NOCASE = @codigo
+                  AND date(c.fecha) = date(@fecha);
+                """;
+            comando.Parameters.AddWithValue("@codigo", codigoComision);
+            comando.Parameters.AddWithValue("@fecha", fecha.Date);
+            return Convert.ToInt64(comando.ExecuteScalar()) > 0;
+        }
+
+        /// <summary>
+        /// Devuelve el estado de una clase; si la fila no existe asume
+        /// Hábil. Lo usan otros repositorios (por ejemplo asistencias)
+        /// a través de <see cref="IClaseRepository"/>.
+        /// </summary>
+        public EstadoClase EstadoDe(Guid claseId)
+        {
+            using var conexion = BaseDeDatos.Abrir();
             using var comando = conexion.CreateCommand();
             comando.CommandText = "SELECT estado FROM clases WHERE id = @id;";
             comando.Parameters.AddWithValue("@id", claseId.ToString("D"));
@@ -78,6 +125,8 @@ namespace Gestor_de_Estudiantes.Repositories
             Id = Guid.Parse(lector.GetString(0)),
             Fecha = lector.GetDateTime(1),
             Estado = Enum.Parse<EstadoClase>(lector.GetString(2)),
+            MateriaId = lector.IsDBNull(3) ? null : Guid.Parse(lector.GetString(3)),
+            NombreMateria = lector.GetString(4),
         };
     }
 }

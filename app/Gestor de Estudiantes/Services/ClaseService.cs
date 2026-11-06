@@ -7,7 +7,7 @@ namespace Gestor_de_Estudiantes.Services
     /// Fachada del calendario de clases (H2): lista las clases de una
     /// comisión, da de alta clases nuevas y marca su estado hábil/no hábil.
     /// </summary>
-    public class ClaseService
+    public class ClaseService : IClaseService
     {
         private readonly IClaseRepository _clases;
         private readonly IComisionRepository _comisiones;
@@ -50,6 +50,13 @@ namespace Gestor_de_Estudiantes.Services
                     "La fecha de la clase es obligatoria.");
             }
 
+            // QA002: la misma comisión no puede tener dos clases el mismo día.
+            if (_clases.ExisteClaseEnFecha(codigoComision.Trim(), fecha.Date))
+            {
+                throw new InvalidOperationException(
+                    $"Ya hay una clase registrada el {fecha.Date:dd/MM/yyyy} en la comisión {codigoComision.Trim()}.");
+            }
+
             var clase = new Clase
             {
                 Fecha = fecha.Date,
@@ -60,6 +67,25 @@ namespace Gestor_de_Estudiantes.Services
                 clase,
                 codigoComision.Trim());
 
+            return clase;
+        }
+
+        public Clase AgregarClase(string codigoComision, Guid materiaId, DateTime fecha)
+        {
+            ValidarComision(codigoComision);
+
+            if (fecha == default)
+                throw new ArgumentException("La fecha de la clase es obligatoria.");
+
+            var clase = new Clase
+            {
+                Fecha = fecha.Date,
+                Estado = EstadoClase.Habil,
+                MateriaId = materiaId
+            };
+
+            _clases.AgregarClase(clase, codigoComision.Trim(), materiaId);
+            clase.MateriaId = materiaId;
             return clase;
         }
 

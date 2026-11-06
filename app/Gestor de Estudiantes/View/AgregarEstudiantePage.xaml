@@ -9,6 +9,9 @@
 
         <Entry x:Name="LegajoEntry" Placeholder="Legajo" />
         <Entry x:Name="NombreEntry" Placeholder="Nombre" />
+        <Entry x:Name="TelefonoEntry"
+               Placeholder="Teléfono (opcional)"
+               Keyboard="Telephone" />
 
         <Label x:Name="ErrorLabel" TextColor="Red" IsVisible="False" />
 

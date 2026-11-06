@@ -16,7 +16,9 @@ var repositorioClases = new ClaseRepository();
 var repositorioTrabajos = new TrabajoRepository();
 var repositorioAsistencias = new AsistenciaRepository();
 var repositorioEntregas = new EntregaRepository();
-var servicioRiesgos = new RiesgoService(new RiesgoRepository(), new EstudianteRepository());
+var servicioRiesgos = new RiesgoService(new RiesgoRepository(), new ParametrosRiesgoRepository(), new EstudianteRepository(), new CalculadoraDeRiesgo(), new ContactoRepository());
+var servicioParametros = new ParametrosRiesgoService(new ParametrosRiesgoRepository());
+var servicioCalendario = new CalendarioService(new CalendarioRepository());
 
 while (true)
 {
@@ -145,14 +147,16 @@ void MenuComisiones()
                 case "2":
                     Console.Write("Código: ");
                     var codigo = Console.ReadLine() ?? string.Empty;
-                    Console.Write("Semanas (Enter = 16): ");
+                    Console.Write($"Semanas (Enter = {Comision.SemanasPorDefecto}): ");
                     var textoSemanas = Console.ReadLine();
-                    var semanas = string.IsNullOrWhiteSpace(textoSemanas) ? 16 : int.Parse(textoSemanas);
+                    var semanas = string.IsNullOrWhiteSpace(textoSemanas)
+                        ? Comision.SemanasPorDefecto
+                        : int.Parse(textoSemanas);
                     var agregada = servicioComisiones.AgregarComision(codigo, semanas);
                     Console.WriteLine($"Agregada: {agregada.Codigo} ({agregada.Semanas} semanas)");
                     break;
                 case "3":
-                    var calendario = servicioComisiones.VerCalendario(ComisionActiva);
+                    var calendario = servicioCalendario.VerCalendario(ComisionActiva);
                     Console.WriteLine();
                     Console.WriteLine($"{"Fecha",-12}{"Tipo",-10}Detalle");
                     Console.WriteLine(new string('-', 56));
@@ -490,16 +494,16 @@ void MenuRiesgos()
                         Console.WriteLine($"{resultado.Legajo,-12}{resultado.Nombre,-24}{riesgo,-16}{detalle}");
                     }
                     Console.WriteLine(new string('-', 78));
-                    Console.WriteLine($"Total: {resultados.Count} · Umbral: {servicioRiesgos.ObtenerUmbral():0.#}");
+                    Console.WriteLine($"Total: {resultados.Count} · Umbral: {servicioParametros.ObtenerUmbral():0.#}");
                     break;
                 case "2":
-                    Console.Write($"Umbral actual: {servicioRiesgos.ObtenerUmbral():0.#}. Nuevo umbral (0-100): ");
+                    Console.Write($"Umbral actual: {servicioParametros.ObtenerUmbral():0.#}. Nuevo umbral (0-100): ");
                     if (!double.TryParse(Console.ReadLine(), out var umbral))
                     {
                         Console.WriteLine("Valor inválido.");
                         break;
                     }
-                    servicioRiesgos.GuardarUmbral(umbral);
+                    servicioParametros.GuardarUmbral(umbral);
                     Console.WriteLine("Umbral actualizado.");
                     break;
                 case "0":
@@ -551,10 +555,11 @@ Guid? SeleccionarTrabajo()
 
 Condicion? LeerCondicion()
 {
-    Console.Write("Condición (P=presente / A=ausente): ");
+    Console.Write("Condición (P=presente / A=ausente / N=sin marcar): ");
     var texto = (Console.ReadLine() ?? string.Empty).Trim().ToUpperInvariant();
     if (texto == "P") return Condicion.Presente;
     if (texto == "A") return Condicion.Ausente;
+    if (texto == "N") return Condicion.Pendiente;
     Console.WriteLine("Condición inválida.");
     return null;
 }
