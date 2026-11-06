@@ -70,6 +70,25 @@ namespace Gestor_de_Estudiantes.Services
             return clase;
         }
 
+        public Clase AgregarClase(string codigoComision, Guid materiaId, DateTime fecha)
+        {
+            ValidarComision(codigoComision);
+
+            if (fecha == default)
+                throw new ArgumentException("La fecha de la clase es obligatoria.");
+
+            var clase = new Clase
+            {
+                Fecha = fecha.Date,
+                Estado = EstadoClase.Habil,
+                MateriaId = materiaId
+            };
+
+            _clases.AgregarClase(clase, codigoComision.Trim(), materiaId);
+            clase.MateriaId = materiaId;
+            return clase;
+        }
+
         /// <summary>
         /// Marca una clase como hábil o no hábil (feriado/suspensión, H2).
         /// </summary>

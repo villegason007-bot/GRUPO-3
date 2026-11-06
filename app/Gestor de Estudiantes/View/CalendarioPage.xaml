@@ -89,6 +89,21 @@
                     TituloPicker="Seleccioná una comisión"
                     TextoBoton="↻  Actualizar calendario" />
 
+                <Border Style="{StaticResource InnerGlassCard}">
+                    <VerticalStackLayout Spacing="6">
+                        <Label
+                            Text="Materia"
+                            TextColor="White"
+                            FontAttributes="Bold" />
+                        <Picker
+                            Title="Seleccionar materia"
+                            ItemsSource="{Binding Materias}"
+                            SelectedItem="{Binding MateriaSeleccionada}"
+                            ItemDisplayBinding="{Binding Nombre}"
+                            TextColor="White" />
+                    </VerticalStackLayout>
+                </Border>
+
                 <!-- Topbar -->
                 <Border
                     Background="#16FFFFFF"
@@ -136,6 +151,112 @@
                             Clicked="MostrarTrabajoTab_Clicked" />
 
                     </Grid>
+                </Border>
+
+                <!-- Clases, materias y asistencias -->
+                <Border Style="{StaticResource GlassCard}">
+                    <VerticalStackLayout Spacing="14">
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                Text="03 / CURSADA Y ASISTENCIA"
+                                FontSize="10"
+                                FontAttributes="Bold"
+                                CharacterSpacing="1.5"
+                                TextColor="#A5B4FC" />
+                            <Label
+                                Text="Clases por materia"
+                                Style="{StaticResource SectionTitle}" />
+                            <Label
+                                Text="Consultá las materias de la comisión y el estado de cada estudiante."
+                                Style="{StaticResource SecondaryText}" />
+                        </VerticalStackLayout>
+
+                        <CollectionView ItemsSource="{Binding Clases}">
+                            <CollectionView.EmptyView>
+                                <Label
+                                    Text="Todavía no hay clases registradas."
+                                    Style="{StaticResource SecondaryText}"
+                                    Padding="0,8" />
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border
+                                        Background="#12FFFFFF"
+                                        Stroke="#25FFFFFF"
+                                        StrokeThickness="1"
+                                        Padding="12"
+                                        Margin="0,0,0,10"
+                                        StrokeShape="RoundRectangle 12">
+                                        <VerticalStackLayout Spacing="7">
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <Label
+                                                    Text="{Binding Fecha, StringFormat='{0:dd/MM/yyyy}'}"
+                                                    TextColor="White"
+                                                    FontAttributes="Bold" />
+                                                <Label
+                                                    Grid.Column="1"
+                                                    Text="{Binding Estado}"
+                                                    TextColor="#A5B4FC"
+                                                    FontSize="12" />
+                                            </Grid>
+                                            <Label
+                                                Text="{Binding Materias}"
+                                                TextColor="White"
+                                                FontSize="13"
+                                                LineBreakMode="WordWrap" />
+                                            <Label
+                                                Text="{Binding Presentes, StringFormat='Presentes: {0}'}"
+                                                TextColor="#86EFAC"
+                                                FontSize="12" />
+                                            <Label
+                                                Text="{Binding Ausentes, StringFormat='Ausentes: {0}'}"
+                                                TextColor="#FDA4AF"
+                                                FontSize="12" />
+                                            <Label
+                                                Text="{Binding Pendientes, StringFormat='Pendientes: {0}'}"
+                                                TextColor="#FDE68A"
+                                                FontSize="12" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                        <Label
+                            Text="Detalle por estudiante"
+                            Style="{StaticResource SectionTitle}"
+                            Margin="0,8,0,0" />
+
+                        <CollectionView ItemsSource="{Binding Asistencias}">
+                            <CollectionView.EmptyView>
+                                <Label
+                                    Text="No hay estudiantes o asistencias para mostrar."
+                                    Style="{StaticResource SecondaryText}"
+                                    Padding="0,8" />
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid
+                                        ColumnDefinitions="Auto,*,Auto"
+                                        ColumnSpacing="10"
+                                        Padding="0,5">
+                                        <Label
+                                            Text="{Binding FechaClase, StringFormat='{0:dd/MM}'}"
+                                            TextColor="#A5B4FC" />
+                                        <Label
+                                            Grid.Column="1"
+                                            Text="{Binding Estudiante}"
+                                            TextColor="White" />
+                                        <Label
+                                            Grid.Column="2"
+                                            Text="{Binding Condicion}"
+                                            TextColor="#D1D5DB"
+                                            FontSize="12" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
                 </Border>
 
                 <!-- Panel Calendario -->

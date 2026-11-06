@@ -22,6 +22,8 @@ namespace Gestor_de_Estudiantes.Services
         /// <exception cref="InvalidOperationException">Si la comisión no existe.</exception>
         Clase AgregarClase(string codigoComision, DateTime fecha);
 
+        Clase AgregarClase(string codigoComision, Guid materiaId, DateTime fecha);
+
         /// <summary>
         /// Marca una clase como hábil o no hábil (feriado/suspensión, H2).
         /// </summary>

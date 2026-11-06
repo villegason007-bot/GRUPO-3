@@ -78,9 +78,11 @@ namespace Gestor_de_Estudiantes.Repositories
                 INNER JOIN comisiones com ON com.id = e.comision_id
                 WHERE com.codigo COLLATE NOCASE = @codigo
                   AND c.rowid = (
-                      SELECT MAX(c2.rowid)
+                      SELECT c2.rowid
                       FROM contactos c2
-                      WHERE c2.estudiante_id = c.estudiante_id);
+                      WHERE c2.estudiante_id = c.estudiante_id
+                      ORDER BY c2.fecha DESC, c2.rowid DESC
+                      LIMIT 1);
                 """;
             comando.Parameters.AddWithValue("@codigo", codigoComision);
 

@@ -70,6 +70,7 @@ namespace Gestor_de_Estudiantes.Config
                 CREATE TABLE IF NOT EXISTS clases (
                     id TEXT PRIMARY KEY,
                     comision_id TEXT NOT NULL REFERENCES comisiones(id),
+                    materia_id TEXT NULL REFERENCES materias(id),
                     fecha TEXT NOT NULL,
                     estado TEXT NOT NULL DEFAULT 'Habil' CHECK (estado IN ('Habil', 'NoHabil'))
                 );
@@ -86,6 +87,7 @@ namespace Gestor_de_Estudiantes.Config
                 CREATE TABLE IF NOT EXISTS trabajos (
                     id TEXT PRIMARY KEY,
                     comision_id TEXT NOT NULL REFERENCES comisiones(id),
+                    materia_id TEXT NULL REFERENCES materias(id),
                     titulo TEXT NOT NULL,
                     fecha_entrega TEXT NOT NULL
                 );
@@ -115,6 +117,12 @@ namespace Gestor_de_Estudiantes.Config
                     PRIMARY KEY (materia_id, comision_id)
                 );
 
+                                CREATE TABLE IF NOT EXISTS estudiante_materia (
+                    estudiante_id TEXT NOT NULL REFERENCES estudiantes(id),
+                    materia_id TEXT NOT NULL REFERENCES materias(id),
+                    PRIMARY KEY (estudiante_id, materia_id)
+                );
+
                 CREATE TABLE IF NOT EXISTS contactos (
                     id TEXT PRIMARY KEY,
                     estudiante_id TEXT NOT NULL REFERENCES estudiantes(id),
@@ -138,6 +146,8 @@ namespace Gestor_de_Estudiantes.Config
                 "ALTER TABLE estudiantes ADD COLUMN activo INTEGER NOT NULL DEFAULT 1;",
                 $"ALTER TABLE comisiones ADD COLUMN semanas INTEGER NOT NULL DEFAULT {Comision.SemanasPorDefecto};",
                 "ALTER TABLE clases ADD COLUMN estado TEXT NOT NULL DEFAULT 'Habil';",
+                "ALTER TABLE clases ADD COLUMN materia_id TEXT NULL;",
+                "ALTER TABLE trabajos ADD COLUMN materia_id TEXT NULL;",
                 // QA002: '1k1' no debe chocar con '1K1'. El índice único
                 // sin distinguir caja se agrega después del esquema porque
                 // en bases viejas la columna UNIQUE era case-sensitive.

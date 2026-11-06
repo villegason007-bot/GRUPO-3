@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Gestor_de_Estudiantes.Entidades;
@@ -10,12 +10,15 @@ namespace Gestor_de_Estudiantes.ViewModel
     /// Ficha del estudiante (H9) y registro de contactos (H10): compone
     /// los datos identificatorios y de contacto con el historial de
     /// contactos del tutor, y valida el formulario del modal antes de
-    /// delegar en <see cref="IContactoService"/>.
+    /// delegar en <see cref="IContactoService"/>. Además permite inscribir
+    /// al estudiante en materias de su comisión y quitarlas.
     /// </summary>
     public class FichaEstudianteViewModel : INotifyPropertyChanged
     {
         private readonly IFichaService _fichas;
         private readonly IContactoService _contactos;
+        private readonly IMateriaService _materias;
+        private readonly IInscripcionMateriaService _inscripciones;
 
         private string _nombreCompleto = string.Empty;
         private string _subtitulo = string.Empty;
@@ -24,17 +27,29 @@ namespace Gestor_de_Estudiantes.ViewModel
         private string _mensaje = string.Empty;
         private bool _mostrarMensaje;
         private string _legajo = string.Empty;
+        private Guid _estudianteId;
+        private string _codigoComision = string.Empty;
 
         public FichaEstudianteViewModel(
             IFichaService fichas,
-            IContactoService contactos)
+            IContactoService contactos,
+            IMateriaService materias,
+            IInscripcionMateriaService inscripciones)
         {
             _fichas = fichas;
             _contactos = contactos;
+            _materias = materias;
+            _inscripciones = inscripciones;
         }
 
         /// <summary>Historial de contactos del estudiante (H10), del más reciente al más antiguo.</summary>
         public ObservableCollection<ContactoFilaViewModel> Contactos { get; } = new();
+
+        /// <summary>Materias en las que el estudiante está inscripto.</summary>
+        public ObservableCollection<Materia> MateriasInscriptas { get; } = new();
+
+        /// <summary>Materias de su comisión en las que todavía no está inscripto.</summary>
+        public ObservableCollection<Materia> MateriasAsignables { get; } = new();
 
         /// <summary>Opciones de medio del modal de contacto (H10).</summary>
         public List<string> Medios { get; } = new() { "Llamada", "Mensaje" };
@@ -90,8 +105,9 @@ namespace Gestor_de_Estudiantes.ViewModel
         }
 
         /// <summary>
-        /// Carga la ficha del estudiante (H9) y su historial de contactos
-        /// (H10). Ante un legajo inexistente deja el mensaje de error.
+        /// Carga la ficha del estudiante (H9), su historial de contactos
+        /// (H10) y sus materias. Ante un legajo inexistente deja el
+        /// mensaje de error.
         /// </summary>
         /// <param name="legajo">Legajo del estudiante a mostrar.</param>
         public void CargarFicha(string legajo)
@@ -99,10 +115,12 @@ namespace Gestor_de_Estudiantes.ViewModel
             try
             {
                 var ficha = _fichas.ObtenerFicha(legajo);
-
                 _legajo = ficha.Legajo;
+                _estudianteId = ficha.Id;
+                _codigoComision = ficha.CodigoComision;
+
                 NombreCompleto = ficha.NombreCompleto;
-                Subtitulo = $"Legajo {ficha.Legajo}  ·  Comisión {ficha.CodigoComision}";
+                Subtitulo = $"Legajo {ficha.Legajo} · Comisión {ficha.CodigoComision}";
                 TelefonoTexto = string.IsNullOrWhiteSpace(ficha.Telefono)
                     ? "Sin teléfono"
                     : ficha.Telefono;
@@ -111,6 +129,8 @@ namespace Gestor_de_Estudiantes.ViewModel
                 Contactos.Clear();
                 foreach (var contacto in ficha.Contactos)
                     Contactos.Add(new ContactoFilaViewModel(contacto));
+
+                CargarMaterias();
 
                 Mensaje = string.Empty;
                 MostrarMensaje = false;
@@ -121,6 +141,78 @@ namespace Gestor_de_Estudiantes.ViewModel
                 MostrarMensaje = true;
             }
         }
+
+        // ---------------- Materias del estudiante ----------------
+
+        /// <summary>
+        /// Recarga las materias inscriptas y las que todavía se pueden
+        /// asignar (solo las de la comisión del estudiante).
+        /// </summary>
+        public void CargarMaterias()
+        {
+            MateriasInscriptas.Clear();
+            MateriasAsignables.Clear();
+
+            if (_estudianteId == Guid.Empty)
+                return;
+
+            var inscriptas = _inscripciones.ListarMateriasDeEstudiante(_estudianteId);
+            foreach (var materia in inscriptas)
+                MateriasInscriptas.Add(materia);
+
+            var ids = inscriptas.Select(m => m.Id).ToHashSet();
+            foreach (var materia in _materias.ListarMateriasDeComision(_codigoComision)
+                         .Where(m => !ids.Contains(m.Id)))
+                MateriasAsignables.Add(materia);
+        }
+
+        /// <summary>Inscribe al estudiante en la materia elegida.</summary>
+        public bool InscribirEnMateria(Materia? materia, out string mensaje)
+        {
+            if (materia is null)
+            {
+                mensaje = "Seleccioná una materia.";
+                return false;
+            }
+
+            try
+            {
+                _inscripciones.InscribirEstudiante(_estudianteId, materia.Id);
+                CargarMaterias();
+                mensaje = $"Se inscribió en {materia.Nombre}.";
+                return true;
+            }
+            catch (Exception ex)
+            {
+                mensaje = ex.Message;
+                return false;
+            }
+        }
+
+        /// <summary>Quita la inscripción del estudiante en la materia.</summary>
+        public bool DesinscribirDeMateria(Materia? materia, out string mensaje)
+        {
+            if (materia is null)
+            {
+                mensaje = "Seleccioná una materia.";
+                return false;
+            }
+
+            try
+            {
+                _inscripciones.DesinscribirEstudiante(_estudianteId, materia.Id);
+                CargarMaterias();
+                mensaje = $"Se quitó la inscripción en {materia.Nombre}.";
+                return true;
+            }
+            catch (Exception ex)
+            {
+                mensaje = ex.Message;
+                return false;
+            }
+        }
+
+        // ---------------- Contactos ----------------
 
         /// <summary>
         /// Valida el formulario del modal y registra el contacto con la
@@ -193,9 +285,7 @@ namespace Gestor_de_Estudiantes.ViewModel
                 return;
 
             campo = valor;
-            PropertyChanged?.Invoke(
-                this,
-                new PropertyChangedEventArgs(nombre));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nombre));
         }
     }
 

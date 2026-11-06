@@ -46,8 +46,19 @@ namespace Gestor_de_Estudiantes
                 ComisionRepository>();
 
             builder.Services.AddSingleton<IComisionService, ComisionService>();
-            builder.Services.AddTransient<ComisionesViewModel>();
+            // AHORA
+            builder.Services.AddSingleton<ComisionesViewModel>();
+            builder.Services.AddTransient<MateriasViewModel>();
+
             builder.Services.AddTransient<ComisionesPage>();
+            builder.Services.AddTransient<ComisionDetallePage>();   // nueva
+            builder.Services.AddTransient<EstudiantesPage>();       // ahora usa ComisionesViewModel
+            builder.Services.AddTransient<MateriasPage>();
+            builder.Services.AddTransient<ComisionesPage>();
+
+
+            builder.Services.AddSingleton<IInscripcionMateriaRepository, InscripcionMateriaRepository>();
+            builder.Services.AddSingleton<IInscripcionMateriaService, InscripcionMateriaService>();
 
             // Materias (N:M con comisiones, QA001)
             builder.Services.AddSingleton<
@@ -55,6 +66,7 @@ namespace Gestor_de_Estudiantes
                 MateriaRepository>();
 
             builder.Services.AddTransient<IMateriaService, MateriaService>();
+            builder.Services.AddTransient<ComisionMateriasViewModel>();
 
             // Contactos, ficha e historiales (H9-H13)
             builder.Services.AddSingleton<

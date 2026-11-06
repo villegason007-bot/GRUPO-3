@@ -81,5 +81,13 @@ namespace Gestor_de_Estudiantes.Services
         /// <summary>Devuelve las comisiones donde se dicta la materia.</summary>
         public List<Comision> ListarComisionesDeMateria(string nombreMateria)
             => _materias.ListarComisionesDeMateria((nombreMateria ?? string.Empty).Trim());
+
+        public bool EliminarMateria(string nombreMateria)
+        {
+            if (string.IsNullOrWhiteSpace(nombreMateria))
+                throw new ArgumentException("Debe indicar la materia a eliminar.");
+
+            return _materias.EliminarMateria(nombreMateria.Trim());
+        }
     }
 }

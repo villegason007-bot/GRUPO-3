@@ -45,5 +45,8 @@ namespace Gestor_de_Estudiantes.Repositories
         /// <summary>Devuelve las comisiones donde se dicta la materia, ordenadas por código.</summary>
         /// <param name="nombreMateria">Nombre de la materia.</param>
         List<Comision> ListarComisionesDeMateria(string nombreMateria);
+
+        /// <summary>Elimina la materia y sus vínculos con comisiones y estudiantes.</summary>
+        bool EliminarMateria(string nombreMateria);
     }
 }

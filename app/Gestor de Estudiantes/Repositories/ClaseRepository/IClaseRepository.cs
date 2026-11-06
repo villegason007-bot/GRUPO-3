@@ -16,6 +16,10 @@ namespace Gestor_de_Estudiantes.Repositories
         /// <param name="codigoComision">Comisión a la que pertenece.</param>
         void AgregarClase(Clase clase, string codigoComision);
 
+        void AgregarClase(Clase clase, string codigoComision, Guid materiaId);
+
+        void ActualizarMateria(Guid claseId, Guid materiaId);
+
         /// <summary>Actualiza el estado (hábil/no hábil) de una clase.</summary>
         /// <param name="claseId">Clase a actualizar.</param>
         /// <param name="estado">Nuevo estado.</param>

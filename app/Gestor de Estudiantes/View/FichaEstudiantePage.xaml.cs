@@ -1,11 +1,12 @@
+using Gestor_de_Estudiantes.Entidades;
 using Gestor_de_Estudiantes.ViewModel;
 
 namespace Gestor_de_Estudiantes.Views
 {
     /// <summary>
     /// Ficha del estudiante (H9): datos de contacto, historial de
-    /// contactos (H10) y modal para registrar uno nuevo. Recibe el
-    /// legajo por la ruta (parámetro «legajo»).
+    /// contactos (H10), modal para registrar uno nuevo y materias en las
+    /// que está inscripto. Recibe el legajo por la ruta (parámetro «legajo»).
     /// </summary>
     [QueryProperty(nameof(Legajo), "legajo")]
     public partial class FichaEstudiantePage : ContentPage
@@ -18,6 +19,8 @@ namespace Gestor_de_Estudiantes.Views
             InitializeComponent();
             _vm = vm;
             BindingContext = _vm;
+
+            _vm.MateriasInscriptas.CollectionChanged += (_, _) => ActualizarMateriasVacio();
         }
 
         /// <summary>Legajo del estudiante a mostrar (llega por la ruta).</summary>
@@ -38,13 +41,19 @@ namespace Gestor_de_Estudiantes.Views
             // Las opciones de los pickers del modal salen del ViewModel.
             MedioPicker.ItemsSource = _vm.Medios;
             ResultadoPicker.ItemsSource = _vm.Resultados;
+
+            ActualizarMateriasVacio();
         }
+
+        private void ActualizarMateriasVacio() =>
+            SinMateriasLabel.IsVisible = _vm.MateriasInscriptas.Count == 0;
+
+        // ---------------- Contactos (H10) ----------------
 
         private void OnRegistrarContactoClicked(object sender, EventArgs e)
         {
             MedioPicker.SelectedItem = null;
             ResultadoPicker.SelectedItem = null;
-
             ModalContacto.LimpiarError();
             ModalContacto.IsVisible = true;
         }
@@ -68,6 +77,49 @@ namespace Gestor_de_Estudiantes.Views
 
             ModalContacto.IsVisible = false;
         }
+
+        // ---------------- Materias ----------------
+
+        private void AbrirModalMateria_Clicked(object sender, EventArgs e)
+        {
+            MateriaPicker.ItemsSource = _vm.MateriasAsignables;
+            MateriaPicker.SelectedItem = null;
+            ModalMateria.LimpiarError();
+            ModalMateria.IsVisible = true;
+        }
+
+        private void CancelarMateria_Clicked(object sender, EventArgs e)
+        {
+            ModalMateria.IsVisible = false;
+        }
+
+        private void AsignarMateria_Clicked(object sender, EventArgs e)
+        {
+            if (!_vm.InscribirEnMateria(MateriaPicker.SelectedItem as Materia, out var mensaje))
+            {
+                ModalMateria.MostrarError(mensaje);
+                return;
+            }
+
+            ModalMateria.IsVisible = false;
+        }
+
+        private async void QuitarMateria_Clicked(object sender, EventArgs e)
+        {
+            if (((BindableObject)sender).BindingContext is not Materia materia)
+                return;
+
+            var confirmar = await DisplayAlert(
+                "Quitar inscripción",
+                $"¿Querés quitar la inscripción en «{materia.Nombre}»?",
+                "Quitar",
+                "Cancelar");
+
+            if (confirmar)
+                _vm.DesinscribirDeMateria(materia, out _);
+        }
+
+        // ---------------- Historiales ----------------
 
         // Historial de asistencia del estudiante (H12).
         private async void OnHistorialAsistenciaClicked(object sender, EventArgs e)

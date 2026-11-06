@@ -15,9 +15,10 @@ namespace Gestor_de_Estudiantes.Repositories
             using var conexion = BaseDeDatos.Abrir();
             using var comando = conexion.CreateCommand();
             comando.CommandText = """
-                SELECT c.id, c.fecha, c.estado
+                SELECT c.id, c.fecha, c.estado, c.materia_id, COALESCE(m.nombre, '')
                 FROM clases c
                 INNER JOIN comisiones com ON com.id = c.comision_id
+                LEFT JOIN materias m ON m.id = c.materia_id
                 WHERE com.codigo = @codigo
                 ORDER BY c.fecha;
                 """;
@@ -44,6 +45,34 @@ namespace Gestor_de_Estudiantes.Repositories
             comando.Parameters.AddWithValue("@fecha", clase.Fecha);
             comando.Parameters.AddWithValue("@estado", clase.Estado.ToString());
             comando.Parameters.AddWithValue("@codigo", codigoComision);
+            comando.ExecuteNonQuery();
+        }
+
+        public void AgregarClase(Clase clase, string codigoComision, Guid materiaId)
+        {
+            using var conexion = BaseDeDatos.Abrir();
+            using var comando = conexion.CreateCommand();
+            comando.CommandText = """
+                INSERT INTO clases (id, fecha, estado, comision_id, materia_id)
+                VALUES (@id, @fecha, @estado,
+                        (SELECT id FROM comisiones WHERE codigo = @codigo),
+                        @materiaId);
+                """;
+            comando.Parameters.AddWithValue("@id", clase.Id.ToString("D"));
+            comando.Parameters.AddWithValue("@fecha", clase.Fecha);
+            comando.Parameters.AddWithValue("@estado", clase.Estado.ToString());
+            comando.Parameters.AddWithValue("@codigo", codigoComision);
+            comando.Parameters.AddWithValue("@materiaId", materiaId.ToString("D"));
+            comando.ExecuteNonQuery();
+        }
+
+        public void ActualizarMateria(Guid claseId, Guid materiaId)
+        {
+            using var conexion = BaseDeDatos.Abrir();
+            using var comando = conexion.CreateCommand();
+            comando.CommandText = "UPDATE clases SET materia_id = @materiaId WHERE id = @id;";
+            comando.Parameters.AddWithValue("@materiaId", materiaId.ToString("D"));
+            comando.Parameters.AddWithValue("@id", claseId.ToString("D"));
             comando.ExecuteNonQuery();
         }
 
@@ -96,6 +125,8 @@ namespace Gestor_de_Estudiantes.Repositories
             Id = Guid.Parse(lector.GetString(0)),
             Fecha = lector.GetDateTime(1),
             Estado = Enum.Parse<EstadoClase>(lector.GetString(2)),
+            MateriaId = lector.IsDBNull(3) ? null : Guid.Parse(lector.GetString(3)),
+            NombreMateria = lector.GetString(4),
         };
     }
 }

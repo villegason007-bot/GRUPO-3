@@ -129,7 +129,8 @@
                 <CollectionView
                     Grid.Row="1"
                     ItemsSource="{Binding Estudiantes}"
-                    SelectionMode="None">
+                    SelectionMode="Single"
+                    SelectionChanged="Estudiantes_SelectionChanged">
 
                     <CollectionView.EmptyView>
                         <controls:EstadoVacio

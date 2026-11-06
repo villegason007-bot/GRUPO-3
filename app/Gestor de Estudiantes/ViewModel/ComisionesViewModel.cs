@@ -206,7 +206,8 @@ namespace Gestor_de_Estudiantes.ViewModel
                 _estudianteService.AgregarEstudiante(
                     datos.Legajo,
                     datos.Nombre,
-                    ComisionSeleccionada.Codigo);
+                    ComisionSeleccionada.Codigo,
+                    datos.Telefono);
 
                 CargarEstudiantes();
 
@@ -307,5 +308,7 @@ namespace Gestor_de_Estudiantes.ViewModel
         public string Legajo { get; set; } = string.Empty;
 
         public string Nombre { get; set; } = string.Empty;
+
+        public string? Telefono { get; set; }
     }
 }

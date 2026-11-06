@@ -89,6 +89,21 @@
                     TituloPicker="Seleccionar comisión"
                     TextoBoton="↻  Actualizar información" />
 
+                <Border Style="{StaticResource InnerGlassCard}">
+                    <VerticalStackLayout Spacing="6">
+                        <Label
+                            Text="Materia"
+                            TextColor="White"
+                            FontAttributes="Bold" />
+                        <Picker
+                            Title="Seleccionar materia"
+                            ItemsSource="{Binding Materias}"
+                            SelectedItem="{Binding MateriaSeleccionada}"
+                            ItemDisplayBinding="{Binding Nombre}"
+                            TextColor="White" />
+                    </VerticalStackLayout>
+                </Border>
+
                 <!-- Topbar de pestañas -->
                 <Border
                     Background="#16FFFFFF"

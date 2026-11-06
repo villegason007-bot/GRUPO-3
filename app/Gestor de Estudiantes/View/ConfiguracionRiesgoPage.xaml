@@ -35,6 +35,31 @@
 
                     <VerticalStackLayout Spacing="6">
                         <Label
+                            Text="Umbral porcentual de riesgo"
+                            FontSize="15"
+                            FontAttributes="Bold"
+                            TextColor="#F1F5F9" />
+
+                        <Label
+                            Text="Puntaje desde el cual el estudiante se considera en riesgo. Usá un valor entre 0 y 100."
+                            FontSize="12"
+                            TextColor="#94A3B8" />
+
+                        <Entry
+                            Text="{Binding UmbralTexto}"
+                            Keyboard="Numeric"
+                            Placeholder="Ej. 50"
+                            TextColor="White"
+                            PlaceholderColor="#64748B"
+                            BackgroundColor="#1E293B" />
+                    </VerticalStackLayout>
+
+                    <BoxView
+                        HeightRequest="1"
+                        Color="#263244" />
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label
                             Text="Máximo de faltas permitidas"
                             FontSize="15"
                             FontAttributes="Bold"

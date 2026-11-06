@@ -11,6 +11,7 @@ namespace Gestor_de_Estudiantes.Repositories
     public class ParametrosRiesgoRepository : IParametrosRiesgoRepository
     {
         private const string ClaveUmbral = "umbral_riesgo";
+        private const double UmbralPredeterminado = 50;
 
         /// <summary>Devuelve el umbral porcentual vigente (0-100) de <c>parametros_riesgo</c>.</summary>
         public double ObtenerUmbral()
@@ -19,7 +20,12 @@ namespace Gestor_de_Estudiantes.Repositories
             using var comando = conexion.CreateCommand();
             comando.CommandText = "SELECT valor FROM parametros_riesgo WHERE clave = @clave;";
             comando.Parameters.AddWithValue("@clave", ClaveUmbral);
-            return Convert.ToDouble(comando.ExecuteScalar());
+            var valor = comando.ExecuteScalar();
+
+            if (valor == null || valor == DBNull.Value)
+                return UmbralPredeterminado;
+
+            return Convert.ToDouble(valor);
         }
 
         /// <summary>Guarda el umbral porcentual (0-100).</summary>

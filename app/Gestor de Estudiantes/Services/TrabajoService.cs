@@ -73,6 +73,31 @@ namespace Gestor_de_Estudiantes.Services
             return trabajo;
         }
 
+        public Trabajo AgregarTrabajo(
+            string codigoComision,
+            Guid materiaId,
+            string titulo,
+            DateTime fechaDeEntrega)
+        {
+            ValidarComision(codigoComision);
+            titulo = (titulo ?? string.Empty).Trim();
+            if (titulo.Length == 0)
+                throw new ArgumentException("El título del trabajo es obligatorio.");
+            if (fechaDeEntrega == default)
+                throw new ArgumentException("La fecha de entrega es obligatoria.");
+
+            var trabajo = new Trabajo
+            {
+                Titulo = titulo,
+                FechaDeEntrega = fechaDeEntrega.Date,
+                MateriaId = materiaId
+            };
+
+            _trabajos.AgregarTrabajo(trabajo, codigoComision.Trim(), materiaId);
+            trabajo.MateriaId = materiaId;
+            return trabajo;
+        }
+
         /// <summary>Valida que se indique una comisión existente (ignorando mayúsculas/minúsculas y espacios).</summary>
         private void ValidarComision(string codigoComision)
         {

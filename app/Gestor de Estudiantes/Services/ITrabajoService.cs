@@ -22,5 +22,7 @@ namespace Gestor_de_Estudiantes.Services
         /// <exception cref="ArgumentException">Si falta el título o la fecha.</exception>
         /// <exception cref="InvalidOperationException">Si la comisión no existe.</exception>
         Trabajo AgregarTrabajo(string codigoComision, string titulo, DateTime fechaDeEntrega);
+
+        Trabajo AgregarTrabajo(string codigoComision, Guid materiaId, string titulo, DateTime fechaDeEntrega);
     }
 }

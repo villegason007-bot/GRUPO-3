@@ -9,6 +9,10 @@ public class Clase
     /// <summary>Identificador único de la clase; lo usan las asistencias y los servicios para referenciarla.</summary>
     public Guid Id { get; set; } = Guid.NewGuid();
 
+    public Guid? MateriaId { get; set; }
+
+    public string NombreMateria { get; set; } = string.Empty;
+
     /// <summary>Fecha del encuentro (solo fecha, sin hora).</summary>
     public DateTime Fecha { get; set; }
 

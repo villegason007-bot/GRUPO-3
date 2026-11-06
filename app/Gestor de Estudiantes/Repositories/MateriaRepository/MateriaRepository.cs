@@ -135,5 +135,32 @@ namespace Gestor_de_Estudiantes.Repositories
             Id = Guid.Parse(lector.GetString(0)),
             Nombre = lector.GetString(1),
         };
+
+        public bool EliminarMateria(string nombreMateria)
+        {
+            if (!ExisteMateria(nombreMateria))
+                return false;
+
+            using var conexion = BaseDeDatos.Abrir();
+            using var transaccion = conexion.BeginTransaction();
+            using var comando = conexion.CreateCommand();
+            comando.Transaction = transaccion;
+            comando.CommandText = """
+        DELETE FROM estudiante_materia
+        WHERE materia_id = (SELECT id FROM materias WHERE nombre COLLATE NOCASE = @nombre);
+
+        DELETE FROM materia_comision
+        WHERE materia_id = (SELECT id FROM materias WHERE nombre COLLATE NOCASE = @nombre);
+
+        DELETE FROM materias
+        WHERE nombre COLLATE NOCASE = @nombre;
+        """;
+            comando.Parameters.AddWithValue("@nombre", nombreMateria);
+            comando.ExecuteNonQuery();
+
+            transaccion.Commit();
+            return true;
+        }
+
     }
 }

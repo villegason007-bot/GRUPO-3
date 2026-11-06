@@ -40,5 +40,7 @@ namespace Gestor_de_Estudiantes.Services
         /// <summary>Devuelve las comisiones donde se dicta la materia.</summary>
         /// <param name="nombreMateria">Nombre de la materia.</param>
         List<Comision> ListarComisionesDeMateria(string nombreMateria);
+
+        bool EliminarMateria(string nombreMateria);
     }
 }

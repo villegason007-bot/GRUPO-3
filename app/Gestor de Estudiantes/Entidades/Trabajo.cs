@@ -8,6 +8,10 @@ namespace Gestor_de_Estudiantes.Entidades
         /// <summary>Identificador único del trabajo.</summary>
         public Guid Id { get; set; } = Guid.NewGuid();
 
+        public Guid? MateriaId { get; set; }
+
+        public string NombreMateria { get; set; } = string.Empty;
+
         /// <summary>Título del trabajo.</summary>
         public string Titulo { get; set; } = string.Empty;
 

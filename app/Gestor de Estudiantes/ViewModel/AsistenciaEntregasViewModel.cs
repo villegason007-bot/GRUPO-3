@@ -1,4 +1,3 @@
-
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -16,16 +15,20 @@ namespace Gestor_de_Estudiantes.ViewModel
         private readonly IEstudianteService _estudianteService;
         private readonly IAsistenciaService _asistenciaService;
         private readonly IEntregaService _entregaService;
+        private readonly IMateriaService _materiaService;
 
         private Comision? _comisionSeleccionada;
         private Clase? _claseSeleccionada;
         private Trabajo? _trabajoSeleccionado;
+        private Materia? _materiaSeleccionada;
         private string _mensaje = string.Empty;
         private bool _estaCargando;
+        private bool _cargandoDatosComision;
 
         public ObservableCollection<Comision> Comisiones { get; } = new();
         public ObservableCollection<Clase> Clases { get; } = new();
         public ObservableCollection<Trabajo> Trabajos { get; } = new();
+        public ObservableCollection<Materia> Materias { get; } = new();
         public ObservableCollection<FilaAsistencia> Asistencias { get; } = new();
         public ObservableCollection<FilaEntrega> Entregas { get; } = new();
 
@@ -36,6 +39,17 @@ namespace Gestor_de_Estudiantes.ViewModel
             {
                 if (SetProperty(ref _comisionSeleccionada, value))
                     CargarDatosComision();
+            }
+        }
+
+        public Materia? MateriaSeleccionada
+        {
+            get => _materiaSeleccionada;
+            set
+            {
+                if (SetProperty(ref _materiaSeleccionada, value) &&
+                    !_cargandoDatosComision)
+                    CargarDatosMateria();
             }
         }
 
@@ -83,7 +97,8 @@ namespace Gestor_de_Estudiantes.ViewModel
             ITrabajoService trabajoService,
             IEstudianteService estudianteService,
             IAsistenciaService asistenciaService,
-            IEntregaService entregaService)
+            IEntregaService entregaService,
+            IMateriaService materiaService)
         {
             _comisionService = comisionService;
             _claseService = claseService;
@@ -91,6 +106,7 @@ namespace Gestor_de_Estudiantes.ViewModel
             _estudianteService = estudianteService;
             _asistenciaService = asistenciaService;
             _entregaService = entregaService;
+            _materiaService = materiaService;
 
             GuardarAsistenciasCommand = new Command(GuardarAsistencias);
             GuardarEntregasCommand = new Command(GuardarEntregas);
@@ -121,6 +137,56 @@ namespace Gestor_de_Estudiantes.ViewModel
 
         private void CargarDatosComision()
         {
+            if (_cargandoDatosComision)
+                return;
+
+            _cargandoDatosComision = true;
+
+            try
+            {
+                Clases.Clear();
+                Trabajos.Clear();
+                Asistencias.Clear();
+                Entregas.Clear();
+
+                if (ComisionSeleccionada == null)
+                    return;
+
+                var codigo = ComisionSeleccionada.Codigo;
+                var materiaIdSeleccionada = _materiaSeleccionada?.Id;
+
+                Materias.Clear();
+                foreach (var materia in _materiaService.ListarMateriasDeComision(codigo))
+                    Materias.Add(materia);
+
+                // No usar el setter aquí: el setter vuelve a llamar a
+                // CargarDatosComision() y provoca una recursión infinita.
+                var materiaSeleccionada = Materias.FirstOrDefault(m =>
+                    m.Id == materiaIdSeleccionada)
+                    ?? Materias.FirstOrDefault();
+
+                if (!ReferenceEquals(_materiaSeleccionada, materiaSeleccionada))
+                {
+                    _materiaSeleccionada = materiaSeleccionada;
+                    PropertyChanged?.Invoke(
+                        this,
+                        new PropertyChangedEventArgs(nameof(MateriaSeleccionada)));
+                }
+
+                CargarDatosMateria();
+            }
+            catch (Exception ex)
+            {
+                Mensaje = $"Error al cargar los datos: {ex.Message}";
+            }
+            finally
+            {
+                _cargandoDatosComision = false;
+            }
+        }
+
+        private void CargarDatosMateria()
+        {
             Clases.Clear();
             Trabajos.Clear();
             Asistencias.Clear();
@@ -133,19 +199,26 @@ namespace Gestor_de_Estudiantes.ViewModel
             {
                 var codigo = ComisionSeleccionada.Codigo;
 
-                foreach (var clase in _claseService.ListarClases(codigo))
+                var clases = _claseService.ListarClases(codigo)
+                    .Where(c => MateriaSeleccionada == null ||
+                                c.MateriaId == MateriaSeleccionada.Id);
+
+                foreach (var clase in clases)
                     Clases.Add(clase);
 
-                foreach (var trabajo in _trabajoService.ListarTrabajos(codigo))
+                var trabajos = _trabajoService.ListarTrabajos(codigo)
+                    .Where(t => MateriaSeleccionada == null ||
+                                t.MateriaId == MateriaSeleccionada.Id);
+
+                foreach (var trabajo in trabajos)
                     Trabajos.Add(trabajo);
 
                 ClaseSeleccionada = Clases.FirstOrDefault();
                 TrabajoSeleccionado = Trabajos.FirstOrDefault();
 
-                if (Clases.Count == 0 && Trabajos.Count == 0)
-                    Mensaje = "Esta comisión todavía no tiene clases ni trabajos.";
-                else
-                    Mensaje = string.Empty;
+                Mensaje = Clases.Count == 0 && Trabajos.Count == 0
+                    ? "Esta comisión todavía no tiene clases ni trabajos."
+                    : string.Empty;
             }
             catch (Exception ex)
             {

@@ -148,6 +148,7 @@ namespace Gestor_de_Estudiantes.ViewModel
 
     public class RiesgoFilaViewModel
     {
+        public string Legajo { get; }
         public string Nombre { get; }
         public string TrabajosResumen { get; }
         public string FaltasResumen { get; }
@@ -159,6 +160,7 @@ namespace Gestor_de_Estudiantes.ViewModel
 
         public RiesgoFilaViewModel(ResultadoRiesgo resultado)
         {
+            Legajo = resultado.Legajo;
             Nombre = resultado.Nombre;
             Estado = resultado.Estado;
             Motivo = resultado.MotivoRiesgo;

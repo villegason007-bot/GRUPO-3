@@ -4,317 +4,74 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:Gestor_de_Estudiantes.Controls"
+    Title="Comisiones"
     BackgroundColor="#090D18">
 
-
     <Grid>
+        <controls:FondoAmbiental />
 
-        <!-- Fondo ambiental -->
-        <Grid InputTransparent="True">
-            <Grid.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#090D18" Offset="0" />
-                    <GradientStop Color="#11182A" Offset="0.55" />
-                    <GradientStop Color="#201C43" Offset="1" />
-                </LinearGradientBrush>
-            </Grid.Background>
+        <Grid Padding="26,26,26,16" RowDefinitions="Auto,*" RowSpacing="18">
 
-            <Ellipse
-                WidthRequest="390"
-                HeightRequest="390"
-                HorizontalOptions="End"
-                VerticalOptions="Start"
-                TranslationX="155"
-                TranslationY="-200">
-                <Ellipse.Fill>
-                    <RadialGradientBrush>
-                        <GradientStop Color="#405B4CF0" Offset="0" />
-                        <GradientStop Color="#005B4CF0" Offset="1" />
-                    </RadialGradientBrush>
-                </Ellipse.Fill>
-            </Ellipse>
+            <!-- Encabezado -->
+            <VerticalStackLayout Spacing="14">
+                <VerticalStackLayout Spacing="7">
+                    <Label Text="ESPACIO ACADÉMICO" FontSize="10" FontAttributes="Bold"
+                           CharacterSpacing="1.7" TextColor="#A5B4FC" />
+                    <Label Text="Comisiones" FontSize="32" FontAttributes="Bold" TextColor="White" />
+                    <Label Text="Elegí una comisión para ver sus materias y estudiantes."
+                           FontSize="14" TextColor="{StaticResource TextoSecundario}"
+                           LineBreakMode="WordWrap" />
+                </VerticalStackLayout>
 
-            <Ellipse
-                WidthRequest="300"
-                HeightRequest="300"
-                HorizontalOptions="Start"
-                VerticalOptions="End"
-                TranslationX="-190"
-                TranslationY="140">
-                <Ellipse.Fill>
-                    <RadialGradientBrush>
-                        <GradientStop Color="#302D75DB" Offset="0" />
-                        <GradientStop Color="#002D75DB" Offset="1" />
-                    </RadialGradientBrush>
-                </Ellipse.Fill>
-            </Ellipse>
+                <Button Text="+ Agregar comisión"
+                        Style="{StaticResource GlassButton}"
+                        Clicked="AbrirModalComision_Clicked" />
+            </VerticalStackLayout>
+
+            <!-- Lista -->
+            <Grid Grid.Row="1">
+                <controls:EstadoVacio
+                    x:Name="SinComisionesLabel"
+                    Text="Todavía no hay comisiones. Usá el botón para crear la primera."
+                    VerticalOptions="Start"
+                    Margin="0,12"
+                    IsVisible="False" />
+
+                <CollectionView
+                    x:Name="ComisionesList"
+                    SelectionMode="Single"
+                    SelectionChanged="ComisionesList_SelectionChanged">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#16FFFFFF" Stroke="#30FFFFFF" StrokeThickness="1"
+                                    Padding="18,16" StrokeShape="RoundRectangle 18">
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+                                    <Border WidthRequest="46" HeightRequest="46"
+                                            Background="#302D75DB" Stroke="#5060A5FA"
+                                            StrokeThickness="1" StrokeShape="RoundRectangle 14">
+                                        <Label Text="▤" FontSize="20" TextColor="#BFDBFE"
+                                               HorizontalOptions="Center" VerticalOptions="Center" />
+                                    </Border>
+                                    <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                                        <Label Text="{Binding Codigo}" FontSize="18"
+                                               FontAttributes="Bold" TextColor="White" />
+                                        <Label Text="{Binding Semanas, StringFormat='Duración: {0} semanas'}"
+                                               FontSize="12" TextColor="{StaticResource TextoSecundario}" />
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="2" Text="›" FontSize="26"
+                                           TextColor="#A5B4FC" VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
         </Grid>
 
-        <ScrollView>
-            <VerticalStackLayout
-                Padding="26,26,26,34"
-                Spacing="22">
-
-                <!-- Encabezado -->
-                <Grid
-                    ColumnDefinitions="*,Auto"
-                    ColumnSpacing="12">
-
-                    <VerticalStackLayout Spacing="7">
-                        <Label
-                            Text="ESPACIO ACADÉMICO"
-                            FontSize="10"
-                            FontAttributes="Bold"
-                            CharacterSpacing="1.7"
-                            TextColor="#A5B4FC" />
-
-                        <Label
-                            Text="Comisiones"
-                            FontSize="32"
-                            FontAttributes="Bold"
-                            TextColor="White" />
-
-                        <Label
-                            Text="Organizá las cursadas y administrá la nómina de estudiantes."
-                            FontSize="14"
-                            TextColor="{StaticResource TextoSecundario}"
-                            LineBreakMode="WordWrap" />
-                    </VerticalStackLayout>
-
-                    <Border
-                        Grid.Column="1"
-                        Padding="11,8"
-                        VerticalOptions="Start"
-                        Background="#16FFFFFF"
-                        Stroke="#30FFFFFF"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 14">
-                        <HorizontalStackLayout
-                            Spacing="7"
-                            VerticalOptions="Center">
-                            <Ellipse
-                                WidthRequest="7"
-                                HeightRequest="7"
-                                Fill="#86EFAC"
-                                VerticalOptions="Center" />
-                            <Label
-                                Text="Gestión"
-                                FontSize="11"
-                                TextColor="#DCE5F5"
-                                VerticalOptions="Center" />
-                        </HorizontalStackLayout>
-                    </Border>
-                </Grid>
-
-                <!-- Panel de comisiones -->
-                <!-- TOPBAR: CAMBIO DE SECCIÓN -->
-                <Border
-    Background="#16FFFFFF"
-    Stroke="#30FFFFFF"
-    StrokeThickness="1"
-    Padding="6"
-    StrokeShape="RoundRectangle 16">
-
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="6">
-
-                        <Button
-            x:Name="TabComisionesButton"
-            Text="▤   Comisiones"
-            BackgroundColor="{StaticResource Acento}"
-            TextColor="White"
-            FontAttributes="Bold"
-            FontSize="13"
-            CornerRadius="12"
-            Padding="12,13"
-            Clicked="MostrarComisionesTab_Clicked" />
-
-                        <Button
-            x:Name="TabEstudiantesButton"
-            Grid.Column="1"
-            Text="◎   Estudiantes"
-            BackgroundColor="Transparent"
-            TextColor="{StaticResource TextoSecundario}"
-            FontAttributes="Bold"
-            FontSize="13"
-            CornerRadius="12"
-            Padding="12,13"
-            Clicked="MostrarEstudiantesTab_Clicked" />
-
-                    </Grid>
-                </Border>
-
-                <!-- PESTAÑA: COMISIONES -->
-                <Border
-    x:Name="ComisionesPanel"
-    Background="#16FFFFFF"
-    Stroke="#30FFFFFF"
-    StrokeThickness="1"
-    Padding="22"
-    StrokeShape="RoundRectangle 22">
-
-                    <VerticalStackLayout Spacing="17">
-
-                        <VerticalStackLayout Spacing="6">
-                            <Label
-                Text="01 / CURSADAS"
-                FontSize="10"
-                FontAttributes="Bold"
-                CharacterSpacing="1.5"
-                TextColor="#A5B4FC" />
-
-                            <Label
-                Text="Comisiones disponibles"
-                FontSize="22"
-                FontAttributes="Bold"
-                TextColor="White" />
-
-                            <Label
-                Text="Consultá las cursadas registradas o creá una nueva comisión."
-                FontSize="13"
-                TextColor="{StaticResource TextoSecundario}" />
-                        </VerticalStackLayout>
-
-                        <Button
-            Text="+ Agregar comisión"
-            Style="{StaticResource GlassButton}"
-            Clicked="AbrirModalComision_Clicked" />
-
-                        <BoxView HeightRequest="1" Color="#24FFFFFF" />
-
-                        <controls:EstadoVacio
-                            x:Name="SinComisionesLabel"
-                            Text="Todavía no hay comisiones. Usá el botón para crear la primera."
-                            Margin="0,12"
-                            IsVisible="False" />
-
-                        <CollectionView
-            x:Name="ComisionesList"
-            SelectionMode="None"
-            HeightRequest="300">
-
-                            <CollectionView.ItemsLayout>
-                                <LinearItemsLayout
-                    Orientation="Vertical"
-                    ItemSpacing="10" />
-                            </CollectionView.ItemsLayout>
-
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <controls:ComisionCardView />
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
-
-                    </VerticalStackLayout>
-                </Border>
-
-                <!-- PESTAÑA: ESTUDIANTES -->
-                <Border
-    x:Name="EstudiantesPanel"
-    IsVisible="False"
-    Background="#16FFFFFF"
-    Stroke="#30FFFFFF"
-    StrokeThickness="1"
-    Padding="22"
-    StrokeShape="RoundRectangle 22">
-
-                    <VerticalStackLayout Spacing="17">
-
-                        <VerticalStackLayout Spacing="6">
-                            <Label
-                Text="02 / NÓMINA"
-                FontSize="10"
-                FontAttributes="Bold"
-                CharacterSpacing="1.5"
-                TextColor="#A5B4FC" />
-
-                            <Label
-                Text="Estudiantes por comisión"
-                FontSize="22"
-                FontAttributes="Bold"
-                TextColor="White" />
-
-                            <Label
-                Text="Seleccioná una comisión para consultar sus estudiantes o agregar integrantes."
-                FontSize="13"
-                TextColor="{StaticResource TextoSecundario}" />
-                        </VerticalStackLayout>
-
-                        <Label
-            Text="COMISIÓN"
-            FontSize="10"
-            FontAttributes="Bold"
-            CharacterSpacing="1"
-            TextColor="{StaticResource TextoSecundario}" />
-
-                        <Border
-            Background="#12FFFFFF"
-            Stroke="#30FFFFFF"
-            StrokeThickness="1"
-            Padding="10,2"
-            StrokeShape="RoundRectangle 14">
-
-                            <Picker
-                x:Name="ComisionFiltroPicker"
-                Title="Seleccionar comisión"
-                TitleColor="#A5B4FC"
-                TextColor="White"
-                BackgroundColor="Transparent"
-                ItemDisplayBinding="{Binding Codigo}"
-                SelectedIndexChanged="ComisionFiltro_Changed" />
-                        </Border>
-
-                        <Button
-            Text="+ Agregar estudiante a esta comisión"
-            Style="{StaticResource GlassButton}"
-            Clicked="AbrirModalEstudiante_Clicked" />
-
-                        <BoxView HeightRequest="1" Color="#24FFFFFF" />
-
-                        <Label
-            x:Name="TituloNominaLabel"
-            Text="Estudiantes"
-            FontSize="17"
-            FontAttributes="Bold"
-            TextColor="White" />
-
-                        <controls:EstadoVacio
-                            x:Name="SinEstudiantesLabel"
-                            Text="Seleccioná una comisión para consultar la nómina."
-                            Margin="0,12"
-                            IsVisible="True" />
-
-                        <CollectionView
-            x:Name="EstudiantesList"
-            SelectionMode="None"
-            HeightRequest="340">
-
-                            <CollectionView.ItemsLayout>
-                                <LinearItemsLayout
-                    Orientation="Vertical"
-                    ItemSpacing="9" />
-                            </CollectionView.ItemsLayout>
-
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <controls:EstudianteCardView />
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
-
-                    </VerticalStackLayout>
-                </Border>
-                <!-- Pie -->
-                <Label
-                    Text="GESTOR DE ESTUDIANTES  ·  ESPACIO ACADÉMICO"
-                    FontSize="10"
-                    CharacterSpacing="1.1"
-                    TextColor="#64748B"
-                    HorizontalTextAlignment="Center"
-                    Margin="0,4,0,0" />
-
-            </VerticalStackLayout>
-        </ScrollView>
+        <controls:AvisoToast x:Name="Aviso" ZIndex="20" />
 
         <!-- Modal: nueva comisión -->
         <controls:GlassModal
@@ -326,87 +83,16 @@
             TextoConfirmar="Guardar comisión"
             CancelarClicked="CancelarModal_Clicked"
             ConfirmarClicked="GuardarComision_Clicked">
-
             <controls:GlassModal.Formulario>
                 <VerticalStackLayout Spacing="15">
-                    <Label
-                        Text="CÓDIGO DE COMISIÓN"
-                        Style="{StaticResource FormLabel}" />
-
-                    <Entry
-                        x:Name="CodigoComisionEntry"
-                        Style="{StaticResource GlassEntry}"
-                        Placeholder="Ej. COM-101"
-                        ReturnType="Next" />
-
-                    <Label
-                        Text="DURACIÓN EN SEMANAS"
-                        Style="{StaticResource FormLabel}" />
-
-                    <Entry
-                        x:Name="SemanasEntry"
-                        Style="{StaticResource GlassEntry}"
-                        Text="16"
-                        Keyboard="Numeric"
-                        ReturnType="Done" />
+                    <Label Text="CÓDIGO DE COMISIÓN" Style="{StaticResource FormLabel}" />
+                    <Entry x:Name="CodigoComisionEntry" Style="{StaticResource GlassEntry}"
+                           Placeholder="Ej. 1K1" ReturnType="Next" />
+                    <Label Text="DURACIÓN EN SEMANAS" Style="{StaticResource FormLabel}" />
+                    <Entry x:Name="SemanasEntry" Style="{StaticResource GlassEntry}"
+                           Text="16" Keyboard="Numeric" ReturnType="Done" />
                 </VerticalStackLayout>
             </controls:GlassModal.Formulario>
         </controls:GlassModal>
-
-        <!-- Modal: nuevo estudiante -->
-        <controls:GlassModal
-            x:Name="ModalEstudiante"
-            IsVisible="False"
-            ZIndex="11"
-            Icono="◎"
-            IconoFondo="#302D75DB"
-            IconoBorde="#5060A5FA"
-            IconoColor="#BFDBFE"
-            IconoTamano="25"
-            Titulo="Nuevo estudiante"
-            Subtitulo="Ingresá los datos y asignalo a una comisión."
-            TextoConfirmar="Guardar estudiante"
-            CancelarClicked="CancelarModal_Clicked"
-            ConfirmarClicked="GuardarEstudiante_Clicked">
-
-            <controls:GlassModal.Formulario>
-                <VerticalStackLayout Spacing="15">
-                    <Label
-                        Text="LEGAJO"
-                        Style="{StaticResource FormLabel}" />
-
-                    <Entry
-                        x:Name="LegajoEntry"
-                        Style="{StaticResource GlassEntry}"
-                        Placeholder="Número de legajo"
-                        ReturnType="Next" />
-
-                    <Label
-                        Text="NOMBRE"
-                        Style="{StaticResource FormLabel}" />
-
-                    <Entry
-                        x:Name="NombreEstudianteEntry"
-                        Style="{StaticResource GlassEntry}"
-                        Placeholder="Nombre del estudiante"
-                        ReturnType="Done" />
-
-                    <Label
-                        Text="COMISIÓN"
-                        Style="{StaticResource FormLabel}" />
-
-                    <Border Style="{StaticResource InnerGlassCard}">
-                        <Picker
-                            x:Name="ComisionEstudiantePicker"
-                            Title="Seleccionar comisión"
-                            TitleColor="#A5B4FC"
-                            TextColor="White"
-                            BackgroundColor="Transparent"
-                            ItemDisplayBinding="{Binding Codigo}" />
-                    </Border>
-                </VerticalStackLayout>
-            </controls:GlassModal.Formulario>
-        </controls:GlassModal>
-
     </Grid>
 </ContentPage>

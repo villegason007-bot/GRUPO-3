@@ -17,5 +17,7 @@ namespace Gestor_de_Estudiantes.Entidades
 
         /// <summary>Detalle a mostrar: estado de la clase (Hábil/NoHábil) o «Fecha de entrega».</summary>
         public string Detalle { get; set; } = string.Empty;
+
+        public string Materia { get; set; } = string.Empty;
     }
 }

@@ -15,5 +15,9 @@ namespace Gestor_de_Estudiantes.Repositories
         /// <param name="trabajo">Trabajo a crear (título y fecha de entrega).</param>
         /// <param name="codigoComision">Comisión a la que pertenece.</param>
         void AgregarTrabajo(Trabajo trabajo, string codigoComision);
+
+        void AgregarTrabajo(Trabajo trabajo, string codigoComision, Guid materiaId);
+
+        void ActualizarMateria(Guid trabajoId, Guid materiaId);
     }
 }

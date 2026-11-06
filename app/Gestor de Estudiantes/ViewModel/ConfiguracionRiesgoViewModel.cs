@@ -13,6 +13,7 @@ namespace Gestor_de_Estudiantes.ViewModel
 
         private string _maxFaltasPermitidasTexto = string.Empty;
         private string _maxTrabajosNoEntregadosPermitidosTexto = string.Empty;
+        private string _umbralTexto = string.Empty;
         private string _mensaje = string.Empty;
         private Color _mensajeColor = Color.FromArgb("#94A3B8");
 
@@ -25,6 +26,18 @@ namespace Gestor_de_Estudiantes.ViewModel
                     return;
 
                 _maxFaltasPermitidasTexto = value;
+                OnPropertyChanged();
+            }
+        }
+        public string UmbralTexto
+        {
+            get => _umbralTexto;
+            set
+            {
+                if (_umbralTexto == value)
+                    return;
+
+                _umbralTexto = value;
                 OnPropertyChanged();
             }
         }
@@ -87,6 +100,8 @@ namespace Gestor_de_Estudiantes.ViewModel
             MaxTrabajosNoEntregadosPermitidosTexto =
                 _riesgoService.ObtenerMaxTrabajosNoEntregadosPermitidos()
                     .ToString();
+
+            UmbralTexto = _riesgoService.ObtenerUmbral().ToString("0.##");
         }
 
         private void Guardar()
@@ -109,8 +124,22 @@ namespace Gestor_de_Estudiantes.ViewModel
                 return;
             }
 
+            if (!double.TryParse(
+                    UmbralTexto,
+                    System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.CurrentCulture,
+                    out var umbral)
+                || umbral < 0
+                || umbral > 100)
+            {
+                MostrarError(
+                    "Ingresá un umbral válido entre 0 y 100.");
+                return;
+            }
+
             try
             {
+                _riesgoService.GuardarUmbral(umbral);
                 _riesgoService.GuardarMaxFaltasPermitidas(maxFaltas);
 
                 _riesgoService.GuardarMaxTrabajosNoEntregadosPermitidos(
