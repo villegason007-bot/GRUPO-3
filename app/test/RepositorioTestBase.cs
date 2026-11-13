@@ -1,6 +1,7 @@
 using Gestor_de_Estudiantes.Config;
 using Gestor_de_Estudiantes.Entidades;
 using Gestor_de_Estudiantes.Repositories;
+using Microsoft.Data.Sqlite;
 
 namespace Test
 {
@@ -16,6 +17,7 @@ namespace Test
         [TestCleanup]
         public void EliminarBaseDeDatos()
         {
+            SqliteConnection.ClearAllPools();
             if (File.Exists(BaseDeDatos.Ruta))
                 File.Delete(BaseDeDatos.Ruta);
         }

@@ -77,13 +77,12 @@
 
                     <Label Text="Espacio de trabajo" Style="{StaticResource SidebarSectionLabel}" />
 
-                    <Button Text="⌂   Inicio" Style="{StaticResource SidebarButton}" Clicked="OnInicioClicked" />
-                    <Button Text="▤ Comisiones" Style="{StaticResource SidebarButton}" Clicked="OnVerComisionesClicked" />
-                    <Button Text="◎ Estudiantes" Style="{StaticResource SidebarButton}" Clicked="OnVerEstudiantesClicked" />
-                    <Button Text="▦ Materias" Style="{StaticResource SidebarButton}" Clicked="OnVerMateriasClicked" />
-                    <Button Text="▣ Calendario" Style="{StaticResource SidebarButton}" Clicked="OnCalendarioClicked" />
-                    <Button Text="✓ Asistencia y entregas" Style="{StaticResource SidebarButton}" Clicked="OnAsistenciaEntregasClicked" />
-
+					<Button Text="🏠   Inicio" Style="{StaticResource SidebarButton}" Clicked="OnInicioClicked" />
+					<Button Text="🗂   Comisiones" Style="{StaticResource SidebarButton}" Clicked="OnVerComisionesClicked" />
+					<Button Text="🎓   Estudiantes" Style="{StaticResource SidebarButton}" Clicked="OnVerEstudiantesClicked" />
+					<Button Text="📚   Materias" Style="{StaticResource SidebarButton}" Clicked="OnVerMateriasClicked" />
+					<Button Text="📅   Calendario" Style="{StaticResource SidebarButton}" Clicked="OnCalendarioClicked" />
+					<Button Text="📋   Asistencia y entregas" Style="{StaticResource SidebarButton}" Clicked="OnAsistenciaEntregasClicked" />
                     <BoxView HeightRequest="1" Margin="0,12" Color="#1E293B" />
 
                     <Label Text="Preferencias" Style="{StaticResource SidebarSectionLabel}" />
