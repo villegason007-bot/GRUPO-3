@@ -81,6 +81,42 @@ namespace Gestor_de_Estudiantes.Repositories
         }
 
         /// <summary>
+        /// Devuelve las condiciones (Presente/Ausente) del estudiante en
+        /// clases hábiles de la comisión, ordenadas de la más antigua a la
+        /// más reciente. Las asistencias Pendiente no se incluyen (R1).
+        /// </summary>
+        public List<Condicion> ObtenerCondicionesPorFecha(
+            Guid estudianteId, string codigoComision)
+        {
+            using var conexion = BaseDeDatos.Abrir();
+            using var comando = conexion.CreateCommand();
+
+            comando.CommandText = """
+                SELECT a.condicion
+                FROM asistencias a
+                INNER JOIN clases c ON c.id = a.clase_id
+                INNER JOIN comisiones com ON com.id = c.comision_id
+                WHERE a.estudiante_id = @estudianteId
+                  AND com.codigo = @codigo
+                  AND c.estado = @estadoHabil
+                  AND a.condicion <> @condicionPendiente
+                ORDER BY c.fecha, c.id;
+                """;
+
+            comando.Parameters.AddWithValue("@estudianteId", estudianteId.ToString("D"));
+            comando.Parameters.AddWithValue("@codigo", codigoComision);
+            comando.Parameters.AddWithValue("@estadoHabil", EstadoClase.Habil.ToString());
+            comando.Parameters.AddWithValue("@condicionPendiente", Condicion.Pendiente.ToString());
+
+            var condiciones = new List<Condicion>();
+            using var lector = comando.ExecuteReader();
+            while (lector.Read())
+                condiciones.Add(Enum.Parse<Condicion>(lector.GetString(0)));
+
+            return condiciones;
+        }
+
+        /// <summary>
         /// Cuenta los trabajos de la comisión ya vencidos a hoy y, de esos,
         /// cuántos entregó el estudiante.
         /// </summary>

@@ -26,6 +26,32 @@ namespace Gestor_de_Estudiantes.Services
         /// <summary>Ausencias del estudiante en clases hábiles.</summary>
         public int Faltas { get; set; }
 
+        /// <summary>
+        /// Ausencias seguidas vigentes hasta la última clase con asistencia
+        /// tomada (R1). null = sin datos; 0 = sin ausencias seguidas.
+        /// </summary>
+        public int? AusenciasSeguidas { get; set; }
+
+        /// <summary>
+        /// Texto de ausencias seguidas para el panel (R1): «Sin datos»,
+        /// «Sin ausencias seguidas», «1 ausencia seguida» o «N ausencias seguidas».
+        /// </summary>
+        public string TextoAusenciasSeguidas
+        {
+            get
+            {
+                if (AusenciasSeguidas is null)
+                    return "Sin datos";
+
+                if (AusenciasSeguidas == 0)
+                    return "Sin ausencias seguidas";
+
+                return AusenciasSeguidas == 1
+                    ? "1 ausencia seguida"
+                    : $"{AusenciasSeguidas} ausencias seguidas";
+            }
+        }
+
         /// <summary>Trabajos de la comisión ya vencidos a hoy (denominador de entregas).</summary>
         public int TrabajosVencidos { get; set; }
 

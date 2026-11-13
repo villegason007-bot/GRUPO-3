@@ -1,3 +1,5 @@
+using Gestor_de_Estudiantes.Entidades;
+
 namespace Gestor_de_Estudiantes.Services
 {
     /// <summary>
@@ -61,6 +63,35 @@ namespace Gestor_de_Estudiantes.Services
 
             resultado.Puntaje = (int)Math.Round(suma / componentes, MidpointRounding.AwayFromZero);
             return resultado;
+        }
+
+        /// <summary>
+        /// Cuenta las ausencias seguidas vigentes (R1): recorre las
+        /// condiciones desde la más reciente hacia atrás y se detiene en
+        /// la primera presencia. Las Pendiente se ignoran: no suman ni
+        /// cortan la racha (CA3).
+        /// </summary>
+        /// <param name="condicionesPorFecha">Condiciones de la clase más antigua a la más reciente.</param>
+        /// <returns>null si no hay asistencia tomada (CA4); 0 si la última es Presente (CA2); N ausencias seguidas (CA1).</returns>
+        public int? CalcularAusenciasSeguidas(IReadOnlyList<Condicion> condicionesPorFecha)
+        {
+            var tomadas = condicionesPorFecha
+                .Where(c => c != Condicion.Pendiente)
+                .ToList();
+
+            if (tomadas.Count == 0)
+                return null;
+
+            var racha = 0;
+            for (var i = tomadas.Count - 1; i >= 0; i--)
+            {
+                if (tomadas[i] != Condicion.Ausente)
+                    break;
+
+                racha++;
+            }
+
+            return racha;
         }
     }
 }

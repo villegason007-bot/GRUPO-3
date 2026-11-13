@@ -1,3 +1,5 @@
+using Gestor_de_Estudiantes.Entidades;
+
 namespace Gestor_de_Estudiantes.Services
 {
     /// <summary>
@@ -22,5 +24,21 @@ namespace Gestor_de_Estudiantes.Services
             int clasesHabiles, int faltas,
             int trabajosVencidos, int noEntregados,
             double umbral);
+
+        /// <summary>
+        /// Cuenta las ausencias seguidas vigentes (R1): desde la última
+        /// clase con asistencia tomada hacia atrás, hasta la primera
+        /// presencia.
+        /// </summary>
+        /// <param name="condicionesPorFecha">
+        /// Condiciones del estudiante ordenadas de la clase más antigua a la
+        /// más reciente. Las Pendiente no suman ni cortan la racha.
+        /// </param>
+        /// <returns>
+        /// null si no hay ninguna asistencia tomada (sin datos); 0 si la
+        /// última asistencia tomada es Presente; N si faltó las últimas N
+        /// clases seguidas.
+        /// </returns>
+        int? CalcularAusenciasSeguidas(IReadOnlyList<Condicion> condicionesPorFecha);
     }
 }
