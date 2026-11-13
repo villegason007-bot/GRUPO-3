@@ -1,4 +1,3 @@
-
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -152,6 +151,10 @@ namespace Gestor_de_Estudiantes.ViewModel
         public string Nombre { get; }
         public string TrabajosResumen { get; }
         public string FaltasResumen { get; }
+
+        /// <summary>R1: «Sin datos», «Sin ausencias seguidas» o «N ausencias seguidas».</summary>
+        public string AusenciasSeguidas { get; }
+
         public string Motivo { get; }
         public string UltimoContacto { get; }
         public string Estado { get; }
@@ -165,6 +168,7 @@ namespace Gestor_de_Estudiantes.ViewModel
             Estado = resultado.Estado;
             Motivo = resultado.MotivoRiesgo;
             UltimoContacto = resultado.TextoUltimoContacto;
+            AusenciasSeguidas = resultado.TextoAusenciasSeguidas;
 
             if (resultado.SinInformacion)
             {
