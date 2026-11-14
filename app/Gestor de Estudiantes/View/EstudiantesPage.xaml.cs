@@ -84,6 +84,7 @@ public partial class EstudiantesPage : ContentPage
         LegajoEntry.Text = string.Empty;
         NombreEntry.Text = string.Empty;
         TelefonoEntry.Text = string.Empty;
+        FechaIncorporacionPicker.Date = DateTime.Today; // Resetea a la fecha actual por defecto
         ComisionEstudiantePicker.SelectedItem =
             _vm.ComisionSeleccionada ?? _vm.Comisiones.FirstOrDefault();
         ModalEstudiante.LimpiarError();
@@ -100,6 +101,7 @@ public partial class EstudiantesPage : ContentPage
             Legajo = LegajoEntry.Text,
             Nombre = NombreEntry.Text,
             Telefono = TelefonoEntry.Text,
+            FechaIncorporacion = FechaIncorporacionPicker.Date.ToString("yyyy-MM-dd")
         }))
         {
             ModalEstudiante.MostrarError(_vm.Mensaje);

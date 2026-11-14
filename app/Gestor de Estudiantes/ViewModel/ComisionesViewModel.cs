@@ -66,11 +66,9 @@ namespace Gestor_de_Estudiantes.ViewModel
             CargarComisionesCommand =
                 new Command(CargarComisiones);
 
-            // Usar lambda que llama al método y descarta el bool devuelto
             AgregarComisionCommand =
                 new Command<string>(codigo => { AgregarComision(codigo); });
-        
-            // Usar lambda que llama al método y descarta el bool devuelto
+
             AgregarEstudianteCommand =
                 new Command<DatosNuevoEstudiante>(datos => { AgregarEstudiante(datos); });
 
@@ -207,7 +205,8 @@ namespace Gestor_de_Estudiantes.ViewModel
                     datos.Legajo,
                     datos.Nombre,
                     ComisionSeleccionada.Codigo,
-                    datos.Telefono);
+                    datos.Telefono,
+                    datos.FechaIncorporacion);
 
                 CargarEstudiantes();
 
@@ -221,11 +220,6 @@ namespace Gestor_de_Estudiantes.ViewModel
             }
         }
 
-        /// <summary>
-        /// Crea una comisión desde el texto del formulario (código y
-        /// duración en semanas como texto), validando la duración antes de
-        /// delegar en <see cref="AgregarComision(string?, int)"/>.
-        /// </summary>
         public bool AgregarComision(string? codigo, string? semanasTexto)
         {
             if (!int.TryParse(semanasTexto, out var semanas) || semanas < 1)
@@ -237,15 +231,11 @@ namespace Gestor_de_Estudiantes.ViewModel
             return AgregarComision(codigo, semanas);
         }
 
-        /// <summary>
-        /// Agrega un estudiante a la comisión indicada desde el formulario,
-        /// validando los campos obligatorios y seleccionando la comisión
-        /// antes de delegar en <see cref="AgregarEstudiante(DatosNuevoEstudiante?)"/>.
-        /// </summary>
         public bool AgregarEstudiante(
             string? legajo,
             string? nombre,
-            Comision? comision)
+            Comision? comision,
+            string? fechaIncorporacion = null)
         {
             if (string.IsNullOrWhiteSpace(legajo))
             {
@@ -265,7 +255,6 @@ namespace Gestor_de_Estudiantes.ViewModel
                 return false;
             }
 
-            // Usar la comisión que se está consultando.
             ComisionSeleccionada =
                 Comisiones.FirstOrDefault(c => c.Id == comision.Id)
                 ?? comision;
@@ -273,7 +262,8 @@ namespace Gestor_de_Estudiantes.ViewModel
             return AgregarEstudiante(new DatosNuevoEstudiante
             {
                 Legajo = legajo.Trim(),
-                Nombre = nombre.Trim()
+                Nombre = nombre.Trim(),
+                FechaIncorporacion = fechaIncorporacion
             });
         }
 
@@ -310,5 +300,7 @@ namespace Gestor_de_Estudiantes.ViewModel
         public string Nombre { get; set; } = string.Empty;
 
         public string? Telefono { get; set; }
+
+        public string? FechaIncorporacion { get; set; }
     }
 }
