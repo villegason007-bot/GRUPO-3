@@ -12,6 +12,34 @@ namespace Test
         {
             BaseDeDatos.Ruta = Path.Combine(Path.GetTempPath(), $"ppii_test_{Guid.NewGuid():N}.db");
             BaseDeDatos.Inicializar();
+            LimpiarDatosSembrados();
+        }
+
+        /// <summary>
+        /// Inicializar() siembra comisiones y estudiantes de ejemplo para la app.
+        /// Los tests necesitan partir de una base vacía con la comisión 1K1.
+        /// </summary>
+        private static void LimpiarDatosSembrados()
+        {
+            using (var conexion = BaseDeDatos.Abrir())
+            {
+                using var comando = conexion.CreateCommand();
+                comando.CommandText = """
+                    DELETE FROM contactos;
+                    DELETE FROM entregas;
+                    DELETE FROM asistencias;
+                    DELETE FROM estudiante_materia;
+                    DELETE FROM materia_comision;
+                    DELETE FROM trabajos;
+                    DELETE FROM clases;
+                    DELETE FROM estudiantes;
+                    DELETE FROM materias;
+                    DELETE FROM comisiones;
+                    """;
+                comando.ExecuteNonQuery();
+            }
+
+            new ComisionRepository().AgregarComision(new Comision { Codigo = "1K1" });
         }
 
         [TestCleanup]
