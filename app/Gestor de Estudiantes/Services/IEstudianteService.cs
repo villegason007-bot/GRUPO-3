@@ -28,10 +28,16 @@ namespace Gestor_de_Estudiantes.Services
         /// <param name="nombre">Nombre del estudiante (obligatorio).</param>
         /// <param name="codigoComision">Comisión en la que se incorpora.</param>
         /// <param name="telefono">Teléfono de contacto (opcional; dígitos, espacios y + - ( )).</param>
+        /// <param name="fechaIncorporacion">
+        /// Fecha desde la que cursa (R2, opcional, formato aaaa-MM-dd). Vacía
+        /// o nula: el estudiante cursa desde el inicio.
+        /// </param>
         /// <returns>El estudiante creado.</returns>
-        /// <exception cref="ArgumentException">Si legajo o nombre están vacíos, o el teléfono tiene símbolos no permitidos.</exception>
+        /// <exception cref="ArgumentException">Si legajo o nombre están vacíos, el teléfono tiene símbolos no permitidos o la fecha es inválida o posterior a hoy.</exception>
         /// <exception cref="InvalidOperationException">Si ya existe un estudiante con ese legajo.</exception>
-        Estudiante AgregarEstudiante(string legajo, string nombre, string codigoComision, string? telefono = null);
+        Estudiante AgregarEstudiante(
+            string legajo, string nombre, string codigoComision,
+            string? telefono = null, string? fechaIncorporacion = null);
 
         /// <summary>
         /// Da de baja lógica al estudiante: la fila queda en la base y se
