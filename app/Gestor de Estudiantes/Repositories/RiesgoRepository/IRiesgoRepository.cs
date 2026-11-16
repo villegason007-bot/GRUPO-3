@@ -22,15 +22,6 @@ namespace Gestor_de_Estudiantes.Repositories
         (int ClasesHabiles, int Faltas, bool TieneRegistro) ContarAsistencias(
             Guid estudianteId, string codigoComision);
 
-        /// <summary>
-        /// Condiciones (Presente/Ausente) del estudiante en clases hábiles,
-        /// de la más antigua a la más reciente, sin las Pendiente (R1).
-        /// </summary>
-        /// <param name="estudianteId">Estudiante a evaluar.</param>
-        /// <param name="codigoComision">Comisión a evaluar.</param>
-        List<Condicion> ObtenerCondicionesPorFecha(
-            Guid estudianteId, string codigoComision);
-
         /// <summary>Cuenta trabajos ya vencidos a hoy en la comisión y cuántos entregó el estudiante.</summary>
         /// <param name="estudianteId">Estudiante a evaluar.</param>
         /// <param name="codigoComision">Comisión a evaluar.</param>

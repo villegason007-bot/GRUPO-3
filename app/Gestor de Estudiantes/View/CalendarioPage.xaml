@@ -153,8 +153,7 @@
                     </Grid>
                 </Border>
 
-                <!-- Clases, materias y asistencias 
-				
+                <!-- Clases, materias y asistencias -->
                 <Border Style="{StaticResource GlassCard}">
                     <VerticalStackLayout Spacing="14">
                         <VerticalStackLayout Spacing="4">
@@ -259,7 +258,6 @@
                         </CollectionView>
                     </VerticalStackLayout>
                 </Border>
-				-->
 
                 <!-- Panel Calendario -->
                 <Border

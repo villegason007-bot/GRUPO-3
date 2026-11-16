@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="Gestor_de_Estudiantes.Views.RiesgoPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -76,7 +76,7 @@
 
                     <Grid
                         Padding="14,16"
-                        ColumnDefinitions="190,150,100,160,300,130,135"
+                        ColumnDefinitions="190,150,100,300,130,135"
                         ColumnSpacing="12"
                         BackgroundColor="#1E293B">
 
@@ -103,21 +103,13 @@
 
                         <Label
                             Grid.Column="3"
-                            Text="Ausencias seguidas"
-                            FontAttributes="Bold"
-                            FontSize="12"
-                            TextColor="#CBD5E1"
-                            VerticalOptions="Center" />
-
-                        <Label
-                            Grid.Column="4"
                             Text="Motivo de riesgo"
                             FontAttributes="Bold"
                             TextColor="#CBD5E1"
                             VerticalOptions="Center" />
 
                         <Label
-                            Grid.Column="5"
+                            Grid.Column="4"
                             Text="Último contacto"
                             FontAttributes="Bold"
                             FontSize="12"
@@ -125,7 +117,7 @@
                             VerticalOptions="Center" />
 
                         <Label
-                            Grid.Column="6"
+                            Grid.Column="5"
                             Text="Riesgo"
                             FontAttributes="Bold"
                             TextColor="#CBD5E1"
@@ -155,7 +147,7 @@
 
                                 <Grid
                                     Padding="14,12"
-                                    ColumnDefinitions="190,150,100,160,300,130,135"
+                                    ColumnDefinitions="190,150,100,300,130,135"
                                     ColumnSpacing="12">
 
                                     <Label
@@ -179,13 +171,6 @@
 
                                     <Label
                                         Grid.Column="3"
-                                        Text="{Binding AusenciasSeguidas}"
-                                        TextColor="#CBD5E1"
-                                        FontSize="12"
-                                        VerticalOptions="Center" />
-
-                                    <Label
-                                        Grid.Column="4"
                                         Text="{Binding Motivo}"
                                         TextColor="#94A3B8"
                                         FontSize="12"
@@ -194,14 +179,14 @@
 
                                     <!-- H11: fecha del último contacto o «Sin contactar» -->
                                     <Label
-                                        Grid.Column="5"
+                                        Grid.Column="4"
                                         Text="{Binding UltimoContacto}"
                                         TextColor="#CBD5E1"
                                         FontSize="12"
                                         VerticalOptions="Center" />
 
                                     <Border
-                                        Grid.Column="6"
+                                        Grid.Column="5"
                                         Padding="8,5"
                                         HorizontalOptions="Start"
                                         VerticalOptions="Center"
