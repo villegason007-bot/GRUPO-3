@@ -58,7 +58,7 @@ namespace Test
 
             var guardado = _servicio.BuscarEstudiante("9001");
             Assert.AreEqual("+54 (11) 5555-5555", guardado!.Telefono);
-            Assert.IsNull(guardado.FechaIncorporacion);
+            Assert.AreEqual(DateTime.Today.ToString("yyyy-MM-dd"), guardado.FechaIncorporacion);
         }
 
         [TestMethod]
