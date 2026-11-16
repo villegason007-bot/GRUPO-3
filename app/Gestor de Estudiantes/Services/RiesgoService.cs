@@ -106,7 +106,8 @@ namespace Gestor_de_Estudiantes.Services
 
         /// <summary>
         /// Cuenta asistencias y trabajos de un estudiante y calcula su
-        /// resultado individual, adjuntando los límites configurados.
+        /// resultado individual, adjuntando los límites configurados y
+        /// las ausencias seguidas (R1).
         /// </summary>
         private ResultadoRiesgo CalcularRiesgoDe(
             Estudiante estudiante,
@@ -129,6 +130,12 @@ namespace Gestor_de_Estudiantes.Services
                 vencidos,
                 vencidos - entregados,
                 umbral);
+
+            // R1: ausencias seguidas hasta la última clase con asistencia tomada.
+            var condiciones = _riesgos.ObtenerCondicionesPorFecha(
+                estudiante.Id, codigoComision);
+            resultado.AusenciasSeguidas =
+                _calculadora.CalcularAusenciasSeguidas(condiciones);
 
             resultado.EstudianteId = estudiante.Id;
             resultado.Legajo = estudiante.Legajo;
