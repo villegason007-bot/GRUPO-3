@@ -4,7 +4,8 @@ namespace Gestor_de_Estudiantes.Services
 {
     /// <summary>
     /// Contrato de la fachada de la nómina de estudiantes (H1):
-    /// listado, búsqueda por legajo, alta y baja lógica.
+    /// listado, búsqueda por legajo, alta, baja lógica y corrección
+    /// de la fecha de incorporación (R2).
     /// </summary>
     public interface IEstudianteService
     {
@@ -47,5 +48,15 @@ namespace Gestor_de_Estudiantes.Services
         /// <returns>true si se dio de baja; false si no estaba activo.</returns>
         /// <exception cref="ArgumentException">Si el legajo está vacío.</exception>
         bool EliminarEstudiante(string legajo);
+
+        /// <summary>
+        /// Corrige la fecha de incorporación de un estudiante ya cargado (R2).
+        /// Fecha vacía = quitarla (el riesgo vuelve a calcularse sobre todas las clases).
+        /// </summary>
+        /// <param name="legajo">Legajo del estudiante (obligatorio).</param>
+        /// <param name="fechaIncorporacion">Nueva fecha aaaa-MM-dd, o vacía para quitarla.</param>
+        /// <returns>true si se actualizó; false si el estudiante no existe o está dado de baja.</returns>
+        /// <exception cref="ArgumentException">Si el legajo está vacío, o la fecha es inválida o posterior a hoy.</exception>
+        bool CambiarFechaIncorporacion(string legajo, string? fechaIncorporacion);
     }
 }

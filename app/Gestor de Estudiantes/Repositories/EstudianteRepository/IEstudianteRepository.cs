@@ -26,5 +26,13 @@ namespace Gestor_de_Estudiantes.Repositories
         /// <param name="legajo">Legajo del estudiante a dar de baja.</param>
         /// <returns>true si estaba activo y se dio de baja.</returns>
         bool EliminarEstudiante(string legajo);
+
+        /// <summary>
+        /// Actualiza la fecha de incorporación (R2) de un estudiante activo.
+        /// </summary>
+        /// <param name="legajo">Legajo del estudiante.</param>
+        /// <param name="fechaIncorporacion">Nueva fecha aaaa-MM-dd, o null para quitarla.</param>
+        /// <returns>true si se actualizó una fila.</returns>
+        bool ActualizarFechaIncorporacion(string legajo, string? fechaIncorporacion);
     }
 }

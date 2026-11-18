@@ -107,6 +107,29 @@ namespace Gestor_de_Estudiantes.Services
         }
 
         /// <summary>
+        /// Corrige la fecha de incorporación de un estudiante ya cargado (R2).
+        /// Fecha vacía = quitarla (el riesgo vuelve a calcularse sobre todas las clases).
+        /// </summary>
+        /// <param name="legajo">Legajo del estudiante (obligatorio).</param>
+        /// <param name="fechaIncorporacion">Nueva fecha aaaa-MM-dd, o vacía para quitarla.</param>
+        /// <returns>true si se actualizó; false si el estudiante no existe o está dado de baja.</returns>
+        /// <exception cref="ArgumentException">Si el legajo está vacío, o la fecha es inválida o posterior a hoy.</exception>
+        public bool CambiarFechaIncorporacion(string legajo, string? fechaIncorporacion)
+        {
+            legajo = (legajo ?? string.Empty).Trim();
+            if (legajo.Length == 0)
+                throw new ArgumentException("El legajo es obligatorio.");
+
+            // Se valida primero: si la fecha es inválida, no se toca nada.
+            var fecha = NormalizarFechaIncorporacion(fechaIncorporacion);
+
+            if (_estudiantes.BuscarEstudiante(legajo) is null)
+                return false;
+
+            return _estudiantes.ActualizarFechaIncorporacion(legajo, fecha);
+        }
+
+        /// <summary>
         /// Valida y normaliza la fecha de incorporación (R2): vacía = sin
         /// fecha (null); si viene, debe ser aaaa-MM-dd y no posterior a hoy.
         /// </summary>

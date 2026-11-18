@@ -86,6 +86,25 @@ namespace Gestor_de_Estudiantes.Repositories
             return comando.ExecuteNonQuery() > 0;
         }
 
+        /// <summary>
+        /// Actualiza la fecha de incorporación (R2) de un estudiante activo.
+        /// Un valor null deja la columna en NULL (sin fecha).
+        /// </summary>
+        /// <returns>true si se actualizó una fila.</returns>
+        public bool ActualizarFechaIncorporacion(string legajo, string? fechaIncorporacion)
+        {
+            using var conexion = BaseDeDatos.Abrir();
+            using var comando = conexion.CreateCommand();
+            comando.CommandText = """
+                UPDATE estudiantes
+                SET fecha_incorporacion = @fecha
+                WHERE legajo = @legajo AND activo = 1;
+                """;
+            comando.Parameters.AddWithValue("@fecha", (object?)fechaIncorporacion ?? DBNull.Value);
+            comando.Parameters.AddWithValue("@legajo", legajo);
+            return comando.ExecuteNonQuery() > 0;
+        }
+
         private static Estudiante Mapear(SqliteDataReader lector) => new Estudiante
         {
             Id = Guid.Parse(lector.GetString(0)),
