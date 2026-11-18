@@ -5,8 +5,9 @@ namespace Gestor_de_Estudiantes.Views
 {
     /// <summary>
     /// Ficha del estudiante (H9): datos de contacto, historial de
-    /// contactos (H10), modal para registrar uno nuevo y materias en las
-    /// que está inscripto. Recibe el legajo por la ruta (parámetro «legajo»).
+    /// contactos (H10), modal para registrar uno nuevo, materias en las
+    /// que está inscripto y edición de la fecha de incorporación (R2).
+    /// Recibe el legajo por la ruta (parámetro «legajo»).
     /// </summary>
     [QueryProperty(nameof(Legajo), "legajo")]
     public partial class FichaEstudiantePage : ContentPage
@@ -47,6 +48,48 @@ namespace Gestor_de_Estudiantes.Views
 
         private void ActualizarMateriasVacio() =>
             SinMateriasLabel.IsVisible = _vm.MateriasInscriptas.Count == 0;
+
+        // ---------------- Incorporación (R2) ----------------
+
+        private void OnEditarIncorporacionClicked(object sender, EventArgs e)
+        {
+            // Parte de la fecha actual del estudiante (o de hoy si no tiene).
+            FechaEdicionPicker.Date = _vm.FechaIncorporacion ?? DateTime.Today;
+            ModalIncorporacion.LimpiarError();
+            ModalIncorporacion.IsVisible = true;
+        }
+
+        private void CancelarIncorporacion_Clicked(object sender, EventArgs e)
+        {
+            ModalIncorporacion.IsVisible = false;
+        }
+
+        private void GuardarIncorporacion_Clicked(object sender, EventArgs e)
+        {
+            DateTime? fecha = FechaEdicionPicker.Date;
+            var error = _vm.CambiarFechaIncorporacion(fecha);
+
+            if (error != null)
+            {
+                ModalIncorporacion.MostrarError(error);
+                return;
+            }
+
+            ModalIncorporacion.IsVisible = false;
+        }
+
+        private void QuitarIncorporacion_Clicked(object sender, EventArgs e)
+        {
+            var error = _vm.CambiarFechaIncorporacion(null);
+
+            if (error != null)
+            {
+                ModalIncorporacion.MostrarError(error);
+                return;
+            }
+
+            ModalIncorporacion.IsVisible = false;
+        }
 
         // ---------------- Contactos (H10) ----------------
 

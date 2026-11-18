@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using Gestor_de_Estudiantes.Entidades;
 using Gestor_de_Estudiantes.Services;
@@ -11,7 +12,8 @@ namespace Gestor_de_Estudiantes.ViewModel
     /// los datos identificatorios y de contacto con el historial de
     /// contactos del tutor, y valida el formulario del modal antes de
     /// delegar en <see cref="IContactoService"/>. Además permite inscribir
-    /// al estudiante en materias de su comisión y quitarlas.
+    /// al estudiante en materias de su comisión y quitarlas, y corregir
+    /// su fecha de incorporación (R2).
     /// </summary>
     public class FichaEstudianteViewModel : INotifyPropertyChanged
     {
@@ -19,6 +21,7 @@ namespace Gestor_de_Estudiantes.ViewModel
         private readonly IContactoService _contactos;
         private readonly IMateriaService _materias;
         private readonly IInscripcionMateriaService _inscripciones;
+        private readonly IEstudianteService _estudiantes;
 
         private string _nombreCompleto = string.Empty;
         private string _subtitulo = string.Empty;
@@ -34,12 +37,14 @@ namespace Gestor_de_Estudiantes.ViewModel
             IFichaService fichas,
             IContactoService contactos,
             IMateriaService materias,
-            IInscripcionMateriaService inscripciones)
+            IInscripcionMateriaService inscripciones,
+            IEstudianteService estudiantes)
         {
             _fichas = fichas;
             _contactos = contactos;
             _materias = materias;
             _inscripciones = inscripciones;
+            _estudiantes = estudiantes;
         }
 
         /// <summary>Historial de contactos del estudiante (H10), del más reciente al más antiguo.</summary>
@@ -90,6 +95,12 @@ namespace Gestor_de_Estudiantes.ViewModel
             private set => Notificar(ref _fechaIncorporacionTexto, value);
         }
 
+        /// <summary>
+        /// Fecha de incorporación actual del estudiante (R2), o null si no
+        /// tiene. Sirve para precargar el selector de fecha al editarla.
+        /// </summary>
+        public DateTime? FechaIncorporacion { get; private set; }
+
         /// <summary>Mensaje de estado o de error para la página.</summary>
         public string Mensaje
         {
@@ -125,6 +136,7 @@ namespace Gestor_de_Estudiantes.ViewModel
                     ? "Sin teléfono"
                     : ficha.Telefono;
                 FechaIncorporacionTexto = FormatearFecha(ficha.FechaIncorporacion);
+                FechaIncorporacion = ParsearFecha(ficha.FechaIncorporacion);
 
                 Contactos.Clear();
                 foreach (var contacto in ficha.Contactos)
@@ -140,6 +152,41 @@ namespace Gestor_de_Estudiantes.ViewModel
                 Mensaje = ex.Message;
                 MostrarMensaje = true;
             }
+        }
+
+        // ---------------- Incorporación (R2) ----------------
+
+        /// <summary>
+        /// Corrige la fecha de incorporación del estudiante (R2). El
+        /// servicio rechaza fechas posteriores a hoy; con null se quita la
+        /// fecha y el riesgo vuelve a calcularse sobre todas las clases.
+        /// Al éxito recarga la ficha para mostrar la fecha nueva.
+        /// </summary>
+        /// <param name="fecha">Nueva fecha, o null para quitarla.</param>
+        /// <returns>null si se guardó; el mensaje de error si falló.</returns>
+        public string? CambiarFechaIncorporacion(DateTime? fecha)
+        {
+            if (_legajo.Length == 0)
+                return "No hay ningún estudiante cargado.";
+
+            var texto = fecha?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+            try
+            {
+                if (!_estudiantes.CambiarFechaIncorporacion(_legajo, texto))
+                    return "No se encontró al estudiante.";
+            }
+            catch (Exception ex) when (ex is ArgumentException || ex is InvalidOperationException)
+            {
+                return ex.Message;
+            }
+
+            CargarFicha(_legajo);
+            Mensaje = fecha is null
+                ? "Se quitó la fecha de incorporación."
+                : "Fecha de incorporación actualizada.";
+            MostrarMensaje = true;
+            return null;
         }
 
         // ---------------- Materias del estudiante ----------------
@@ -275,6 +322,18 @@ namespace Gestor_de_Estudiantes.ViewModel
             return DateTime.TryParse(fecha, out var fechaParseada)
                 ? fechaParseada.ToString("dd/MM/yyyy")
                 : fecha;
+        }
+
+        /// <summary>Convierte la fecha ISO (aaaa-MM-dd) en DateTime, o null si no hay o es inválida.</summary>
+        private static DateTime? ParsearFecha(string? fecha)
+        {
+            if (string.IsNullOrWhiteSpace(fecha))
+                return null;
+
+            return DateTime.TryParseExact(fecha, "yyyy-MM-dd", CultureInfo.InvariantCulture,
+                DateTimeStyles.None, out var parseada)
+                ? parseada
+                : null;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
