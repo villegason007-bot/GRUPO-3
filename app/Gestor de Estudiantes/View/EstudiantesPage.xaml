@@ -110,7 +110,7 @@
 						<Picker x:Name="ComisionEstudiantePicker"
                                 Title="Seleccionar comisión"
                                 TitleColor="#A5B4FC"
-                                TextColor="White"
+                                TextColor="Wh
                                 BackgroundColor="Transparent"
                                 ItemDisplayBinding="{Binding Codigo}" />
 					</Border>
