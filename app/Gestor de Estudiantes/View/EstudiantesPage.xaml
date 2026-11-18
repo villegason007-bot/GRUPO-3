@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage    x:Class="Gestor_de_Estudiantes.Views.EstudiantesPage"
+<ContentPage x:Class="Gestor_de_Estudiantes.Views.EstudiantesPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:Gestor_de_Estudiantes.Controls"
@@ -110,7 +110,7 @@
 						<Picker x:Name="ComisionEstudiantePicker"
                                 Title="Seleccionar comisión"
                                 TitleColor="#A5B4FC"
-                                TextColor="Wh
+                                TextColor="White"
                                 BackgroundColor="Transparent"
                                 ItemDisplayBinding="{Binding Codigo}" />
 					</Border>
