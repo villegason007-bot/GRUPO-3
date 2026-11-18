@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="Gestor_de_Estudiantes.Controls.AvisoToast"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    IsVisible="False"
+    InputTransparent="True"
+    VerticalOptions="End"
+    HorizontalOptions="Center"
+    Margin="24">
+
+    <Border
+        Padding="18,12"
+        Background="#E61E293B"
+        Stroke="#5060A5FA"
+        StrokeThickness="1"
+        StrokeShape="RoundRectangle 14">
+        <Label
+            x:Name="AvisoLabel"
+            FontSize="13"
+            TextColor="White"
+            HorizontalTextAlignment="Center" />
+    </Border>
+</ContentView>

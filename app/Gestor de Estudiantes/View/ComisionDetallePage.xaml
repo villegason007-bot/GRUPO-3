@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Gestor_de_Estudiantes.Views.ComisionDetallePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:Gestor_de_Estudiantes.Controls"
+    Title="Detalle de comisión"
+    BackgroundColor="#090D18">
+
+    <Grid>
+        <controls:FondoAmbiental />
+
+        <ScrollView>
+            <VerticalStackLayout Padding="26,22,26,34" Spacing="20">
+
+                <!-- Volver + encabezado -->
+                <Button Text="‹ Comisiones"
+                        BackgroundColor="Transparent"
+                        TextColor="#A5B4FC"
+                        FontAttributes="Bold"
+                        HorizontalOptions="Start"
+                        Padding="0"
+                        Clicked="Volver_Clicked" />
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="COMISIÓN" FontSize="10" FontAttributes="Bold"
+                           CharacterSpacing="1.7" TextColor="#A5B4FC" />
+                    <Label Text="{Binding ComisionSeleccionada.Codigo}"
+                           FontSize="32" FontAttributes="Bold" TextColor="White" />
+                    <Label Text="{Binding ComisionSeleccionada.Semanas, StringFormat='Duración: {0} semanas'}"
+                           FontSize="14" TextColor="{StaticResource TextoSecundario}" />
+                </VerticalStackLayout>
+
+                <!-- Materias asignadas -->
+                <Border Background="#16FFFFFF" Stroke="#30FFFFFF" StrokeThickness="1"
+                        Padding="22" StrokeShape="RoundRectangle 22">
+                    <VerticalStackLayout Spacing="15">
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="01 / PLAN DE ESTUDIOS" FontSize="10" FontAttributes="Bold"
+                                   CharacterSpacing="1.5" TextColor="#A5B4FC" />
+                            <Label Text="Materias asignadas" FontSize="22"
+                                   FontAttributes="Bold" TextColor="White" />
+                        </VerticalStackLayout>
+
+                        <Button Text="+ Asignar materia"
+                                Style="{StaticResource GlassButton}"
+                                Clicked="AbrirModalMateria_Clicked" />
+
+                        <BoxView HeightRequest="1" Color="#24FFFFFF" />
+
+                        <controls:EstadoVacio
+                            x:Name="SinMateriasLabel"
+                            Text="Esta comisión todavía no tiene materias asignadas."
+                            IsVisible="False" />
+
+                        <VerticalStackLayout
+                            x:Name="MateriasLayout"
+                            Spacing="9">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#12FFFFFF" Stroke="#30FFFFFF" StrokeThickness="1"
+                                            Padding="14,10" StrokeShape="RoundRectangle 14">
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                            <Label Text="{Binding Nombre}" FontSize="15"
+                                                   FontAttributes="Bold" TextColor="White"
+                                                   VerticalOptions="Center" LineBreakMode="TailTruncation" />
+                                            <Button Grid.Column="1" Text="Quitar"
+                                                    BackgroundColor="#33F87171" TextColor="#FCA5A5"
+                                                    FontSize="12" FontAttributes="Bold"
+                                                    CornerRadius="10" Padding="12,6"
+                                                    Clicked="QuitarMateria_Clicked" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Estudiantes -->
+                <Border Background="#16FFFFFF" Stroke="#30FFFFFF" StrokeThickness="1"
+                        Padding="22" StrokeShape="RoundRectangle 22">
+                    <VerticalStackLayout Spacing="15">
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="02 / NÓMINA" FontSize="10" FontAttributes="Bold"
+                                   CharacterSpacing="1.5" TextColor="#A5B4FC" />
+                            <Label Text="Estudiantes" FontSize="22"
+                                   FontAttributes="Bold" TextColor="White" />
+                            <Label Text="Tocá un estudiante para ver su ficha."
+                                   FontSize="13" TextColor="{StaticResource TextoSecundario}" />
+                        </VerticalStackLayout>
+
+                        <Button Text="+ Agregar estudiante"
+                                Style="{StaticResource GlassButton}"
+                                Clicked="AbrirModalEstudiante_Clicked" />
+
+                        <BoxView HeightRequest="1" Color="#24FFFFFF" />
+
+                        <controls:EstadoVacio
+                            x:Name="SinEstudiantesLabel"
+                            Text="Esta comisión todavía no tiene estudiantes."
+                            IsVisible="False" />
+
+                        <VerticalStackLayout
+                            x:Name="EstudiantesLayout"
+                            Spacing="9"
+                            BindableLayout.ItemsSource="{Binding Estudiantes}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#12FFFFFF" Stroke="#30FFFFFF" StrokeThickness="1"
+                                            Padding="14,12" StrokeShape="RoundRectangle 14">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="Estudiante_Tapped" />
+                                        </Border.GestureRecognizers>
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                            <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                                                <HorizontalStackLayout Spacing="5">
+                                                    <Label Text="{Binding Apellido}" FontSize="15"
+                                                           FontAttributes="Bold" TextColor="White" />
+                                                    <Label Text="{Binding Nombre}" FontSize="15"
+                                                           TextColor="White" />
+                                                </HorizontalStackLayout>
+                                                <Label Text="{Binding Legajo, StringFormat='Legajo {0}'}"
+                                                       FontSize="12"
+                                                       TextColor="{StaticResource TextoSecundario}" />
+                                            </VerticalStackLayout>
+                                            <Label Grid.Column="1" Text="›" FontSize="24"
+                                                   TextColor="#A5B4FC" VerticalOptions="Center" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <controls:AvisoToast x:Name="Aviso" ZIndex="20" />
+
+        <!-- Modal: asignar materia -->
+        <controls:GlassModal
+            x:Name="ModalMateria"
+            IsVisible="False"
+            ZIndex="10"
+            Icono="▦"
+            IconoFondo="#302D75DB"
+            IconoBorde="#5060A5FA"
+            IconoColor="#BFDBFE"
+            IconoTamano="25"
+            Titulo="Asignar materia"
+            Subtitulo="Elegí una materia del listado para sumarla a la comisión."
+            TextoConfirmar="Asignar"
+            CancelarClicked="CancelarModal_Clicked"
+            ConfirmarClicked="AsignarMateria_Clicked">
+            <controls:GlassModal.Formulario>
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="MATERIA" Style="{StaticResource FormLabel}" />
+                    <Border Style="{StaticResource InnerGlassCard}">
+                        <Picker x:Name="MateriaPicker"
+                                Title="Seleccionar materia"
+                                TitleColor="#A5B4FC"
+                                TextColor="White"
+                                BackgroundColor="Transparent"
+                                ItemDisplayBinding="{Binding Nombre}" />
+                    </Border>
+                    <Label x:Name="SinDisponiblesLabel"
+                           Text="No quedan materias para asignar. Podés crearlas desde la sección Materias."
+                           FontSize="12" TextColor="{StaticResource TextoSecundario}"
+                           IsVisible="False" />
+                </VerticalStackLayout>
+            </controls:GlassModal.Formulario>
+        </controls:GlassModal>
+
+        <!-- Modal: nuevo estudiante -->
+        <controls:GlassModal
+            x:Name="ModalEstudiante"
+            IsVisible="False"
+            ZIndex="11"
+            Icono="◎"
+            IconoFondo="#302D75DB"
+            IconoBorde="#5060A5FA"
+            IconoColor="#BFDBFE"
+            IconoTamano="25"
+            Titulo="Nuevo estudiante"
+            Subtitulo="Se agregará a esta comisión."
+            TextoConfirmar="Guardar estudiante"
+            CancelarClicked="CancelarModal_Clicked"
+            ConfirmarClicked="GuardarEstudiante_Clicked">
+            <controls:GlassModal.Formulario>
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="LEGAJO" Style="{StaticResource FormLabel}" />
+                    <Entry x:Name="LegajoEntry" Style="{StaticResource GlassEntry}"
+                           Placeholder="Número de legajo" ReturnType="Next" />
+                    <Label Text="NOMBRE" Style="{StaticResource FormLabel}" />
+                    <Entry x:Name="NombreEntry" Style="{StaticResource GlassEntry}"
+                           Placeholder="Nombre del estudiante" ReturnType="Done" />
+                </VerticalStackLayout>
+            </controls:GlassModal.Formulario>
+        </controls:GlassModal>
+    </Grid>
+</ContentPage>

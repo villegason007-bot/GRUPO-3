@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="Gestor_de_Estudiantes.Controls.ComisionCardView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Tarjeta de comisión para el ItemTemplate de las listas.
+         El BindingContext es la Comision (Codigo, Semanas). -->
+    <Border
+        Background="#14FFFFFF"
+        Stroke="#2DFFFFFF"
+        StrokeThickness="1"
+        Padding="15"
+        StrokeShape="RoundRectangle 16">
+
+        <Grid
+            ColumnDefinitions="42,*,Auto"
+            ColumnSpacing="12">
+
+            <Border
+                WidthRequest="42"
+                HeightRequest="42"
+                VerticalOptions="Center"
+                Background="#302F2A75"
+                Stroke="#505B5CF6"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 13">
+                <Label
+                    Text="▤"
+                    FontSize="22"
+                    TextColor="#C7D2FE"
+                    HorizontalTextAlignment="Center"
+                    VerticalTextAlignment="Center" />
+            </Border>
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                VerticalOptions="Center"
+                Spacing="5">
+
+                <Label
+                    Text="{Binding Codigo}"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Label
+                    Text="{Binding Semanas, StringFormat='Duración: {0} semanas'}"
+                    FontSize="12"
+                    TextColor="{StaticResource TextoSecundario}" />
+            </VerticalStackLayout>
+
+        </Grid>
+    </Border>
+</ContentView>
