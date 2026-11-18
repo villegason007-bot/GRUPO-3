@@ -11,12 +11,12 @@
 		<Image
             Source="fondo.jpg"
             Aspect="AspectFill"
-            Opacity="0.55"
+            Opacity="0.7"
             InputTransparent="True" />
 
-		<!-- Capa azul oscura para que los textos blancos se lean bien -->
+		<!-- Capa oscura intermedia: se distingue el fondo y los textos blancos se leen bien -->
 		<BoxView
-            Color="#E6090D18"
+            Color="#BF090D18"
             InputTransparent="True" />
 
 		<!-- Brillos de color -->
