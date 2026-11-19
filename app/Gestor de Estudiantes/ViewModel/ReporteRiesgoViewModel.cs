@@ -65,6 +65,7 @@ public class ReporteRiesgoViewModel : INotifyPropertyChanged
         {
             ComisionSeleccionada = Comisiones[0];
         }
+
     }
 
     private void CargarReporte()

@@ -1,67 +1,107 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://microsoft.com"
-             xmlns:x="http://microsoft.com"
+<ContentPage  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Gestor_de_Estudiantes.Views.ReporteRiesgoPage"
              Title="Reporte de Riesgo por Comisión"
-             Loaded="ContentPage_Loaded">
+            BackgroundColor="#090D18">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="30" Spacing="20" MaxWidthRequest="700" HorizontalOptions="Center">
+        <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="18" MaximumWidthRequest="700" HorizontalOptions="Center">
 
-            <!-- Encabezado -->
-            <Label Text="Reporte de Estudiantes en Riesgo" FontSize="26" FontAttributes="Bold" />
-            <Label Text="Seleccione una comisión para evaluar el estado general del curso." FontSize="14" TextColor="Gray" />
+            <!-- Encabezado con la misma estética que RiesgoPage -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Reporte de riesgo por comisión"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="White" />
+                    <Label Text="Cantidad de estudiantes en riesgo de abandonar la materia."
+                       FontSize="13"
+                       TextColor="#94A3B8" />
+                </VerticalStackLayout>
 
-            <!-- Selector de Comisión -->
-            <VerticalStackLayout Spacing="6">
-                <Label Text="Comisión:" FontAttributes="Bold" FontSize="15" />
-                <Picker Title="Seleccione una comisión"
-                        ItemsSource="{Binding Comisiones}"
-                        ItemDisplayBinding="{Binding Codigo}"
-                        SelectedItem="{Binding ComisionSeleccionada}" />
-            </VerticalStackLayout>
+                <!-- Selector de comisión -->
+                <Border Padding="16"
+                    BackgroundColor="#111827"
+                    Stroke="#263244"
+                    StrokeShape="RoundRectangle 10">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Comisión:"
+                           FontAttributes="Bold"
+                           FontSize="14"
+                           TextColor="#E2E8F0" />
+                        <Picker Title="Seleccione una comisión"
+                            TextColor="White"
+                            TitleColor="#94A3B8"
+                            ItemsSource="{Binding Comisiones}"
+                            ItemDisplayBinding="{Binding Codigo}"
+                            SelectedItem="{Binding ComisionSeleccionada}" />
+                    </VerticalStackLayout>
+                </Border>
 
-            <!-- Tarjeta de Resultado (CA1, CA2 y CA3) -->
-            <Border IsVisible="{Binding TieneReporte}"
-                    StrokeShape="RoundRectangle 12"
-                    Stroke="#D0D0D0"
+                <!-- Tarjeta de Resultado (CA1, CA2 y CA3) -->
+                <Border IsVisible="{Binding TieneReporte}"
                     Padding="24"
-                    BackgroundColor="#F9FAFB">
-                <VerticalStackLayout Spacing="14">
+                    BackgroundColor="#111827"
+                    Stroke="#263244"
+                    StrokeShape="RoundRectangle 12">
+                    <VerticalStackLayout Spacing="14">
 
-                    <Label Text="{Binding ReporteActual.CodigoComision, StringFormat='Comisión: {0}'}"
+                        <Label Text="{Binding ReporteActual.CodigoComision, StringFormat='Comisión {0}'}"
                            FontSize="20"
-                           FontAttributes="Bold" />
+                           FontAttributes="Bold"
+                           TextColor="White" />
 
-                    <!-- Mensaje principal (CA1: "7 de 30..." o CA3: "Todavía no hay datos...") -->
-                    <Label Text="{Binding ReporteActual.MensajeEstado}"
-                           FontSize="17"
-                           TextColor="#1F2937" />
+                        <!-- Mensaje principal (CA1: "7 de 30..." o CA3: "Todavía no hay datos...") -->
+                        <Label Text="{Binding ReporteActual.MensajeEstado}"
+                           FontSize="16"
+                           TextColor="#E2E8F0" />
 
-                    <!-- Indicadores numéricos (visibles solo cuando hay datos suficientes - CA1) -->
-                    <Grid IsVisible="{Binding ReporteActual.TieneDatosSuficientes}"
+                        <!-- Indicadores numéricos (visibles solo cuando hay datos suficientes - CA1) -->
+                        <Grid IsVisible="{Binding ReporteActual.TieneDatosSuficientes}"
                           ColumnDefinitions="*, *"
                           ColumnSpacing="15"
                           Margin="0,10,0,0">
 
-                        <Border Grid.Column="0" StrokeShape="RoundRectangle 8" BackgroundColor="#FEE2E2" Padding="15" StrokeThickness="0">
-                            <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
-                                <Label Text="{Binding ReporteActual.CantidadEnRiesgo}" FontSize="28" FontAttributes="Bold" TextColor="#B91C1C" HorizontalOptions="Center" />
-                                <Label Text="En riesgo" FontSize="13" TextColor="#7F1D1D" HorizontalOptions="Center" />
-                            </VerticalStackLayout>
-                        </Border>
+                            <Border Grid.Column="0"
+                                StrokeShape="RoundRectangle 8"
+                                BackgroundColor="#450A0A"
+                                Stroke="#7F1D1D"
+                                Padding="15">
+                                <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
+                                    <Label Text="{Binding ReporteActual.CantidadEnRiesgo}"
+                                       FontSize="28"
+                                       FontAttributes="Bold"
+                                       TextColor="#FCA5A5"
+                                       HorizontalOptions="Center" />
+                                    <Label Text="En riesgo"
+                                       FontSize="13"
+                                       TextColor="#FECACA"
+                                       HorizontalOptions="Center" />
+                                </VerticalStackLayout>
+                            </Border>
 
-                        <Border Grid.Column="1" StrokeShape="RoundRectangle 8" BackgroundColor="#E5E7EB" Padding="15" StrokeThickness="0">
-                            <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
-                                <Label Text="{Binding ReporteActual.TotalEstudiantes}" FontSize="28" FontAttributes="Bold" TextColor="#1F2937" HorizontalOptions="Center" />
-                                <Label Text="Total estudiantes" FontSize="13" TextColor="#4B5563" HorizontalOptions="Center" />
-                            </VerticalStackLayout>
-                        </Border>
+                            <Border Grid.Column="1"
+                                StrokeShape="RoundRectangle 8"
+                                BackgroundColor="#1E293B"
+                                Stroke="#334155"
+                                Padding="15">
+                                <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
+                                    <Label Text="{Binding ReporteActual.TotalEstudiantes}"
+                                       FontSize="28"
+                                       FontAttributes="Bold"
+                                       TextColor="White"
+                                       HorizontalOptions="Center" />
+                                    <Label Text="Total estudiantes"
+                                       FontSize="13"
+                                       TextColor="#94A3B8"
+                                       HorizontalOptions="Center" />
+                                </VerticalStackLayout>
+                            </Border>
 
-                    </Grid>
-                </VerticalStackLayout>
-            </Border>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
 
-        </VerticalStackLayout>
-    </ScrollView>
-</ContentPage>
+            </VerticalStackLayout>
+        </ScrollView>
+    </ContentPage>

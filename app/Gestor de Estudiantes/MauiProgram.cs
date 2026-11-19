@@ -137,6 +137,12 @@ namespace Gestor_de_Estudiantes
             builder.Services.AddTransient<ConfiguracionRiesgoViewModel>();
             builder.Services.AddTransient<ConfiguracionRiesgoPage>();
 
+            //reporte
+            builder.Services.AddTransient<IReporteRiesgoService, ReporteRiesgoService>();
+            builder.Services.AddTransient<ReporteRiesgoViewModel>();
+            builder.Services.AddTransient<ReporteRiesgoPage>();
+
+
             // Crear la base (esquema + semilla) al iniciar la app: en una
             // máquina recién clonada no hay base y sin esto la primera
             // pantalla falla con «SQLite Error 14» (la consola no corre en

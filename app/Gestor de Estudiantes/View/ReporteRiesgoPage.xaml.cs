@@ -1,20 +1,23 @@
 using Gestor_de_Estudiantes.ViewModel;
 
-namespace Gestor_de_Estudiantes.Views;
-
-public partial class ReporteRiesgoPage : ContentPage
+namespace Gestor_de_Estudiantes.Views
 {
-    private readonly ReporteRiesgoViewModel _vm;
-
-    public ReporteRiesgoPage(ReporteRiesgoViewModel vm)
+    public partial class ReporteRiesgoPage : ContentPage
     {
-        InitializeComponent();
-        _vm = vm;
-        BindingContext = _vm;
-    }
+        public ReporteRiesgoPage(ReporteRiesgoViewModel viewModel)
+        {
+            InitializeComponent();
+            BindingContext = viewModel;
+        }
 
-    private void ContentPage_Loaded(object sender, EventArgs e)
-    {
-        _vm.Inicializar();
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            if (BindingContext is ReporteRiesgoViewModel vm)
+            {
+                vm.Inicializar();
+            }
+        }
     }
 }
