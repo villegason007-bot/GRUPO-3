@@ -19,6 +19,8 @@ namespace Gestor_de_Estudiantes
             Routing.RegisterRoute(nameof(ConfiguracionRiesgoPage), typeof(ConfiguracionRiesgoPage));
             Routing.RegisterRoute(nameof(ComisionDetallePage), typeof(ComisionDetallePage));
             Routing.RegisterRoute(nameof(MateriasPage), typeof(MateriasPage));
+            Routing.RegisterRoute(nameof(ReporteRiesgoPage), typeof(ReporteRiesgoPage));
+
         }
 
         private async void OnInicioClicked(object sender, EventArgs e)
@@ -60,5 +62,11 @@ namespace Gestor_de_Estudiantes
         {
             await Shell.Current.GoToAsync(nameof(MateriasPage));
         }
+
+        private async void OnReporteRiesgoClicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync(nameof(ReporteRiesgoPage));
+        }
+
     }
 }
