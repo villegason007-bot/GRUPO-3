@@ -27,5 +27,13 @@ namespace Gestor_de_Estudiantes.Repositories
         /// <param name="codigoComision">Comisión a evaluar.</param>
         /// <returns>(trabajos vencidos, de esos cuántos entregó el estudiante).</returns>
         (int TrabajosVencidos, int Entregados) ContarTrabajos(Guid estudianteId, string codigoComision);
+
+        /// <summary>
+        /// Obtiene el historial de condiciones de asistencia efectivamente tomadas
+        /// (Presente o Ausente) de un estudiante en clases hábiles, ordenado desde
+        /// la clase más reciente hacia la más antigua (R1).
+        /// </summary>
+        List<Condicion> ObtenerCondicionesAsistenciaOrdenadas(Guid estudianteId, string codigoComision);
+
     }
 }

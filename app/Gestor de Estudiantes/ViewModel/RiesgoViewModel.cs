@@ -153,6 +153,7 @@ namespace Gestor_de_Estudiantes.ViewModel
         public string TrabajosResumen { get; }
         public string FaltasResumen { get; }
         public string Motivo { get; }
+        public string AusenciasSeguidasTexto { get; } // <-- R1: Agregar esta propiedad
         public string UltimoContacto { get; }
         public string Estado { get; }
         public Color BadgeColor { get; }
@@ -164,6 +165,7 @@ namespace Gestor_de_Estudiantes.ViewModel
             Nombre = resultado.Nombre;
             Estado = resultado.Estado;
             Motivo = resultado.MotivoRiesgo;
+            AusenciasSeguidasTexto = resultado.TextoAusenciasSeguidas; // <-- R1: Asignar el texto
             UltimoContacto = resultado.TextoUltimoContacto;
 
             if (resultado.SinInformacion)

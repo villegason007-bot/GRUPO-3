@@ -169,13 +169,22 @@
                                         TextColor="#CBD5E1"
                                         VerticalOptions="Center" />
 
-                                    <Label
-                                        Grid.Column="3"
-                                        Text="{Binding Motivo}"
-                                        TextColor="#94A3B8"
-                                        FontSize="12"
-                                        VerticalOptions="Center"
-                                        LineBreakMode="WordWrap" />
+                                    <VerticalStackLayout
+                                     Grid.Column="3"
+                                     Spacing="4"
+                                     VerticalOptions="Center">
+                                        <Label
+                                         Text="{Binding Motivo}"
+                                         TextColor="#94A3B8"
+                                         FontSize="12"
+                                         LineBreakMode="WordWrap" />
+                                        <Label
+                                         Text="{Binding AusenciasSeguidasTexto}"
+                                         TextColor="#FBBF24"
+                                         FontSize="11"
+                                         FontAttributes="Bold" />
+                                    </VerticalStackLayout>
+
 
                                     <!-- H11: fecha del último contacto o «Sin contactar» -->
                                     <Label

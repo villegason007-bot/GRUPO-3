@@ -8,16 +8,7 @@ namespace Gestor_de_Estudiantes.Views
         {
             InitializeComponent();
             BindingContext = viewModel;
-        }
-
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-
-            if (BindingContext is ReporteRiesgoViewModel vm)
-            {
-                vm.Inicializar();
-            }
+            viewModel.Inicializar();
         }
     }
 }

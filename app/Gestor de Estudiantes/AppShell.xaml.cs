@@ -68,5 +68,6 @@ namespace Gestor_de_Estudiantes
             await Shell.Current.GoToAsync(nameof(ReporteRiesgoPage));
         }
 
+
     }
 }

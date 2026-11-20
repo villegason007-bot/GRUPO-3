@@ -119,5 +119,27 @@ namespace Gestor_de_Estudiantes.Services
                     : "Está dentro de los límites permitidos.";
             }
         }
+
+        /// <summary>Ausencias consecutivas hasta la última clase tomada; null si no hay datos (R1).</summary>
+        public int? AusenciasSeguidas { get; set; }
+
+        /// <summary>Texto listo para el panel: distingue sin datos, sin racha y racha vigente (R1).</summary>
+        public string TextoAusenciasSeguidas
+        {
+            get
+            {
+                if (AusenciasSeguidas is null)
+                    return "Sin datos"; // CA4
+
+                if (AusenciasSeguidas == 0)
+                    return "Sin ausencias seguidas"; // CA2
+
+                return AusenciasSeguidas == 1
+                    ? "1 ausencia seguida"
+                    : $"{AusenciasSeguidas} ausencias seguidas"; // CA1 y CA3
+            }
+        }
+
+
     }
 }

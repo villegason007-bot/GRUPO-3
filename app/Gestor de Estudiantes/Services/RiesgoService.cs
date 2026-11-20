@@ -108,6 +108,10 @@ namespace Gestor_de_Estudiantes.Services
         /// Cuenta asistencias y trabajos de un estudiante y calcula su
         /// resultado individual, adjuntando los límites configurados.
         /// </summary>
+        /// <summary>
+        /// Cuenta asistencias y trabajos de un estudiante y calcula su
+        /// resultado individual, adjuntando los límites configurados.
+        /// </summary>
         private ResultadoRiesgo CalcularRiesgoDe(
             Estudiante estudiante,
             string codigoComision,
@@ -138,7 +142,42 @@ namespace Gestor_de_Estudiantes.Services
             resultado.MaxFaltasPermitidas = maxFaltas;
             resultado.MaxTrabajosNoEntregadosPermitidos = maxTrabajos;
 
+            // R1: Calculamos la racha de ausencias seguidas
+            resultado.AusenciasSeguidas = CalcularAusenciasSeguidas(estudiante.Id, codigoComision);
+
             return resultado;
+        }
+
+        /// <summary>
+        /// Calcula cuántas clases seguidas lleva faltando el estudiante hasta la última clase tomada (R1).
+        /// Devuelve null si no tiene ninguna asistencia registrada (CA4).
+        /// </summary>
+        private int? CalcularAusenciasSeguidas(Guid estudianteId, string codigoComision)
+        {
+            var condiciones = _riesgos.ObtenerCondicionesAsistenciaOrdenadas(estudianteId, codigoComision);
+
+            // CA4: Sin datos de asistencia tomada -> devuelve null (no 0)
+            if (condiciones.Count == 0)
+                return null;
+
+            int racha = 0;
+
+            foreach (var condicion in condiciones)
+            {
+                if (condicion == Condicion.Ausente)
+                {
+                    racha++; // CA1: Suma mientras sean ausencias consecutivas desde la última clase
+                }
+                else if (condicion == Condicion.Presente)
+                {
+                    break;   // CA2: La presencia corta la racha inmediatamente
+                }
+            }
+
+            return racha;
         }
     }
 }
+
+   
+

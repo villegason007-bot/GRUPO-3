@@ -104,5 +104,45 @@ namespace Gestor_de_Estudiantes.Repositories
             lector.Read();
             return (lector.GetInt32(0), lector.GetInt32(1));
         }
+
+        public List<Condicion> ObtenerCondicionesAsistenciaOrdenadas(Guid estudianteId, string codigoComision)
+        {
+            using var conexion = BaseDeDatos.Abrir();
+            using var comando = conexion.CreateCommand();
+
+            // Ordenamos por fecha DESC para contar desde la última clase tomada hacia atrás.
+            // Al filtrar condicion <> Pendiente, ignoramos clases futuras o sin asistencia tomada (CA3).
+            comando.CommandText = """
+                SELECT a.condicion
+                FROM asistencias a
+                INNER JOIN clases c ON c.id = a.clase_id
+                INNER JOIN comisiones com ON com.id = c.comision_id
+                WHERE a.estudiante_id = @estudianteId
+                  AND com.codigo = @codigo
+                  AND c.estado = @estadoHabil
+                  AND a.condicion <> @condicionPendiente
+                ORDER BY c.fecha DESC;
+                """;
+
+            comando.Parameters.AddWithValue("@estadoHabil", EstadoClase.Habil.ToString());
+            comando.Parameters.AddWithValue("@condicionPendiente", Condicion.Pendiente.ToString());
+            comando.Parameters.AddWithValue("@estudianteId", estudianteId.ToString("D"));
+            comando.Parameters.AddWithValue("@codigo", codigoComision);
+
+            var condiciones = new List<Condicion>();
+            using var lector = comando.ExecuteReader();
+
+            while (lector.Read())
+            {
+                string textoCondicion = lector.GetString(0);
+                if (Enum.TryParse<Condicion>(textoCondicion, out var condicion))
+                {
+                    condiciones.Add(condicion);
+                }
+            }
+
+            return condiciones;
+        }
+
     }
 }
